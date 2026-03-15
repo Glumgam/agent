@@ -38,6 +38,7 @@ def _fix_loop(result: EvalResult) -> dict:
     main_py = AGENT_ROOT / "main.py"
     content = main_py.read_text(encoding="utf-8")
     modified = False
+    applied_change = ""
     for old, new in [
         ("REPEAT_THRESHOLD = 3", "REPEAT_THRESHOLD = 4"),
         ("REPEAT_THRESHOLD = 4", "REPEAT_THRESHOLD = 5"),
@@ -47,9 +48,20 @@ def _fix_loop(result: EvalResult) -> dict:
         if old in content:
             content = content.replace(old, new, 1)
             modified = True
+            applied_change = f"{old} → {new}"
             break
     if modified:
         main_py.write_text(content, encoding="utf-8")
+        # --- GIT EVOLUTION START ---
+        from evolution_tracker import record_evolution
+        record_evolution(
+            error_type="loop_detected",
+            file_repaired="main.py",
+            strategy="rule_loop_threshold_relaxed",
+            description=f"detect_loop 閾値を緩和: {applied_change}",
+            files_to_commit=["main.py"],
+        )
+        # --- GIT EVOLUTION END ---
     return {"applied": modified, "strategy": "loop_threshold_relaxed",
             "files_modified": ["main.py"] if modified else [],
             "description": "detect_loop の閾値を緩和"}
@@ -63,17 +75,25 @@ def _fix_done_declaration(result: EvalResult) -> dict:
         "declare done IMMEDIATELY. No extra steps.\n"
     )
     if "RULE 4b" not in content:
-        # RULE #4 の後に注入（現行のフォーマットに対応）
         marker = "[RULE #4"
         if marker in content:
             idx = content.find(marker)
-            # 次の [RULE の手前に挿入
             next_rule = content.find("[RULE #", idx + 1)
             if next_rule == -1:
                 next_rule = content.find("You are an autonomous", idx)
             if next_rule != -1:
                 content = content[:next_rule] + injection + content[next_rule:]
                 llm_py.write_text(content, encoding="utf-8")
+                # --- GIT EVOLUTION START ---
+                from evolution_tracker import record_evolution
+                record_evolution(
+                    error_type="max_steps",
+                    file_repaired="llm.py",
+                    strategy="rule_done_prompt_strengthened",
+                    description="SYSTEM_PROMPTにRULE 4b（done宣言強化）を注入",
+                    files_to_commit=["llm.py"],
+                )
+                # --- GIT EVOLUTION END ---
                 return {"applied": True, "strategy": "done_prompt_strengthened",
                         "files_modified": ["llm.py"], "description": "done宣言ルール強化"}
     return {"applied": False, "strategy": "already_done",
@@ -115,9 +135,22 @@ def _fix_missing_import(result: EvalResult) -> dict:
         [sys.executable, "-m", "pip", "install", pip_name],
         capture_output=True, text=True
     )
-    return {"applied": proc.returncode == 0,
+    applied = proc.returncode == 0
+    description = f"pip install {pip_name}: {'成功' if applied else '失敗'}"
+    if applied:
+        # --- GIT EVOLUTION START ---
+        from evolution_tracker import record_evolution
+        record_evolution(
+            error_type="import_error",
+            file_repaired="(venv)",
+            strategy=f"rule_installed_{pip_name}",
+            description=description,
+            files_to_commit=[],
+        )
+        # --- GIT EVOLUTION END ---
+    return {"applied": applied,
             "strategy": f"installed_{pip_name}", "files_modified": [],
-            "description": f"pip install {pip_name}: {'成功' if proc.returncode==0 else '失敗'}"}
+            "description": description}
 
 
 def _fix_no_run(result: EvalResult) -> dict:
@@ -181,11 +214,14 @@ def _auto_repair(result: EvalResult) -> dict:
     target_file = file_match.group(1)
     print(f"    🎯 修復対象: {target_file}")
 
+    # --- GIT EVOLUTION START ---
     repair_result = repair_file(
         file_path=target_file,
         error_log=result.last_log,
         task_description=result.reason,
+        error_type=result.failure_type.value,  # 追加
     )
+    # --- GIT EVOLUTION END ---
 
     return {
         "applied": repair_result.success,

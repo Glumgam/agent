@@ -500,6 +500,17 @@ def save_round_report(suite_result: dict, loop_round: int) -> str:
     out_path = AGENT_DIR / f"qa_report_round{loop_round}.md"
     out_path.write_text(md, encoding="utf-8")
     print(f"  📄 {out_path.name} を保存")
+
+    # --- GIT EVOLUTION START ---
+    try:
+        from evolution_tracker import generate_evolution_report
+        with open(out_path, "a", encoding="utf-8") as f:
+            f.write("\n\n---\n\n")
+            f.write(generate_evolution_report())
+    except Exception as _evo_err:
+        print(f"  ⚠️ Evolution Report スキップ: {_evo_err}")
+    # --- GIT EVOLUTION END ---
+
     return md
 
 

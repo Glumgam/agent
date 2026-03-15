@@ -1,0 +1,31 @@
+{
+  "records": [
+    {
+      "timestamp": "2026-03-15T14:24:06.821131",
+      "error_type": "syntax_error",
+      "file_repaired": "test_broken.py",
+      "strategy": "patch",
+      "commit_hash": "no-commit",
+      "description": "テスト用修復記録",
+      "success": false
+    },
+    {
+      "timestamp": "2026-03-15T14:24:18.498766",
+      "error_type": "syntax_error",
+      "file_repaired": "workspace/evo_test.py",
+      "strategy": "patch",
+      "commit_hash": "15b6da4",
+      "description": "git commit統合テスト",
+      "success": true
+    }
+  ],
+  "patterns": {
+    "syntax_error": [
+      {
+        "strategy": "patch",
+        "description": "git commit統合テスト",
+        "count": 1
+      }
+    ]
+  }
+}

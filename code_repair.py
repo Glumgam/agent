@@ -49,6 +49,7 @@ def repair_file(
     error_log: str,
     task_description: str = "",
     max_attempts: int = 2,
+    error_type: str = "unknown",  # --- GIT EVOLUTION START ---
 ) -> RepairResult:
     """
     失敗したファイルをLLMで修復する。
@@ -78,6 +79,16 @@ def repair_file(
             strategy=strategy,
         )
         if result.success:
+            # --- GIT EVOLUTION START ---
+            from evolution_tracker import record_evolution
+            record_evolution(
+                error_type=error_type,
+                file_repaired=result.file_repaired,
+                strategy=result.strategy,
+                description=result.description,
+                files_to_commit=[result.file_repaired],
+            )
+            # --- GIT EVOLUTION END ---
             _log_repair(result, original_code, error_log)
             return result
         print(f"      ⚠️ 修復失敗: {result.error}")
