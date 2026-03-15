@@ -1,0 +1,82 @@
+[
+  {
+    "task": "workspaceにtmp_sort/を作り、test.txt/test.py/test.mdの3ファイルを作成後、拡張子ごとにtexts//scripts//docs/へ振り分けるスクリプトorganize.pyを書いて実行せよ",
+    "summary": "created: tmp_sort/test.txt | last_run_output: [exit code 0] | ended_with: run"
+  },
+  {
+    "task": "同じ内容'hello'のファイルをdup1.txt/dup2.txt/dup3.txtとして作成し、ハッシュで重複を検出して1つだけ残すfind_dups.pyを書いて実行せよ",
+    "summary": "created: tmp_sort/test.py, tmp_sort/test.md, tmp_sort/test.txt, organize.py | last_run_output: [exit code 0]\n{'texts': ['test.txt', '._test.txt'], 'scripts': ['test.py', '._test.py'], 'docs': ['test.md', '._test.md']} | ended_with: run"
+  },
+  {
+    "task": "workspaceの全.pyファイルを再帰検索し、ファイルごとの行数と合計をcount_lines.pyで集計して表示せよ",
+    "summary": "created: count_lines.py | edited: count_lines.py | ended_with: edit_file"
+  },
+  {
+    "task": "workspaceの全.pyファイルを再帰検索し、ファイルごとの行数と合計をcount_lines.pyで集計して表示せよ\n\n[RETRY HINT] 前の試行ではループ検出により強制終了した。同じコマンドを2回以上繰り返さないこと。前のステップの結果を必ず確認してから次のアクションを選べ。タスクが完了したら即座に {\"tool\": \"done\"} を返せ。",
+    "summary": "edited: count_lines.py | ended_with: edit_file"
+  },
+  {
+    "task": "ERROR/WARNING/INFOの行を含むsample.logをPythonで生成し、レベルごとの件数を集計して表示するparse_log.pyを書いて実行せよ",
+    "summary": "created: parse_log.py | edited: parse_log.py | last_run_output: [exit code 0]\nCounter({'INFO': 1, 'WARNING': 1, 'ERROR': 1}) | ended_with: run"
+  },
+  {
+    "task": "reportlabを使ってタイトル'Agent QA Report'と現在日時・'TEST PASSED'の文字列を含むreport.pdfを生成するmake_pdf.pyを書いて実行せよ",
+    "summary": "edited: make_pdf.py | ended_with: edit_file"
+  },
+  {
+    "task": "reportlabを使ってタイトル'Agent QA Report'と現在日時・'TEST PASSED'の文字列を含むreport.pdfを生成するmake_pdf.pyを書いて実行せよ\n\n[RETRY HINT] 前の試行ではループ検出により強制終了した。同じコマンドを2回以上繰り返さないこと。前のステップの結果を必ず確認してから次のアクションを選べ。タスクが完了したら即座に {\"tool\": \"done\"} を返せ。",
+    "summary": "created: make_pdf.py | last_run_output: [exit code 0] | ended_with: run"
+  },
+  {
+    "task": "pdfplumberでworkspace/report.pdfからテキストを抽出しextracted.txtに保存するextract_pdf.pyを書いて実行せよ。report.pdfがなければreportlabで先に作成せよ",
+    "summary": "edited: make_pdf.py | last_run_output: [exit code 0] | ended_with: run"
+  },
+  {
+    "task": "reportlabで3ページのPDF（各ページにページ番号と'Page N of 3'）を生成するmultipage.pyを書いて実行せよ",
+    "summary": "edited: make_pdf.py | ended_with: edit_file"
+  },
+  {
+    "task": "pypdfを使って2つのPDFをreportlabで生成しmerged.pdfとして結合するmerge_pdf.pyを書いて実行せよ。結合後のページ数を表示すること",
+    "summary": "edited: multipage.py | ended_with: edit_file"
+  },
+  {
+    "task": "openpyxlで月/売上/前月比の3列・6行のデータを含むsales.xlsxを生成するmake_excel.pyを書いて実行せよ。売上は10000〜50000のランダム値",
+    "summary": "edited: make_excel.py | ended_with: edit_file"
+  },
+  {
+    "task": "openpyxlで月/売上/前月比の3列・6行のデータを含むsales.xlsxを生成するmake_excel.pyを書いて実行せよ。売上は10000〜50000のランダム値\n\n[RETRY HINT] 前の試行ではループ検出により強制終了した。同じコマンドを2回以上繰り返さないこと。前のステップの結果を必ず確認してから次のアクションを選べ。タスクが完了したら即座に {\"tool\": \"done\"} を返せ。",
+    "summary": "edited: make_excel.py | ended_with: edit_file"
+  },
+  {
+    "task": "pandasでsales.xlsxを読み込み、合計/平均/最大月を計算して表示するanalyze.pyを書いて実行せよ。sales.xlsxがなければ先に生成せよ",
+    "summary": "edited: make_excel.py | ended_with: edit_file"
+  },
+  {
+    "task": "pandasでsales.xlsxを読み込み、合計/平均/最大月を計算して表示するanalyze.pyを書いて実行せよ。sales.xlsxがなければ先に生成せよ\n\n[RETRY HINT] 前の試行ではループ検出により強制終了した。同じコマンドを2回以上繰り返さないこと。前のステップの結果を必ず確認してから次のアクションを選べ。タスクが完了したら即座に {\"tool\": \"done\"} を返せ。",
+    "summary": "edited: make_excel.py | ended_with: edit_file"
+  },
+  {
+    "task": "openpyxlでsales.xlsxの売上データに棒グラフを追加してsales_chart.xlsxとして保存するadd_chart.pyを書いて実行せよ",
+    "summary": "edited: add_chart.py | ended_with: edit_file"
+  },
+  {
+    "task": "requestsでhttps://httpbin.org/jsonにGETリクエストを送り、レスポンスJSONを整形して表示するfetch.pyを書いて実行せよ",
+    "summary": "created: fetch.py | last_run_output: Error: repeated action detected (loop guard) | ended_with: create_file"
+  },
+  {
+    "task": "requestsとBeautifulSoupでhttps://example.comのHTMLを取得し、h1タグとpタグのテキストを抽出して表示するscrape.pyを書いて実行せよ",
+    "summary": "created: fetch.py | edited: fetch.py | last_run_output: Error: repeated action detected (loop guard) | ended_with: create_file"
+  },
+  {
+    "task": "https://jsonplaceholder.typicode.com/todos/1からデータを取得しtodo.jsonに保存するapi_fetch.pyを書いて実行せよ。取得したtitle値を表示すること",
+    "summary": "created: api_fetch.py | edited: api_fetch.py | last_run_output: [exit code 0] | ended_with: edit_file"
+  },
+  {
+    "task": "openpyxlで月/売上/前月比の3列・6行のデータを含むsales.xlsxを生成するmake_excel.pyを書いて実行せよ。売上は10000〜50000のランダム値",
+    "summary": "edited: analyze.py | ended_with: diff_edit"
+  },
+  {
+    "task": "pandasでsales.xlsxを読み込み、合計/平均/最大月を計算して表示するanalyze.pyを書いて実行せよ。sales.xlsxがなければ先に生成せよ",
+    "summary": "created: make_excel.py | last_run_output: Error: repeated action detected (loop guard) | ended_with: create_file"
+  }
+]

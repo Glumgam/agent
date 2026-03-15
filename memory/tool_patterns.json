@@ -1,0 +1,770 @@
+[
+  {
+    "task": "トヨタについて教えて",
+    "steps": []
+  },
+  {
+    "task": "トヨタに教えて",
+    "steps": []
+  },
+  {
+    "task": "Hello Worldを出力するPythonファイルを作成して実行せよ",
+    "steps": []
+  },
+  {
+    "task": "こんにちは",
+    "steps": []
+  },
+  {
+    "task": "hello",
+    "steps": []
+  },
+  {
+    "task": "こんにちは",
+    "steps": []
+  },
+  {
+    "task": "こんにちは",
+    "steps": []
+  },
+  {
+    "task": "hello.pyを作成してHello, World!を出力せよ",
+    "steps": [
+      "create_file"
+    ]
+  },
+  {
+    "task": "1から15までのFizzBuzzをPythonで実装して実行せよ",
+    "steps": []
+  },
+  {
+    "task": "utils.pyにadd(a,b)関数を実装し、main.pyからimportして add(3,4) の結果を出力せよ",
+    "steps": []
+  },
+  {
+    "task": "わざと構文エラーを含むbuggy.pyを作成してから自分で修正し、python buggy.pyが成功するようにせよ",
+    "steps": [
+      "create_file"
+    ]
+  },
+  {
+    "task": "todo.py/storage.py/cli.pyを作成し、python cli.py add '買い物' → list → done 1 → list を全て成功させよ",
+    "steps": [
+      "create_file"
+    ]
+  },
+  {
+    "task": "こんにちは",
+    "steps": []
+  },
+  {
+    "task": "hello.pyを作成してHello, World\\!を出力せよ",
+    "steps": [
+      "create_file"
+    ]
+  },
+  {
+    "task": "日本で一番高い山はどこにありますか？",
+    "steps": []
+  },
+  {
+    "task": "珍味ベスト5を教えて",
+    "steps": []
+  },
+  {
+    "task": "reportlabを使ってタイトル'Agent QA Report'と現在日時・'TEST PASSED'の文字列を含むreport.pdfを生成するmake_pdf.pyを書いて実行せよ",
+    "steps": [
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "pandasでsales.xlsxを読み込み、合計/平均/最大月を計算して表示するanalyze.pyを書いて実行せよ。sales.xlsxがなければ先に生成せよ\n\n[RETRY HINT] 前の試行ではループ検出により強制終了した。同じコマンドを2回以上繰り返さないこと。前のステップの結果を必ず確認してから次のアクションを選べ。タスクが完了したら即座に {\"tool\": \"done\"} を返せ。",
+    "steps": [
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "openpyxlでsales.xlsxの売上データに棒グラフを追加してsales_chart.xlsxとして保存するadd_chart.pyを書いて実行せよ",
+    "steps": [
+      "create_file"
+    ]
+  },
+  {
+    "task": "requestsでhttps://httpbin.org/jsonにGETリクエストを送り、レスポンスJSONを整形して表示するfetch.pyを書いて実行せよ",
+    "steps": [
+      "search_web",
+      "run",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "workspaceにtmp_sort/を作り、test.txt/test.py/test.mdの3ファイルを作成後、拡張子ごとにtexts//scripts//docs/へ振り分けるスクリプトorganize.pyを書いて実行せよ\n\n[RETRY HINT] 前の試行ではループ検出により強制終了した。同じコマンドを2回以上繰り返さないこと。前のステップの結果を必ず確認してから次のアクションを選べ。タスクが完了したら即座に {\"tool\": \"done\"} を返せ。",
+    "steps": [
+      "make_dir",
+      "create_file"
+    ]
+  },
+  {
+    "task": "同じ内容'hello'のファイルをdup1.txt/dup2.txt/dup3.txtとして作成し、ハッシュで重複を検出して1つだけ残すfind_dups.pyを書いて実行せよ",
+    "steps": [
+      "make_dir",
+      "create_file",
+      "create_file",
+      "edit_file",
+      "run_tests"
+    ]
+  },
+  {
+    "task": "reportlabで3ページのPDF（各ページにページ番号と'Page N of 3'）を生成するmultipage.pyを書いて実行せよ\n\n[RETRY HINT] 前の試行ではループ検出により強制終了した。同じコマンドを2回以上繰り返さないこと。前のステップの結果を必ず確認してから次のアクションを選べ。タスクが完了したら即座に {\"tool\": \"done\"} を返せ。",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "珍味ベスト5を教えて",
+    "steps": []
+  },
+  {
+    "task": "openpyxlでsales.xlsxの売上データに棒グラフを追加してsales_chart.xlsxとして保存するadd_chart.pyを書いて実行せよ\n\n[RETRY HINT] 前の試行ではループ検出により強制終了した。同じコマンドを2回以上繰り返さないこと。前のステップの結果を必ず確認してから次のアクションを選べ。タスクが完了したら即座に {\"tool\": \"done\"} を返せ。",
+    "steps": [
+      "create_file"
+    ]
+  },
+  {
+    "task": "同じ内容'hello'のファイルをdup1.txt/dup2.txt/dup3.txtとして作成し、ハッシュで重複を検出して1つだけ残すfind_dups.pyを書いて実行せよ",
+    "steps": [
+      "make_dir",
+      "create_file",
+      "create_file",
+      "create_file",
+      "edit_file",
+      "run_tests"
+    ]
+  },
+  {
+    "task": "同じ内容'hello'のファイルをdup1.txt/dup2.txt/dup3.txtとして作成し、ハッシュで重複を検出して1つだけ残すfind_dups.pyを書いて実行せよ\n\n[RETRY HINT] 请运行organize.py并检查其输出，确认无误后再进行下一步。",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "pdfplumberでworkspace/report.pdfからテキストを抽出しextracted.txtに保存するextract_pdf.pyを書いて実行せよ。report.pdfがなければreportlabで先に作成せよ\n\n[RETRY HINT] 前の試行ではループ検出により強制終了した。同じコマンドを2回以上繰り返さないこと。前のステップの結果を必ず確認してから次のアクションを選べ。タスクが完了したら即座に {\"tool\": \"done\"} を返せ。",
+    "steps": [
+      "search_knowledge",
+      "search_web",
+      "search_web",
+      "run",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "bugfix.pyにdef add(a,b): return a-b を書き、a+bに修正してadd(3,4)を実行し7を出力せよ。出力を確認したら即座に done を宣言せよ。",
+    "steps": [
+      "create_file",
+      "read_file",
+      "edit_file",
+      "run_tests",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "珍味ベスト5を教えて",
+    "steps": []
+  },
+  {
+    "task": "workspaceの全.pyファイルを再帰検索し、ファイルごとの行数と合計をcount_lines.pyで集計して表示せよ",
+    "steps": [
+      "create_file"
+    ]
+  },
+  {
+    "task": "reportlabを使ってタイトル'Agent QA Report'と現在日時・'TEST PASSED'の文字列を含むreport.pdfを生成するmake_pdf.pyを書いて実行せよ",
+    "steps": [
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "pdfplumberでworkspace/report.pdfからテキストを抽出しextracted.txtに保存するextract_pdf.pyを書いて実行せよ。report.pdfがなければreportlabで先に作成せよ",
+    "steps": [
+      "create_file",
+      "run",
+      "run",
+      "_self_improve",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "openpyxlで月/売上/前月比の3列・6行のデータを含むsales.xlsxを生成するmake_excel.pyを書いて実行せよ。売上は10000〜50000のランダム値",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "openpyxlでsales.xlsxの売上データに棒グラフを追加してsales_chart.xlsxとして保存するadd_chart.pyを書いて実行せよ\n\n[RETRY HINT] 前の試行ではループ検出により強制終了した。同じコマンドを2回以上繰り返さないこと。前のステップの結果を必ず確認してから次のアクションを選べ。タスクが完了したら即座に {\"tool\": \"done\"} を返せ。",
+    "steps": [
+      "create_file"
+    ]
+  },
+  {
+    "task": "同じ内容'hello'のファイルをdup1.txt/dup2.txt/dup3.txtとして作成し、ハッシュで重複を検出して1つだけ残すfind_dups.pyを書いて実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "edit_file",
+      "run_tests",
+      "run"
+    ]
+  },
+  {
+    "task": "workspaceの全.pyファイルを再帰検索し、ファイルごとの行数と合計をcount_lines.pyで集計して表示せよ",
+    "steps": [
+      "create_file",
+      "edit_file",
+      "run_tests",
+      "run",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "珍味ベスト5を教えて",
+    "steps": []
+  },
+  {
+    "task": "標高の高い山ベスト5を教えて",
+    "steps": []
+  },
+  {
+    "task": "reportlabで3ページのPDF（各ページにページ番号と'Page N of 3'）を生成するmultipage.pyを書いて実行せよ",
+    "steps": [
+      "run_tests",
+      "create_file",
+      "edit_file",
+      "run_tests",
+      "create_file",
+      "create_file",
+      "_self_improve"
+    ]
+  },
+  {
+    "task": "openpyxlでsales.xlsxの売上データに棒グラフを追加してsales_chart.xlsxとして保存するadd_chart.pyを書いて実行せよ\n\n[RETRY HINT] 前の試行ではループ検出により強制終了した。同じコマンドを2回以上繰り返さないこと。前のステップの結果を必ず確認してから次のアクションを選べ。タスクが完了したら即座に {\"tool\": \"done\"} を返せ。",
+    "steps": [
+      "create_file",
+      "create_file",
+      "edit_file",
+      "run_tests"
+    ]
+  },
+  {
+    "task": "workspaceにtmp_sort/を作り、test.txt/test.py/test.mdの3ファイルを作成後、拡張子ごとにtexts//scripts//docs/へ振り分けるスクリプトorganize.pyを書いて実行せよ",
+    "steps": [
+      "make_dir",
+      "create_file"
+    ]
+  },
+  {
+    "task": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ\n\n[RETRY HINT] テストが全て通過した場合、「OK」と出力されるように修正してください。",
+    "steps": [
+      "edit_file",
+      "run_tests",
+      "edit_file",
+      "run_tests"
+    ]
+  },
+  {
+    "task": "同じ内容'hello'のファイルをdup1.txt/dup2.txt/dup3.txtとして作成し、ハッシュで重複を検出して1つだけ残すfind_dups.pyを書いて実行せよ",
+    "steps": [
+      "run_tests",
+      "edit_file",
+      "run_tests",
+      "run",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))\n\n[RETRY HINT] バグの修正と確認が完了しました。",
+    "steps": [
+      "run_tests",
+      "edit_file",
+      "run_tests",
+      "run",
+      "edit_file",
+      "run_tests"
+    ]
+  },
+  {
+    "task": "workspaceの全.pyファイルを再帰検索し、ファイルごとの行数と合計をcount_lines.pyで集計して表示せよ",
+    "steps": [
+      "create_file"
+    ]
+  },
+  {
+    "task": "同じ内容'hello'のファイルをdup1.txt/dup2.txt/dup3.txtとして作成し、ハッシュで重複を検出して1つだけ残すfind_dups.pyを書いて実行せよ",
+    "steps": [
+      "create_file",
+      "read_file",
+      "run",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ\n\n[RETRY HINT] 请设置HF_TOKEN以提高模型加载速度。",
+    "steps": [
+      "read_file",
+      "create_file",
+      "read_file",
+      "create_file",
+      "edit_file",
+      "run_tests"
+    ]
+  },
+  {
+    "task": "workspaceにtmp_sort/を作り、test.txt/test.py/test.mdの3ファイルを作成後、拡張子ごとにtexts//scripts//docs/へ振り分けるスクリプトorganize.pyを書いて実行せよ",
+    "steps": [
+      "make_dir",
+      "create_file"
+    ]
+  },
+  {
+    "task": "同じ内容'hello'のファイルをdup1.txt/dup2.txt/dup3.txtとして作成し、ハッシュで重複を検出して1つだけ残すfind_dups.pyを書いて実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "ERROR/WARNING/INFOの行を含むsample.logをPythonで生成し、レベルごとの件数を集計して表示するparse_log.pyを書いて実行せよ\n\n[RETRY HINT] 以下の内容をタスク文末に追記してください：",
+    "steps": [
+      "create_file"
+    ]
+  },
+  {
+    "task": "reportlabを使ってタイトル'Agent QA Report'と現在日時・'TEST PASSED'の文字列を含むreport.pdfを生成するmake_pdf.pyを書いて実行せよ",
+    "steps": [
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "reportlabで3ページのPDF（各ページにページ番号と'Page N of 3'）を生成するmultipage.pyを書いて実行せよ\n\n[RETRY HINT] 前の試行ではループ検出により強制終了した。同じコマンドを2回以上繰り返さないこと。前のステップの結果を必ず確認してから次のアクションを選べ。タスクが完了したら即座に {\"tool\": \"done\"} を返せ。",
+    "steps": [
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "pypdfを使って2つのPDFをreportlabで生成しmerged.pdfとして結合するmerge_pdf.pyを書いて実行せよ。結合後のページ数を表示すること",
+    "steps": [
+      "create_file"
+    ]
+  },
+  {
+    "task": "pypdfを使って2つのPDFをreportlabで生成しmerged.pdfとして結合するmerge_pdf.pyを書いて実行せよ。結合後のページ数を表示すること\n\n[RETRY HINT] 前回の試行に失敗した。別のアプローチを試み、完了したら {\"tool\": \"done\"} を返せ。",
+    "steps": [
+      "run_tests",
+      "edit_file",
+      "run_tests",
+      "edit_file",
+      "run_tests",
+      "run"
+    ]
+  },
+  {
+    "task": "openpyxlで月/売上/前月比の3列・6行のデータを含むsales.xlsxを生成するmake_excel.pyを書いて実行せよ。売上は10000〜50000のランダム値\n\n[RETRY HINT] 前の試行ではループ検出により強制終了した。同じコマンドを2回以上繰り返さないこと。前のステップの結果を必ず確認してから次のアクションを選べ。タスクが完了したら即座に {\"tool\": \"done\"} を返せ。",
+    "steps": [
+      "create_file",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "pandasでsales.xlsxを読み込み、合計/平均/最大月を計算して表示するanalyze.pyを書いて実行せよ。sales.xlsxがなければ先に生成せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "_self_improve",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "workspaceにtmp_sort/を作り、test.txt/test.py/test.mdの3ファイルを作成後、拡張子ごとにtexts//scripts//docs/へ振り分けるスクリプトorganize.pyを書いて実行せよ",
+    "steps": [
+      "make_dir",
+      "create_file",
+      "run",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "workspaceの全.pyファイルを再帰検索し、ファイルごとの行数と合計をcount_lines.pyで集計して表示せよ",
+    "steps": [
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "https://jsonplaceholder.typicode.com/todos/1からデータを取得しtodo.jsonに保存するapi_fetch.pyを書いて実行せよ。取得したtitle値を表示すること",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "_self_improve",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "同じ内容'hello'のファイルをdup1.txt/dup2.txt/dup3.txtとして作成し、ハッシュで重複を検出して1つだけ残すfind_dups.pyを書いて実行せよ",
+    "steps": [
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "reportlabを使ってタイトル'Agent QA Report'と現在日時・'TEST PASSED'の文字列を含むreport.pdfを生成するmake_pdf.pyを書いて実行せよ",
+    "steps": [
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "reportlabで3ページのPDF（各ページにページ番号と'Page N of 3'）を生成するmultipage.pyを書いて実行せよ",
+    "steps": [
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "pandasでsales.xlsxをsales.csvに変換するconvert.pyを書いて実行せよ。変換後にcsvの内容を表示すること",
+    "steps": [
+      "run",
+      "create_file",
+      "create_file",
+      "edit_file",
+      "run_tests",
+      "create_file"
+    ]
+  },
+  {
+    "task": "https://jsonplaceholder.typicode.com/todos/1からデータを取得しtodo.jsonに保存するapi_fetch.pyを書いて実行せよ。取得したtitle値を表示すること",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "edit_file",
+      "run_tests"
+    ]
+  },
+  {
+    "task": "https://jsonplaceholder.typicode.com/todos/1からデータを取得しtodo.jsonに保存するapi_fetch.pyを書いて実行せよ。取得したtitle値を表示すること\n\n[RETRY HINT] 以下のコードをapi_fetch.pyの末尾に追記してから再度実行してください。python print(data['title'])",
+    "steps": [
+      "create_file",
+      "edit_file",
+      "run_tests",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+    "steps": [
+      "create_file",
+      "edit_file",
+      "run_tests",
+      "create_file",
+      "edit_file",
+      "run_tests"
+    ]
+  },
+  {
+    "task": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "edit_file",
+      "run_tests"
+    ]
+  },
+  {
+    "task": "同じ内容'hello'のファイルをdup1.txt/dup2.txt/dup3.txtとして作成し、ハッシュで重複を検出して1つだけ残すfind_dups.pyを書いて実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "make_dir",
+      "run"
+    ]
+  },
+  {
+    "task": "workspaceの全.pyファイルを再帰検索し、ファイルごとの行数と合計をcount_lines.pyで集計して表示せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "_self_improve",
+      "run"
+    ]
+  },
+  {
+    "task": "reportlabを使ってタイトル'Agent QA Report'と現在日時・'TEST PASSED'の文字列を含むreport.pdfを生成するmake_pdf.pyを書いて実行せよ",
+    "steps": [
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "reportlabで3ページのPDF（各ページにページ番号と'Page N of 3'）を生成するmultipage.pyを書いて実行せよ\n\n[RETRY HINT] 前の試行ではループ検出により強制終了した。同じコマンドを2回以上繰り返さないこと。前のステップの結果を必ず確認してから次のアクションを選べ。タスクが完了したら即座に {\"tool\": \"done\"} を返せ。",
+    "steps": [
+      "create_file"
+    ]
+  },
+  {
+    "task": "pypdfを使って2つのPDFをreportlabで生成しmerged.pdfとして結合するmerge_pdf.pyを書いて実行せよ。結合後のページ数を表示すること",
+    "steps": [
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "openpyxlで月/売上/前月比の3列・6行のデータを含むsales.xlsxを生成するmake_excel.pyを書いて実行せよ。売上は10000〜50000のランダム値",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "_self_improve",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+    "steps": [
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "workspaceにtmp_sort/を作り、test.txt/test.py/test.mdの3ファイルを作成後、拡張子ごとにtexts//scripts//docs/へ振り分けるスクリプトorganize.pyを書いて実行せよ",
+    "steps": [
+      "run",
+      "run",
+      "create_file",
+      "run",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "同じ内容'hello'のファイルをdup1.txt/dup2.txt/dup3.txtとして作成し、ハッシュで重複を検出して1つだけ残すfind_dups.pyを書いて実行せよ",
+    "steps": [
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "workspaceの全.pyファイルを再帰検索し、ファイルごとの行数と合計をcount_lines.pyで集計して表示せよ",
+    "steps": [
+      "create_file"
+    ]
+  },
+  {
+    "task": "ERROR/WARNING/INFOの行を含むsample.logをPythonで生成し、レベルごとの件数を集計して表示するparse_log.pyを書いて実行せよ",
+    "steps": [
+      "run",
+      "create_file",
+      "create_file",
+      "edit_file",
+      "run_tests",
+      "run",
+      "search_code"
+    ]
+  },
+  {
+    "task": "reportlabを使ってタイトル'Agent QA Report'と現在日時・'TEST PASSED'の文字列を含むreport.pdfを生成するmake_pdf.pyを書いて実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "https://jsonplaceholder.typicode.com/todos/1からデータを取得しtodo.jsonに保存するapi_fetch.pyを書いて実行せよ。取得したtitle値を表示すること",
+    "steps": [
+      "create_file",
+      "run",
+      "edit_file",
+      "run_tests",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "workspaceの全.pyファイルを再帰検索し、ファイルごとの行数と合計をcount_lines.pyで集計して表示せよ",
+    "steps": [
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+    "steps": [
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+    "steps": [
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
+    "steps": [
+      "create_file",
+      "run",
+      "read_file",
+      "edit_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "workspaceにtmp_sort/を作り、test.txt/test.py/test.mdの3ファイルを作成後、拡張子ごとにtexts//scripts//docs/へ振り分けるスクリプトorganize.pyを書いて実行せよ",
+    "steps": [
+      "make_dir",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "同じ内容'hello'のファイルをdup1.txt/dup2.txt/dup3.txtとして作成し、ハッシュで重複を検出して1つだけ残すfind_dups.pyを書いて実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "ERROR/WARNING/INFOの行を含むsample.logをPythonで生成し、レベルごとの件数を集計して表示するparse_log.pyを書いて実行せよ",
+    "steps": [
+      "create_file",
+      "run",
+      "run_test",
+      "edit_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "reportlabを使ってタイトル'Agent QA Report'と現在日時・'TEST PASSED'の文字列を含むreport.pdfを生成するmake_pdf.pyを書いて実行せよ\n\n[RETRY HINT] 前の試行ではループ検出により強制終了した。同じコマンドを2回以上繰り返さないこと。前のステップの結果を必ず確認してから次のアクションを選べ。タスクが完了したら即座に {\"tool\": \"done\"} を返せ。",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "pdfplumberでworkspace/report.pdfからテキストを抽出しextracted.txtに保存するextract_pdf.pyを書いて実行せよ。report.pdfがなければreportlabで先に作成せよ",
+    "steps": [
+      "edit_file",
+      "edit_file",
+      "_self_improve",
+      "run",
+      "edit_file",
+      "run"
+    ]
+  },
+  {
+    "task": "https://jsonplaceholder.typicode.com/todos/1からデータを取得しtodo.jsonに保存するapi_fetch.pyを書いて実行せよ。取得したtitle値を表示すること",
+    "steps": [
+      "create_file",
+      "run",
+      "edit_file",
+      "edit_file",
+      "edit_file",
+      "edit_file"
+    ]
+  }
+]

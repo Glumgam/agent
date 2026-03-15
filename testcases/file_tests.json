@@ -1,0 +1,34 @@
+[
+  {
+    "id": "F1",
+    "label": "拡張子別フォルダ振り分け",
+    "task": "workspaceにtmp_sort/を作り、test.txt/test.py/test.mdの3ファイルを作成後、拡張子ごとにtexts//scripts//docs/へ振り分けるスクリプトorganize.pyを書いて実行せよ",
+    "expect_contains": "exit code 0",
+    "max_steps": 15,
+    "category": "file"
+  },
+  {
+    "id": "F2",
+    "label": "重複ファイル検出・削除",
+    "task": "同じ内容'hello'のファイルをdup1.txt/dup2.txt/dup3.txtとして作成し、ハッシュで重複を検出して1つだけ残すfind_dups.pyを書いて実行せよ",
+    "expect_contains": "exit code 0",
+    "max_steps": 12,
+    "category": "file"
+  },
+  {
+    "id": "F3",
+    "label": "ファイル行数集計",
+    "task": "workspaceの全.pyファイルを再帰検索し、ファイルごとの行数と合計をcount_lines.pyで集計して表示せよ",
+    "expect_contains": "exit code 0",
+    "max_steps": 10,
+    "category": "file"
+  },
+  {
+    "id": "F4",
+    "label": "ログファイル解析",
+    "task": "ERROR/WARNING/INFOの行を含むsample.logをPythonで生成し、レベルごとの件数を集計して表示するparse_log.pyを書いて実行せよ",
+    "expect_contains": "ERROR",
+    "max_steps": 12,
+    "category": "file"
+  }
+]

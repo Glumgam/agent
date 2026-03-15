@@ -1,0 +1,34 @@
+[
+  {
+    "id": "P1",
+    "label": "PDF生成",
+    "task": "reportlabを使ってタイトル'Agent QA Report'と現在日時・'TEST PASSED'の文字列を含むreport.pdfを生成するmake_pdf.pyを書いて実行せよ",
+    "expect_contains": "exit code 0",
+    "max_steps": 12,
+    "category": "pdf"
+  },
+  {
+    "id": "P2",
+    "label": "PDFテキスト抽出",
+    "task": "pdfplumberでworkspace/report.pdfからテキストを抽出しextracted.txtに保存するextract_pdf.pyを書いて実行せよ。report.pdfがなければreportlabで先に作成せよ",
+    "expect_contains": "exit code 0",
+    "max_steps": 15,
+    "category": "pdf"
+  },
+  {
+    "id": "P3",
+    "label": "PDF複数ページ生成",
+    "task": "reportlabで3ページのPDF（各ページにページ番号と'Page N of 3'）を生成するmultipage.pyを書いて実行せよ",
+    "expect_contains": "exit code 0",
+    "max_steps": 12,
+    "category": "pdf"
+  },
+  {
+    "id": "P4",
+    "label": "PDF結合",
+    "task": "pypdfを使って2つのPDFをreportlabで生成しmerged.pdfとして結合するmerge_pdf.pyを書いて実行せよ。結合後のページ数を表示すること",
+    "expect_contains": "exit code 0",
+    "max_steps": 15,
+    "category": "pdf"
+  }
+]

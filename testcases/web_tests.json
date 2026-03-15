@@ -1,0 +1,26 @@
+[
+  {
+    "id": "W1",
+    "label": "HTTPリクエスト",
+    "task": "requestsでhttps://httpbin.org/jsonにGETリクエストを送り、レスポンスJSONを整形して表示するfetch.pyを書いて実行せよ",
+    "expect_contains": "exit code 0",
+    "max_steps": 10,
+    "category": "web"
+  },
+  {
+    "id": "W2",
+    "label": "HTML解析",
+    "task": "requestsとBeautifulSoupでhttps://example.comのHTMLを取得し、h1タグとpタグのテキストを抽出して表示するscrape.pyを書いて実行せよ",
+    "expect_contains": "exit code 0",
+    "max_steps": 12,
+    "category": "web"
+  },
+  {
+    "id": "W3",
+    "label": "JSON API保存",
+    "task": "https://jsonplaceholder.typicode.com/todos/1からデータを取得しtodo.jsonに保存するapi_fetch.pyを書いて実行せよ。取得したtitle値を表示すること",
+    "expect_contains": "exit code 0",
+    "max_steps": 10,
+    "category": "web"
+  }
+]

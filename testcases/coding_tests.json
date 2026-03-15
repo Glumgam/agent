@@ -1,0 +1,26 @@
+[
+  {
+    "id": "C1",
+    "label": "FizzBuzz実装",
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "expect_contains": "FizzBuzz",
+    "max_steps": 8,
+    "category": "coding"
+  },
+  {
+    "id": "C2",
+    "label": "バグ修正",
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+    "expect_contains": "7",
+    "max_steps": 12,
+    "category": "coding"
+  },
+  {
+    "id": "C3",
+    "label": "unittest",
+    "task": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
+    "expect_contains": "OK",
+    "max_steps": 15,
+    "category": "coding"
+  }
+]

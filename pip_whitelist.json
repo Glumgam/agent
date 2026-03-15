@@ -1,0 +1,17 @@
+[
+  "pytest",
+  "requests",
+  "reportlab",
+  "pypdf",
+  "PyPDF2",
+  "pdfplumber",
+  "openpyxl",
+  "pandas",
+  "numpy",
+  "matplotlib",
+  "beautifulsoup4",
+  "bs4",
+  "lxml",
+  "pillow",
+  "Pillow"
+]

@@ -1,0 +1,34 @@
+[
+  {
+    "id": "E1",
+    "label": "Excel生成",
+    "task": "openpyxlで月/売上/前月比の3列・6行のデータを含むsales.xlsxを生成するmake_excel.pyを書いて実行せよ。売上は10000〜50000のランダム値",
+    "expect_contains": "exit code 0",
+    "max_steps": 12,
+    "category": "excel"
+  },
+  {
+    "id": "E2",
+    "label": "Excel集計",
+    "task": "pandasでsales.xlsxを読み込み、合計/平均/最大月を計算して表示するanalyze.pyを書いて実行せよ。sales.xlsxがなければ先に生成せよ",
+    "expect_contains": "exit code 0",
+    "max_steps": 15,
+    "category": "excel"
+  },
+  {
+    "id": "E3",
+    "label": "Excel→CSV変換",
+    "task": "pandasでsales.xlsxをsales.csvに変換するconvert.pyを書いて実行せよ。変換後にcsvの内容を表示すること",
+    "expect_contains": "exit code 0",
+    "max_steps": 10,
+    "category": "excel"
+  },
+  {
+    "id": "E4",
+    "label": "Excelグラフ",
+    "task": "openpyxlでsales.xlsxの売上データに棒グラフを追加してsales_chart.xlsxとして保存するadd_chart.pyを書いて実行せよ",
+    "expect_contains": "exit code 0",
+    "max_steps": 15,
+    "category": "excel"
+  }
+]
