@@ -169,7 +169,7 @@ def _action_signature(entry: dict) -> str:
 
 
 def detect_loop(history: list) -> bool:
-    WINDOW = 6
+    WINDOW = 8
     REPEAT_THRESHOLD = 5
 
     real_steps = [h for h in history if not h.get("action", {}).get("_auto")]
@@ -642,6 +642,15 @@ def build_agent_prompt(task, project_map, history, memory, step, category=None, 
 
     tools_text = "\n".join(VALID_TOOLS)
 
+    # --- SKILL HINT START ---
+    skill_hint_text = ""
+    try:
+        from skill_extractor import get_skill_hint
+        skill_hint_text = get_skill_hint(task)
+    except Exception:
+        pass
+    # --- SKILL HINT END ---
+
     if task not in _code_context_cache:
         try:
             _code_context_cache[task] = search_code(task) or []
@@ -699,7 +708,7 @@ STRATEGY
 --------
 {strategy_hint or ""}
 
-CODE CONTEXT
+{skill_hint_text}CODE CONTEXT
 ------------
 {code_context}
 
@@ -744,7 +753,7 @@ TASK CATEGORY:
 STRATEGY:
 {strategy_hint or ""}
 
-CODE CONTEXT:
+{skill_hint_text}CODE CONTEXT:
 {code_context}
 
 PROJECT:
@@ -919,6 +928,15 @@ def run_agent():
         if tool in ("done", "answer"):
             print("完了")
             save_pattern(task, history)
+            # --- SKILL LEARNING START ---
+            try:
+                from skill_extractor import extract_skill, save_skill
+                _skill = extract_skill(task, history)
+                if _skill:
+                    save_skill(_skill)
+            except Exception as _sk_err:
+                print(f"  ⚠️ スキル抽出スキップ: {_sk_err}")
+            # --- SKILL LEARNING END ---
             break
 
         if tool not in VALID_TOOLS:
