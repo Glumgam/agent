@@ -170,7 +170,7 @@ def _action_signature(entry: dict) -> str:
 
 def detect_loop(history: list) -> bool:
     WINDOW = 6
-    REPEAT_THRESHOLD = 4
+    REPEAT_THRESHOLD = 5
 
     real_steps = [h for h in history if not h.get("action", {}).get("_auto")]
 
