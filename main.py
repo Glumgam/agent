@@ -170,7 +170,7 @@ def _action_signature(entry: dict) -> str:
 
 def detect_loop(history: list) -> bool:
     WINDOW = 6
-    REPEAT_THRESHOLD = 3
+    REPEAT_THRESHOLD = 4
 
     real_steps = [h for h in history if not h.get("action", {}).get("_auto")]
 
@@ -266,7 +266,7 @@ def _inject_run_if_needed(action: dict, history: list) -> dict:
         if e.get("action", {}).get("tool") in ("create_file", "edit_file")
         and e.get("action", {}).get("path", "") == path
     )
-    if create_count >= 1 and not run_exists:
+    if create_count >= 0 and not run_exists:
         # --- LOOP FIX START ---
         # sys.argv を使うスクリプトには引数を渡す必要があるか確認
         content = action.get("content", "")
