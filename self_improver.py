@@ -14,24 +14,41 @@ from self_evaluator import FailureType, EvalResult
 AGENT_ROOT = Path(__file__).parent
 
 
+# --- PATTERN LEARNING START ---
 def improve(eval_result: EvalResult) -> dict:
+    """
+    修復優先順位:
+    1. past_patterns（過去の成功記録）
+    2. rule_based（既存ルール）
+    3. LLM repair（最終手段）
+    """
+    # 優先1: 過去の成功パターン
+    from pattern_repair import apply_best_pattern
+    pattern_result = apply_best_pattern(eval_result)
+    if pattern_result["applied"]:
+        print(f"  ✅ パターン修復成功: {pattern_result['description']}")
+        return pattern_result
+    print("  ℹ️  パターンなし → ルールベースへ")
+
+    # 優先2 & 3: ルール → LLM
     strategy_map = {
         FailureType.LOOP_DETECTED: _fix_loop,
         FailureType.MAX_STEPS:     _fix_done_declaration,
         FailureType.INVALID_TOOL:  _fix_invalid_tool,
         FailureType.IMPORT_ERROR:  _fix_missing_import,
-        FailureType.SYNTAX_ERROR:  _fix_syntax_with_llm,
         FailureType.NO_RUN:        _fix_no_run,
-        FailureType.WRONG_OUTPUT:  _fix_wrong_output_with_llm,
         FailureType.TIMEOUT:       _fix_timeout,
+        FailureType.SYNTAX_ERROR:  _fix_syntax_with_llm,
+        FailureType.WRONG_OUTPUT:  _fix_wrong_output_with_llm,
         FailureType.UNKNOWN:       _fix_unknown_with_llm,
     }
     fixer = strategy_map.get(eval_result.failure_type)
     if not fixer:
         return {"applied": False, "strategy": "no_strategy",
-                "files_modified": [], "description": "修正戦略なし"}
-    print(f"  🔧 修正戦略: {eval_result.failure_type.value}")
+                "files_modified": [], "description": "修復戦略なし"}
+    print(f"  🔧 ルール修復: {eval_result.failure_type.value}")
     return fixer(eval_result)
+# --- PATTERN LEARNING END ---
 
 
 def _fix_loop(result: EvalResult) -> dict:
@@ -60,6 +77,9 @@ def _fix_loop(result: EvalResult) -> dict:
             strategy="rule_loop_threshold_relaxed",
             description=f"detect_loop 閾値を緩和: {applied_change}",
             files_to_commit=["main.py"],
+            # --- SIGNATURE UPDATE START ---
+            signature=getattr(result, "signature", "loop_detected"),
+            # --- SIGNATURE UPDATE END ---
         )
         # --- GIT EVOLUTION END ---
     return {"applied": modified, "strategy": "loop_threshold_relaxed",
@@ -92,6 +112,9 @@ def _fix_done_declaration(result: EvalResult) -> dict:
                     strategy="rule_done_prompt_strengthened",
                     description="SYSTEM_PROMPTにRULE 4b（done宣言強化）を注入",
                     files_to_commit=["llm.py"],
+                    # --- SIGNATURE UPDATE START ---
+                    signature=getattr(result, "signature", "max_steps"),
+                    # --- SIGNATURE UPDATE END ---
                 )
                 # --- GIT EVOLUTION END ---
                 return {"applied": True, "strategy": "done_prompt_strengthened",
@@ -146,6 +169,9 @@ def _fix_missing_import(result: EvalResult) -> dict:
             strategy=f"rule_installed_{pip_name}",
             description=description,
             files_to_commit=[],
+            # --- SIGNATURE UPDATE START ---
+            signature=getattr(result, "signature", "import_error"),
+            # --- SIGNATURE UPDATE END ---
         )
         # --- GIT EVOLUTION END ---
     return {"applied": applied,

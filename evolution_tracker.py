@@ -16,6 +16,7 @@ EVOLUTION_LOG = AGENT_ROOT / "evolution_log.md"
 PATTERN_DB    = AGENT_ROOT / "memory" / "repair_patterns.json"
 
 
+# --- SIGNATURE UPDATE START ---
 @dataclass
 class EvolutionRecord:
     timestamp:     str
@@ -25,6 +26,7 @@ class EvolutionRecord:
     commit_hash:   str
     description:   str
     success:       bool
+    signature:     str = ""   # 追加
 
 
 def record_evolution(
@@ -33,6 +35,7 @@ def record_evolution(
     strategy: str,
     description: str,
     files_to_commit: list = None,
+    signature: str = "",   # 追加
 ) -> EvolutionRecord:
     """修復成功時に呼ぶ。git commitして進化記録を保存する。"""
     commit_hash = _git_commit(
@@ -47,11 +50,13 @@ def record_evolution(
         commit_hash=commit_hash,
         description=description,
         success=commit_hash not in ("no-commit", "no-change"),
+        signature=signature or error_type,   # 追加
     )
     _append_evolution_log(record)
     _update_pattern_db(record)
-    print(f"  📌 進化記録: [{commit_hash[:8]}] {error_type} → {strategy}")
+    print(f"  📌 進化記録: [{commit_hash[:8]}] {record.signature} → {strategy}")
     return record
+# --- SIGNATURE UPDATE END ---
 
 
 def get_evolution_history(limit: int = 20) -> list:
@@ -173,37 +178,60 @@ def _append_evolution_log(record: EvolutionRecord):
         )
 
 
+def _init_evolution_log():
+    """evolution_log.md のヘッダーを初回だけ書く"""
+    with open(EVOLUTION_LOG, "w", encoding="utf-8") as f:
+        f.write("# Evolution Log\n\n")
+        f.write("| Timestamp | Error Type | File | Strategy | Commit | Result |\n")
+        f.write("|-----------|-----------|------|----------|--------|--------|\n")
+
+
+# --- SIGNATURE UPDATE START ---
 def _update_pattern_db(record: EvolutionRecord):
+    """signatures と patterns の両方に保存（後方互換維持）"""
     PATTERN_DB.parent.mkdir(exist_ok=True)
     if PATTERN_DB.exists():
         with open(PATTERN_DB, encoding="utf-8") as f:
             data = json.load(f)
     else:
-        data = {"records": [], "patterns": {}}
-        # evolution_log.md のヘッダーを初回だけ書く
-        with open(EVOLUTION_LOG, "w", encoding="utf-8") as f:
-            f.write("# Evolution Log\n\n")
-            f.write("| Timestamp | Error Type | File | Strategy | Commit | Result |\n")
-            f.write("|-----------|-----------|------|----------|--------|--------|\n")
+        data = {"records": [], "patterns": {}, "signatures": {}}
+        _init_evolution_log()
 
     data["records"].append(asdict(record))
 
     if record.success:
+        # signatures キー（高精度・新方式）
+        if "signatures" not in data:
+            data["signatures"] = {}
+        sig = record.signature or record.error_type
+        if sig not in data["signatures"]:
+            data["signatures"][sig] = []
+        _upsert_pattern(data["signatures"][sig], record)
+
+        # patterns キー（後方互換・error_type 単位）
         et = record.error_type
         if et not in data["patterns"]:
             data["patterns"][et] = []
-        existing = [p["strategy"] for p in data["patterns"][et]]
-        if record.strategy not in existing:
-            data["patterns"][et].append({
-                "strategy": record.strategy,
-                "description": record.description,
-                "count": 1,
-            })
-        else:
-            for p in data["patterns"][et]:
-                if p["strategy"] == record.strategy:
-                    p["count"] = p.get("count", 0) + 1
+        _upsert_pattern(data["patterns"][et], record)
 
     with open(PATTERN_DB, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
+
+
+def _upsert_pattern(pattern_list: list, record: EvolutionRecord):
+    """パターンリストに追加またはカウントアップ"""
+    existing = [p["strategy"] for p in pattern_list]
+    if record.strategy not in existing:
+        pattern_list.append({
+            "strategy":    record.strategy,
+            "description": record.description,
+            "count":       1,
+            "last_success": record.timestamp,
+        })
+    else:
+        for p in pattern_list:
+            if p["strategy"] == record.strategy:
+                p["count"] = p.get("count", 0) + 1
+                p["last_success"] = record.timestamp
+# --- SIGNATURE UPDATE END ---
 # --- GIT EVOLUTION END ---

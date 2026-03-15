@@ -224,6 +224,14 @@ def run_with_self_improve(
         print(f"    💬 理由: {se_result.reason}")
 
         improve_result = improve(se_result)
+        # --- PATTERN LEARNING START ---
+        if improve_result["applied"]:
+            strategy = improve_result.get("strategy", "")
+            if "pattern" in strategy:
+                print("    🧠 パターン学習による修復")
+            else:
+                print(f"    🔧 ルール修復: {strategy}")
+        # --- PATTERN LEARNING END ---
         if improve_result["applied"]:
             print(f"    ✅ 修正適用: {improve_result['description']}")
             print(f"    🔄 自己改善後リトライ")
@@ -510,6 +518,16 @@ def save_round_report(suite_result: dict, loop_round: int) -> str:
     except Exception as _evo_err:
         print(f"  ⚠️ Evolution Report スキップ: {_evo_err}")
     # --- GIT EVOLUTION END ---
+
+    # --- PATTERN LEARNING START ---
+    try:
+        from pattern_repair import show_pattern_stats
+        with open(out_path, "a", encoding="utf-8") as f:
+            f.write("\n\n---\n\n")
+            f.write(show_pattern_stats())
+    except Exception as _pl_err:
+        print(f"  ⚠️ Pattern Stats スキップ: {_pl_err}")
+    # --- PATTERN LEARNING END ---
 
     return md
 
