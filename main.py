@@ -931,7 +931,8 @@ def run_agent():
             # --- SKILL LEARNING START ---
             try:
                 from skill_extractor import extract_skill, save_skill
-                _skill = extract_skill(task, history)
+                # succeeded=True: done 検出時点では history に done が未append
+                _skill = extract_skill(task, history, succeeded=True)
                 if _skill:
                     save_skill(_skill)
             except Exception as _sk_err:

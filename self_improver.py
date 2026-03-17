@@ -219,7 +219,33 @@ def _fix_wrong_output_with_llm(result: EvalResult) -> dict:
 
 
 def _fix_unknown_with_llm(result: EvalResult) -> dict:
-    return _auto_repair(result)
+    # --- THINKING REPAIR START ---
+    from llm import ask_thinking
+    prompt = f"""
+以下のAIエージェントの失敗を深く分析して、根本原因と修正方法を提案してください。
+
+失敗理由: {result.reason}
+ログ:
+{result.last_log}
+
+以下を答えてください:
+1. 根本原因（1行）
+2. 修正すべきファイルと箇所
+3. 具体的な修正コード
+"""
+    suggestion = ask_thinking(prompt)
+    print(f"    🧠 Thinking分析:\n{suggestion[:400]}")
+    log_path = Path(__file__).parent / "self_improve_log.md"
+    with open(log_path, "a", encoding="utf-8") as f:
+        f.write(f"\n## {datetime.now().strftime('%Y-%m-%d %H:%M')} — thinking_analysis\n")
+        f.write(f"**理由:** {result.reason}\n**分析:**\n{suggestion}\n")
+    return {
+        "applied": False,
+        "strategy": "thinking_analysis",
+        "files_modified": [],
+        "description": "Thinkingモデルによる深層分析（self_improve_log.md参照）",
+    }
+    # --- THINKING REPAIR END ---
 
 
 def _auto_repair(result: EvalResult) -> dict:

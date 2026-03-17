@@ -45,11 +45,14 @@ REQUIRED_PACKAGES = {
 }
 
 CATEGORY_FILES = {
-    "coding": "coding_tests.json",
-    "file":   "file_tests.json",
-    "pdf":    "pdf_tests.json",
-    "excel":  "excel_tests.json",
-    "web":    "web_tests.json",
+    "coding":  "coding_tests.json",
+    "file":    "file_tests.json",
+    "pdf":     "pdf_tests.json",
+    "excel":   "excel_tests.json",
+    "web":     "web_tests.json",
+    # --- COMPLEX TEST START ---
+    "complex": "complex_tests.json",
+    # --- COMPLEX TEST END ---
 }
 
 ALL_CATEGORIES = list(CATEGORY_FILES.keys())
@@ -332,6 +335,24 @@ def run_test_suite(
 
         if eval_result.success:
             completed_ids.add(tc["id"])
+            # --- SKILL SAVE START ---
+            try:
+                from skill_extractor import extract_skill, save_skill
+                # stdoutからツール名を抽出（ACTION: {"tool": "..."} の形式）
+                import re as _re
+                _tools = _re.findall(r'"tool"\s*:\s*"([^"]+)"', run_result["output"])
+                _seen_t, _tools_uniq = set(), []
+                for _t in _tools:
+                    if _t not in _seen_t and _t not in ("_error",):
+                        _seen_t.add(_t); _tools_uniq.append(_t)
+                # 疑似履歴を構築（done を含む）
+                _fake_history = [{"action": {"tool": t}} for t in _tools_uniq]
+                _skill = extract_skill(task_str, _fake_history, succeeded=True)
+                if _skill:
+                    save_skill(_skill)
+            except Exception as _sk_err:
+                pass  # スキル保存失敗は無視
+            # --- SKILL SAVE END ---
 
         ok_str = "✅" if eval_result.success else "❌"
         tout_str = " [タイムアウト]" if run_result["timed_out"] else ""
@@ -528,6 +549,16 @@ def save_round_report(suite_result: dict, loop_round: int) -> str:
     except Exception as _pl_err:
         print(f"  ⚠️ Pattern Stats スキップ: {_pl_err}")
     # --- PATTERN LEARNING END ---
+
+    # --- SKILL STATS START ---
+    try:
+        from skill_extractor import show_skill_stats
+        with open(out_path, "a", encoding="utf-8") as f:
+            f.write("\n\n---\n\n")
+            f.write(show_skill_stats())
+    except Exception as _ss_err:
+        print(f"  ⚠️ Skill Stats スキップ: {_ss_err}")
+    # --- SKILL STATS END ---
 
     return md
 

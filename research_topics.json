@@ -1,0 +1,58 @@
+[
+  {
+    "id": "ai_news",
+    "label": "AI・LLM 最新動向",
+    "queries": ["AI LLM agent 2026", "Claude GPT Gemini update"],
+    "sources": ["news", "hackernews"],
+    "evolve": true
+  },
+  {
+    "id": "python_tech",
+    "label": "Python 技術トレンド",
+    "queries": ["Python new library 2026", "Python automation tool"],
+    "sources": ["github", "pypi"],
+    "evolve": true
+  },
+  {
+    "id": "arxiv_ai",
+    "label": "AI 論文",
+    "queries": ["LLM tool use agent", "autonomous AI learning"],
+    "sources": ["arxiv"],
+    "evolve": true
+  },
+  {
+    "id": "security",
+    "label": "セキュリティ",
+    "queries": ["cybersecurity 2026", "vulnerability security tool"],
+    "sources": ["hackernews", "news"],
+    "evolve": true
+  },
+  {
+    "id": "gadget",
+    "label": "ガジェット・テック",
+    "queries": ["latest gadget 2026", "Apple Google tech"],
+    "sources": ["hackernews", "news"],
+    "evolve": false
+  },
+  {
+    "id": "finance",
+    "label": "経済・投資",
+    "queries": ["日本株 最新", "economic news 2026"],
+    "sources": ["news", "reddit"],
+    "evolve": false
+  },
+  {
+    "id": "science",
+    "label": "科学・研究",
+    "queries": ["science breakthrough 2026", "physics biology research"],
+    "sources": ["arxiv", "news"],
+    "evolve": false
+  },
+  {
+    "id": "food",
+    "label": "グルメ・食",
+    "queries": ["ラーメン 新店 2026", "グルメ おすすめ"],
+    "sources": ["news"],
+    "evolve": false
+  }
+]

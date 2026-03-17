@@ -766,5 +766,661 @@
       "edit_file",
       "edit_file"
     ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+    "steps": [
+      "edit_file",
+      "edit_file",
+      "edit_file",
+      "_self_improve",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "pdfplumberでworkspace/report.pdfからテキストを抽出しextracted.txtに保存するextract_pdf.pyを書いて実行せよ。report.pdfがなければreportlabで先に作成せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "pypdfを使って2つのPDFをreportlabで生成しmerged.pdfとして結合するmerge_pdf.pyを書いて実行せよ。結合後のページ数を表示すること",
+    "steps": [
+      "edit_file",
+      "edit_file",
+      "edit_file",
+      "edit_file",
+      "edit_file",
+      "edit_file"
+    ]
+  },
+  {
+    "task": "pandasでsales.xlsxを読み込み、合計/平均/最大月を計算して表示するanalyze.pyを書いて実行せよ。sales.xlsxがなければ先に生成せよ",
+    "steps": [
+      "edit_file",
+      "edit_file",
+      "edit_file",
+      "edit_file",
+      "edit_file",
+      "edit_file"
+    ]
+  },
+  {
+    "task": "pandasでsales.xlsxを読み込み、合計/平均/最大月を計算して表示するanalyze.pyを書いて実行せよ。sales.xlsxがなければ先に生成せよ\n\n[RETRY HINT] 前の試行ではループ検出により強制終了した。同じコマンドを2回以上繰り返さないこと。前のステップの結果を必ず確認してから次のアクションを選べ。タスクが完了したら即座に {\"tool\": \"done\"} を返せ。",
+    "steps": [
+      "diff_edit",
+      "diff_edit",
+      "diff_edit",
+      "_self_improve",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "openpyxlでsales.xlsxの売上データに棒グラフを追加してsales_chart.xlsxとして保存するadd_chart.pyを書いて実行せよ",
+    "steps": [
+      "edit_file",
+      "run",
+      "read_file",
+      "run"
+    ]
+  },
+  {
+    "task": "requestsでhttps://httpbin.org/jsonにGETリクエストを送り、レスポンスJSONを整形して表示するfetch.pyを書いて実行せよ\n\n[RETRY HINT] 以下のコードを追加してrequestsライブラリをインストールしてください。その後、fetch.pyファイルを作成し、requestsライブラリを使用してhttps://httpbin.org/jsonにGETリクエストを送り、レスポンスJSONを整形して表示するためのコードを記述します。",
+    "steps": [
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のパイプラインを実装して実行せよ:\n1. generator.py: 100件のランダム売上データ(日付/商品名/金額)をCSVに生成\n2. analyzer.py: CSVを読み込み、月別集計・商品別ランキング・平均単価を計算してレポートをMarkdownで出力\n3. run_pipeline.py: generator→analyzerの順で実行\npython run_pipeline.py を実行して report.md が生成されること",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "edit_file",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy_app.pyに書き、自分で発見・修正して動作させよ:\nimport json\n\nclass DataStore:\n    def __init__(self):\n        self.data = {}\n    \n    def save(self, key, value):\n        self.data[key] = value\n        # バグ: ファイルに書き込んでいない\n    \n    def load(self, key):\n        return self.data[key]  # バグ: keyがない場合の処理なし\n\nstore = DataStore()\nstore.save('user', {'name': 'Alice', 'age': 30})\nprint(store.load('user'))\nprint(store.load('missing'))  # KeyError発生\n\n修正後にpython buggy_app.pyが正常終了すること",
+    "steps": [
+      "edit_file",
+      "edit_file",
+      "edit_file",
+      "edit_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "以下を実装して実行せよ:\n1. scraper.py: https://jsonplaceholder.typicode.com/posts から最初の10件を取得\n2. exporter.py: 取得データ(id/title/body)をopenpyxlでposts.xlsxに書き出し\n3. pipeline.py: scraper→exporterの順で実行してposts.xlsxを生成\npython pipeline.py を実行してposts.xlsxが存在すること",
+    "steps": [
+      "create_file",
+      "create_file",
+      "run",
+      "edit_file",
+      "edit_file",
+      "run"
+    ]
+  },
+  {
+    "task": "Flaskを使って以下のTODO APIを実装して起動テストせよ:\n- app.py: GET /todos, POST /todos, PUT /todos/<id>, DELETE /todos/<id>\n- todos.jsonで永続化\n- test_app.py: requestsでAPIをテスト(追加→一覧→更新→削除の順)\npython test_app.py を実行して全APIが動作すること\n(Flaskがない場合はpip installすること)",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "workspace/fg01.py を作成して実行せよ。\nファイルの内容:\ndef greet(name):\nprint(f'Hello {name}')  # インデントなし（バグ）\ngreet('World')\nエラーを自分で修正してexit code 0にすること",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "edit_file",
+      "run"
+    ]
+  },
+  {
+    "task": "workspace/fg02.py を作成して実行せよ。\nファイルの内容:\ndef add(a, b)  # コロンなし（バグ）\n    return a + b\nprint(add(3, 4))\nエラーを自分で修正してexit code 0にすること",
+    "steps": [
+      "create_file",
+      "create_file",
+      "edit_file",
+      "edit_file",
+      "edit_file",
+      "run"
+    ]
+  },
+  {
+    "task": "workspace/fg05.py を作成して実行せよ。\nファイルの内容:\ndata = {'name': 'Alice'}\nprint(data['age'])  # KeyError（バグ）\nエラーを修正して name と age(デフォルト0) を表示させること",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "workspace/fg06.py を作成して実行せよ。\nファイルの内容:\ndef double(x):\n    return x * 2\nresult = double('5') + 10  # TypeError（バグ）\nprint(result)\nエラーを修正して結果20を出力させること",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "workspaceにtmp_sort/を作り、test.txt/test.py/test.mdの3ファイルを作成後、拡張子ごとにtexts//scripts//docs/へ振り分けるスクリプトorganize.pyを書いて実行せよ",
+    "steps": [
+      "make_dir",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "同じ内容'hello'のファイルをdup1.txt/dup2.txt/dup3.txtとして作成し、ハッシュで重複を検出して1つだけ残すfind_dups.pyを書いて実行せよ",
+    "steps": [
+      "make_dir",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "reportlabを使ってタイトル'Agent QA Report'と現在日時・'TEST PASSED'の文字列を含むreport.pdfを生成するmake_pdf.pyを書いて実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "reportlabで3ページのPDF（各ページにページ番号と'Page N of 3'）を生成するmultipage.pyを書いて実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "openpyxlで月/売上/前月比の3列・6行のデータを含むsales.xlsxを生成するmake_excel.pyを書いて実行せよ。売上は10000〜50000のランダム値",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "requestsとBeautifulSoupでhttps://example.comのHTMLを取得し、h1タグとpタグのテキストを抽出して表示するscrape.pyを書いて実行せよ\n\n[RETRY HINT] 前の試行ではループ検出により強制終了した。同じコマンドを2回以上繰り返さないこと。前のステップの結果を必ず確認してから次のアクションを選べ。タスクが完了したら即座に {\"tool\": \"done\"} を返せ。",
+    "steps": [
+      "create_file",
+      "create_file",
+      "run",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "https://jsonplaceholder.typicode.com/todos/1からデータを取得しtodo.jsonに保存するapi_fetch.pyを書いて実行せよ。取得したtitle値を表示すること",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "以下を実装して実行せよ:\n1. scraper.py: https://jsonplaceholder.typicode.com/posts から最初の10件を取得\n2. exporter.py: 取得データ(id/title/body)をopenpyxlでposts.xlsxに書き出し\n3. pipeline.py: scraper→exporterの順で実行してposts.xlsxを生成\npython pipeline.py を実行してposts.xlsxが存在すること",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "Flaskを使って以下のTODO APIを実装して起動テストせよ:\n- app.py: GET /todos, POST /todos, PUT /todos/<id>, DELETE /todos/<id>\n- todos.jsonで永続化\n- test_app.py: requestsでAPIをテスト(追加→一覧→更新→削除の順)\npython test_app.py を実行して全APIが動作すること\n(Flaskがない場合はpip installすること)\n\n[RETRY HINT] 前の試行ではループ検出により強制終了した。同じコマンドを2回以上繰り返さないこと。前のステップの結果を必ず確認してから次のアクションを選べ。タスクが完了したら即座に {\"tool\": \"done\"} を返せ。",
+    "steps": [
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+    "steps": [
+      "run",
+      "edit_file",
+      "edit_file",
+      "edit_file",
+      "edit_file",
+      "run"
+    ]
+  },
+  {
+    "task": "workspaceにtmp_sort/を作り、test.txt/test.py/test.mdの3ファイルを作成後、拡張子ごとにtexts//scripts//docs/へ振り分けるスクリプトorganize.pyを書いて実行せよ",
+    "steps": [
+      "make_dir",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "同じ内容'hello'のファイルをdup1.txt/dup2.txt/dup3.txtとして作成し、ハッシュで重複を検出して1つだけ残すfind_dups.pyを書いて実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "reportlabを使ってタイトル'Agent QA Report'と現在日時・'TEST PASSED'の文字列を含むreport.pdfを生成するmake_pdf.pyを書いて実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "run",
+      "search_code",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "reportlabで3ページのPDF（各ページにページ番号と'Page N of 3'）を生成するmultipage.pyを書いて実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "pypdfを使って2つのPDFをreportlabで生成しmerged.pdfとして結合するmerge_pdf.pyを書いて実行せよ。結合後のページ数を表示すること",
+    "steps": [
+      "edit_file",
+      "edit_file",
+      "edit_file",
+      "run",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "openpyxlでsales.xlsxの売上データに棒グラフを追加してsales_chart.xlsxとして保存するadd_chart.pyを書いて実行せよ",
+    "steps": [
+      "run",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "workspaceにtmp_sort/を作り、test.txt/test.py/test.mdの3ファイルを作成後、拡張子ごとにtexts//scripts//docs/へ振り分けるスクリプトorganize.pyを書いて実行せよ",
+    "steps": [
+      "create_file",
+      "run",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "同じ内容'hello'のファイルをdup1.txt/dup2.txt/dup3.txtとして作成し、ハッシュで重複を検出して1つだけ残すfind_dups.pyを書いて実行せよ",
+    "steps": [
+      "edit_file",
+      "edit_file",
+      "edit_file",
+      "edit_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "ERROR/WARNING/INFOの行を含むsample.logをPythonで生成し、レベルごとの件数を集計して表示するparse_log.pyを書いて実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "reportlabを使ってタイトル'Agent QA Report'と現在日時・'TEST PASSED'の文字列を含むreport.pdfを生成するmake_pdf.pyを書いて実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "edit_file",
+      "run"
+    ]
+  },
+  {
+    "task": "reportlabで3ページのPDF（各ページにページ番号と'Page N of 3'）を生成するmultipage.pyを書いて実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "pypdfを使って2つのPDFをreportlabで生成しmerged.pdfとして結合するmerge_pdf.pyを書いて実行せよ。結合後のページ数を表示すること",
+    "steps": [
+      "run",
+      "run_test",
+      "run_test",
+      "run_test",
+      "run_test",
+      "run_test"
+    ]
+  },
+  {
+    "task": "openpyxlで月/売上/前月比の3列・6行のデータを含むsales.xlsxを生成するmake_excel.pyを書いて実行せよ。売上は10000〜50000のランダム値",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "workspaceにtmp_sort/を作り、test.txt/test.py/test.mdの3ファイルを作成後、拡張子ごとにtexts//scripts//docs/へ振り分けるスクリプトorganize.pyを書いて実行せよ\n\n[RETRY HINT] organize.pyスクリプトを作成して実行する",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "同じ内容'hello'のファイルをdup1.txt/dup2.txt/dup3.txtとして作成し、ハッシュで重複を検出して1つだけ残すfind_dups.pyを書いて実行せよ",
+    "steps": [
+      "create_file",
+      "run",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "workspaceの全.pyファイルを再帰検索し、ファイルごとの行数と合計をcount_lines.pyで集計して表示せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "reportlabで3ページのPDF（各ページにページ番号と'Page N of 3'）を生成するmultipage.pyを書いて実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "pypdfを使って2つのPDFをreportlabで生成しmerged.pdfとして結合するmerge_pdf.pyを書いて実行せよ。結合後のページ数を表示すること",
+    "steps": [
+      "create_file",
+      "run",
+      "search_code",
+      "edit_file",
+      "edit_file",
+      "run"
+    ]
+  },
+  {
+    "task": "openpyxlで月/売上/前月比の3列・6行のデータを含むsales.xlsxを生成するmake_excel.pyを書いて実行せよ。売上は10000〜50000のランダム値",
+    "steps": [
+      "create_file",
+      "create_file",
+      "run",
+      "edit_file",
+      "edit_file",
+      "run"
+    ]
+  },
+  {
+    "task": "requestsとBeautifulSoupでhttps://example.comのHTMLを取得し、h1タグとpタグのテキストを抽出して表示するscrape.pyを書いて実行せよ",
+    "steps": [
+      "edit_file",
+      "edit_file",
+      "edit_file",
+      "run",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "workspaceにtmp_sort/を作り、test.txt/test.py/test.mdの3ファイルを作成後、拡張子ごとにtexts//scripts//docs/へ振り分けるスクリプトorganize.pyを書いて実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "run",
+      "edit_file",
+      "edit_file",
+      "run"
+    ]
+  },
+  {
+    "task": "同じ内容'hello'のファイルをdup1.txt/dup2.txt/dup3.txtとして作成し、ハッシュで重複を検出して1つだけ残すfind_dups.pyを書いて実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "requestsとBeautifulSoupでhttps://example.comのHTMLを取得し、h1タグとpタグのテキストを抽出して表示するscrape.pyを書いて実行せよ",
+    "steps": [
+      "edit_file",
+      "run",
+      "run",
+      "run",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy_app.pyに書き、自分で発見・修正して動作させよ:\nimport json\n\nclass DataStore:\n    def __init__(self):\n        self.data = {}\n    \n    def save(self, key, value):\n        self.data[key] = value\n        # バグ: ファイルに書き込んでいない\n    \n    def load(self, key):\n        return self.data[key]  # バグ: keyがない場合の処理なし\n\nstore = DataStore()\nstore.save('user', {'name': 'Alice', 'age': 30})\nprint(store.load('user'))\nprint(store.load('missing'))  # KeyError発生\n\n修正後にpython buggy_app.pyが正常終了すること",
+    "steps": [
+      "run",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "以下を実装して実行せよ:\n1. scraper.py: https://jsonplaceholder.typicode.com/posts から最初の10件を取得\n2. exporter.py: 取得データ(id/title/body)をopenpyxlでposts.xlsxに書き出し\n3. pipeline.py: scraper→exporterの順で実行してposts.xlsxを生成\npython pipeline.py を実行してposts.xlsxが存在すること",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "Flaskを使って以下のTODO APIを実装して起動テストせよ:\n- app.py: GET /todos, POST /todos, PUT /todos/<id>, DELETE /todos/<id>\n- todos.jsonで永続化\n- test_app.py: requestsでAPIをテスト(追加→一覧→更新→削除の順)\npython test_app.py を実行して全APIが動作すること\n(Flaskがない場合はpip installすること)\n\n[RETRY HINT] 前の試行ではループ検出により強制終了した。同じコマンドを2回以上繰り返さないこと。前のステップの結果を必ず確認してから次のアクションを選べ。タスクが完了したら即座に {\"tool\": \"done\"} を返せ。",
+    "steps": [
+      "run",
+      "run"
+    ]
   }
 ]

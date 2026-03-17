@@ -28,6 +28,36 @@
       "description": "detect_loop 閾値を緩和: REPEAT_THRESHOLD = 3 → REPEAT_THRESHOLD = 4",
       "success": true,
       "signature": "loop_detected::fetch"
+    },
+    {
+      "timestamp": "2026-03-15T16:34:54.754331",
+      "error_type": "loop_detected",
+      "file_repaired": "main.py",
+      "strategy": "rule_loop_threshold_relaxed",
+      "commit_hash": "ad60626",
+      "description": "detect_loop 閾値を緩和: REPEAT_THRESHOLD = 4 → REPEAT_THRESHOLD = 5",
+      "success": true,
+      "signature": "loop_detected::make_excel"
+    },
+    {
+      "timestamp": "2026-03-15T21:42:34.432482",
+      "error_type": "max_steps",
+      "file_repaired": "llm.py",
+      "strategy": "rule_done_prompt_strengthened",
+      "commit_hash": "393f01c",
+      "description": "SYSTEM_PROMPTにRULE 4b（done宣言強化）を注入",
+      "success": true,
+      "signature": "max_steps"
+    },
+    {
+      "timestamp": "2026-03-16T06:27:35.795406",
+      "error_type": "loop_detected",
+      "file_repaired": "main.py",
+      "strategy": "rule_loop_threshold_relaxed",
+      "commit_hash": "5a11a3b",
+      "description": "detect_loop 閾値を緩和: WINDOW = 6 → WINDOW = 8",
+      "success": true,
+      "signature": "loop_detected"
     }
   ],
   "patterns": {
@@ -52,8 +82,8 @@
       {
         "strategy": "rule_loop_threshold_relaxed",
         "description": "detect_loop 閾値を緩和: REPEAT_THRESHOLD = 3 → REPEAT_THRESHOLD = 4",
-        "count": 1,
-        "last_success": "2026-03-15T15:05:06.960386"
+        "count": 3,
+        "last_success": "2026-03-16T06:27:35.795406"
       }
     ],
     "no_run": [
@@ -69,6 +99,14 @@
         "description": "pandas インストール",
         "count": 1,
         "last_success": "2026-03-15T14:54:31.329613"
+      }
+    ],
+    "max_steps": [
+      {
+        "strategy": "rule_done_prompt_strengthened",
+        "description": "SYSTEM_PROMPTにRULE 4b（done宣言強化）を注入",
+        "count": 1,
+        "last_success": "2026-03-15T21:42:34.432482"
       }
     ]
   },
@@ -95,6 +133,30 @@
         "description": "detect_loop 閾値を緩和: REPEAT_THRESHOLD = 3 → REPEAT_THRESHOLD = 4",
         "count": 1,
         "last_success": "2026-03-15T15:05:06.960386"
+      }
+    ],
+    "loop_detected::make_excel": [
+      {
+        "strategy": "rule_loop_threshold_relaxed",
+        "description": "detect_loop 閾値を緩和: REPEAT_THRESHOLD = 4 → REPEAT_THRESHOLD = 5",
+        "count": 1,
+        "last_success": "2026-03-15T16:34:54.754331"
+      }
+    ],
+    "max_steps": [
+      {
+        "strategy": "rule_done_prompt_strengthened",
+        "description": "SYSTEM_PROMPTにRULE 4b（done宣言強化）を注入",
+        "count": 1,
+        "last_success": "2026-03-15T21:42:34.432482"
+      }
+    ],
+    "loop_detected": [
+      {
+        "strategy": "rule_loop_threshold_relaxed",
+        "description": "detect_loop 閾値を緩和: WINDOW = 6 → WINDOW = 8",
+        "count": 1,
+        "last_success": "2026-03-16T06:27:35.795406"
       }
     ]
   }

@@ -72,6 +72,22 @@ def _register_tools():
     registry.register("ask_user",             tool_ask_user)
     registry.register("answer",               tool_answer)
     registry.register("done",                 tool_done)
+    # --- WEB SEARCH START ---
+    from tools.web_search import tool_web_search
+    registry.register("web_search", tool_web_search)
+    # --- WEB SEARCH END ---
+    # --- NEWS/RANKING START ---
+    from tools.web_search import tool_fetch_news, tool_fetch_ranking
+    registry.register("fetch_news",    tool_fetch_news)
+    registry.register("fetch_ranking", tool_fetch_ranking)
+    # --- NEWS/RANKING END ---
+    # --- SECRETARY TOOLS START ---
+    from tools.web_search import tool_search_places, tool_fetch_tech_info
+    registry.register("search_places",   lambda a: tool_search_places(
+        a.get("query", ""), a.get("location", ""), int(a.get("limit", 5))))
+    registry.register("fetch_tech_info", lambda a: tool_fetch_tech_info(
+        a.get("query", a.get("topic", "")), a.get("source", "auto")))
+    # --- SECRETARY TOOLS END ---
 
 
 _register_tools()
@@ -82,6 +98,9 @@ VALID_TOOLS = {
     "create_file", "edit_file", "read_file", "append_file",
     "delete_file", "make_dir", "read_directory", "diff_edit",
     "run", "run_test", "done", "ask_user", "answer",
+    "web_search",   # --- WEB SEARCH START ---
+    "fetch_news", "fetch_ranking",         # --- NEWS/RANKING START ---
+    "search_places", "fetch_tech_info",   # --- SECRETARY TOOLS START ---
 }
 # --- LOOP FIX END ---
 

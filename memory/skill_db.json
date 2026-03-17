@@ -1,0 +1,313 @@
+{
+  "skills": {
+    "data_analysis": {
+      "name": "data_analysis",
+      "task_example": "pandasを使ってデータを分析してください",
+      "success_count": 9,
+      "last_used": "2026-03-16T17:12:00.865276+00:00",
+      "tools_used": [
+        "create_file",
+        "run",
+        "done"
+      ],
+      "key_imports": [
+        "pandas",
+        "glob"
+      ],
+      "keywords": [
+        "pandasを使ってデータを分析してください",
+        "workspaceの全",
+        "pyファイルを再帰検索し",
+        "ファイルごとの行数と合計をcount",
+        "lines",
+        "pyで集計して表示せよ",
+        "error",
+        "warning",
+        "infoの行を含むsample",
+        "logをpythonで生成し",
+        "レベルごとの件数を集計して表示するparse",
+        "log",
+        "pyを書いて実行せよ",
+        "以下のパイプラインを実装して実行せよ",
+        "generator"
+      ],
+      "summary": "以下のパイプラインを実装して実行せよ:\n1. generator.py: 100件のランダム売上データ(日付/商品名/金額)をCSVに生成\n2. analyzer.py: CSVを読み込み、月別集計・商品別ランキング・平均単価を計算してレポートをMarkdownで出力\n3. run_pipeline.py: generator→analyzerの順で実行\npython run_pipeline.p"
+    },
+    "web_scraping": {
+      "name": "web_scraping",
+      "task_example": "Scrape product data from website and save to CSV",
+      "success_count": 5,
+      "last_used": "2026-03-16T17:15:56.621247+00:00",
+      "tools_used": [
+        "create_file",
+        "run",
+        "done"
+      ],
+      "key_imports": [
+        "bs4",
+        "requests"
+      ],
+      "keywords": [
+        "scrape",
+        "product",
+        "data",
+        "website",
+        "save",
+        "csv",
+        "pandasを使ってデータを分析してください",
+        "requestsとbeautifulsoupでhttps",
+        "example",
+        "comのhtmlを取得し",
+        "h1タグとpタグのテキストを抽出して表示するscrape",
+        "pyを書いて実行せよ",
+        "以下を実装して実行せよ",
+        "scraper",
+        "py"
+      ],
+      "summary": "以下を実装して実行せよ:\n1. scraper.py: https://jsonplaceholder.typicode.com/posts から最初の10件を取得\n2. exporter.py: 取得データ(id/title/body)をopenpyxlでposts.xlsxに書き出し\n3. pipeline.py: scraper→exporterの順で実行してposts.xlsxを生成\npy"
+    },
+    "coding": {
+      "name": "coding",
+      "task_example": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+      "success_count": 8,
+      "last_used": "2026-03-16T14:58:51.014598+00:00",
+      "tools_used": [
+        "create_file",
+        "run"
+      ],
+      "key_imports": [],
+      "keywords": [
+        "1から20までのfizzbuzzをfizzbuzz",
+        "pyに実装して実行せよ"
+      ],
+      "summary": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ"
+    },
+    "data_analysis_plus_web_scraping": {
+      "name": "data_analysis_plus_web_scraping",
+      "summary": "pandasのバージョンを出力しました + Web scraping completed successfully",
+      "keywords": [
+        "save",
+        "pandasを使ってデータを分析してください",
+        "csv",
+        "data",
+        "scrape",
+        "product",
+        "website"
+      ],
+      "tools_used": [
+        "create_file",
+        "run",
+        "done"
+      ],
+      "key_imports": [
+        "pandas",
+        "bs4",
+        "requests"
+      ],
+      "success_count": 1,
+      "last_used": "2026-03-15T11:21:53.287028+00:00",
+      "composed_from": [
+        "data_analysis",
+        "web_scraping"
+      ],
+      "is_composed": true
+    },
+    "bug_fix": {
+      "name": "bug_fix",
+      "task_example": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+      "success_count": 5,
+      "last_used": "2026-03-16T17:13:36.147326+00:00",
+      "tools_used": [
+        "run"
+      ],
+      "key_imports": [],
+      "keywords": [
+        "以下のバグありコードをbuggy",
+        "pyに書き",
+        "自分で修正して実行せよ",
+        "def",
+        "add",
+        "return",
+        "バグあり",
+        "print",
+        "app",
+        "自分で発見・修正して動作させよ",
+        "import",
+        "json",
+        "class",
+        "datastore",
+        "init"
+      ],
+      "summary": "以下のバグありコードをbuggy_app.pyに書き、自分で発見・修正して動作させよ:\nimport json\n\nclass DataStore:\n    def __init__(self):\n        self.data = {}\n    \n    def save(self, key, value):\n        self.data[key] = value\n        # バ"
+    },
+    "testing": {
+      "name": "testing",
+      "task_example": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
+      "success_count": 7,
+      "last_used": "2026-03-16T15:11:05.178514+00:00",
+      "tools_used": [
+        "done",
+        "run"
+      ],
+      "key_imports": [],
+      "keywords": [
+        "calculator",
+        "pyにadd",
+        "subtract関数を実装し",
+        "test",
+        "pyでunittestを書いて全テスト通過させよ",
+        "workspaceにtmp",
+        "sort",
+        "を作り",
+        "txt",
+        "py",
+        "mdの3ファイルを作成後",
+        "拡張子ごとにtexts",
+        "scripts",
+        "docs",
+        "へ振り分けるスクリプトorganize"
+      ],
+      "summary": "workspaceにtmp_sort/を作り、test.txt/test.py/test.mdの3ファイルを作成後、拡張子ごとにtexts//scripts//docs/へ振り分けるスクリプトorganize.pyを書いて実行せよ"
+    },
+    "file_operation": {
+      "name": "file_operation",
+      "task_example": "同じ内容'hello'のファイルをdup1.txt/dup2.txt/dup3.txtとして作成し、ハッシュで重複を検出して1つだけ残すfind_dups.pyを書いて実行せよ",
+      "success_count": 4,
+      "last_used": "2026-03-16T15:14:40.701674+00:00",
+      "tools_used": [
+        "run",
+        "done",
+        "create_file"
+      ],
+      "key_imports": [],
+      "keywords": [
+        "同じ内容",
+        "hello",
+        "のファイルをdup1",
+        "txt",
+        "dup2",
+        "dup3",
+        "txtとして作成し",
+        "ハッシュで重複を検出して1つだけ残すfind",
+        "dups",
+        "pyを書いて実行せよ"
+      ],
+      "summary": "同じ内容'hello'のファイルをdup1.txt/dup2.txt/dup3.txtとして作成し、ハッシュで重複を検出して1つだけ残すfind_dups.pyを書いて実行せよ"
+    },
+    "pdf_operation": {
+      "name": "pdf_operation",
+      "task_example": "reportlabを使ってタイトル'Agent QA Report'と現在日時・'TEST PASSED'の文字列を含むreport.pdfを生成するmake_pdf.pyを書いて実行せよ",
+      "success_count": 12,
+      "last_used": "2026-03-16T16:00:53.700839+00:00",
+      "tools_used": [
+        "run",
+        "done"
+      ],
+      "key_imports": [],
+      "keywords": [
+        "reportlabを使ってタイトル",
+        "agent",
+        "qa",
+        "report",
+        "と現在日時・",
+        "test",
+        "passed",
+        "の文字列を含むreport",
+        "pdfを生成するmake",
+        "pdf",
+        "pyを書いて実行せよ",
+        "pdfplumberでworkspace",
+        "pdfからテキストを抽出しextracted",
+        "txtに保存するextract",
+        "pdfがなければreportlabで先に作成せよ"
+      ],
+      "summary": "pypdfを使って2つのPDFをreportlabで生成しmerged.pdfとして結合するmerge_pdf.pyを書いて実行せよ。結合後のページ数を表示すること"
+    },
+    "excel_operation": {
+      "name": "excel_operation",
+      "task_example": "openpyxlで月/売上/前月比の3列・6行のデータを含むsales.xlsxを生成するmake_excel.pyを書いて実行せよ。売上は10000〜50000のランダム値",
+      "success_count": 10,
+      "last_used": "2026-03-16T16:32:02.060708+00:00",
+      "tools_used": [
+        "run",
+        "done"
+      ],
+      "key_imports": [],
+      "keywords": [
+        "openpyxlで月",
+        "売上",
+        "前月比の3列・6行のデータを含むsales",
+        "xlsxを生成するmake",
+        "excel",
+        "pyを書いて実行せよ",
+        "売上は10000",
+        "50000のランダム値",
+        "pandasでsales",
+        "xlsxを読み込み",
+        "合計",
+        "平均",
+        "最大月を計算して表示するanalyze",
+        "sales",
+        "xlsxがなければ先に生成せよ"
+      ],
+      "summary": "openpyxlでsales.xlsxの売上データに棒グラフを追加してsales_chart.xlsxとして保存するadd_chart.pyを書いて実行せよ"
+    },
+    "api_client": {
+      "name": "api_client",
+      "task_example": "requestsでhttps://httpbin.org/jsonにGETリクエストを送り、レスポンスJSONを整形して表示するfetch.pyを書いて実行せよ",
+      "success_count": 6,
+      "last_used": "2026-03-16T17:04:13.930742+00:00",
+      "tools_used": [
+        "run",
+        "done"
+      ],
+      "key_imports": [],
+      "keywords": [
+        "requestsでhttps",
+        "httpbin",
+        "org",
+        "jsonにgetリクエストを送り",
+        "レスポンスjsonを整形して表示するfetch",
+        "pyを書いて実行せよ",
+        "https",
+        "jsonplaceholder",
+        "typicode",
+        "com",
+        "todos",
+        "1からデータを取得しtodo",
+        "jsonに保存するapi",
+        "fetch",
+        "取得したtitle値を表示すること"
+      ],
+      "summary": "以下を実装して全て動作させよ:\n- models.py: Productクラス(id, name, price, stock)\n- db.py: JSONファイルへの保存・読み込み(save/load)\n- api.py: add_product/get_product/list_products/update_stock関数\n- main.py: apiをimportして商品を3件追加・一覧表示"
+    },
+    "web_app": {
+      "name": "web_app",
+      "task_example": "Flaskを使って以下のTODO APIを実装して起動テストせよ:\n- app.py: GET /todos, POST /todos, PUT /todos/<id>, DELETE /todos/<id>\n- todos.jsonで永続化\n- test_app.py: requestsでAPIをテスト(追加→一覧→更新→削除の順)\npython test_app.py を実行して全APIが動作すること\n(Flaskがない場合はpip installすること)",
+      "success_count": 1,
+      "last_used": "2026-03-16T17:31:55.455014+00:00",
+      "tools_used": [
+        "done"
+      ],
+      "key_imports": [],
+      "keywords": [
+        "flaskを使って以下のtodo",
+        "apiを実装して起動テストせよ",
+        "app",
+        "py",
+        "get",
+        "todos",
+        "post",
+        "put",
+        "id",
+        "delete",
+        "jsonで永続化",
+        "test",
+        "requestsでapiをテスト",
+        "追加",
+        "一覧"
+      ],
+      "summary": "Flaskを使って以下のTODO APIを実装して起動テストせよ:\n- app.py: GET /todos, POST /todos, PUT /todos/<id>, DELETE /todos/<id>\n- todos.jsonで永続化\n- test_app.py: requestsでAPIをテスト(追加→一覧→更新→削除の順)\npython test_app.py を実行して全APIが動作"
+    }
+  }
+}

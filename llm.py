@@ -425,3 +425,51 @@ def ask(prompt: str) -> str:
 
 def ask_plain(prompt: str) -> str:
     return ask_planner(prompt)
+
+
+# --- DUAL MODEL START ---
+# 思考型モデル（深い推論が必要な場面のみ使用）
+THINKING_MODEL = "qwen3.5:9b"
+
+
+def ask_thinking(prompt: str, label: str = "THINKING") -> str:
+    """
+    深い推論が必要な場面でのみ呼ぶ。
+    通常の ask() より遅いが、複雑な問題に強い。
+    使用場面:
+    - 複雑なタスクの初回プラン生成
+    - 何度修復しても失敗するタスクの根本原因分析
+    - アーキテクチャ設計の相談
+    """
+    import time as _time
+    payload = {
+        "model": THINKING_MODEL,
+        "prompt": prompt,
+        "stream": True,
+        "options": {
+            "temperature": 0.6,
+        }
+    }
+    thinking_buf = ""
+    response_buf = ""
+    try:
+        import requests as _req
+        print(f"  🧠 Thinking ({THINKING_MODEL})...", end=" ", flush=True)
+        t0 = _time.time()
+        with _req.post(OLLAMA_URL, json=payload, stream=True, timeout=900) as r:
+            r.raise_for_status()
+            for line in r.iter_lines():
+                if line:
+                    chunk = json.loads(line)
+                    thinking_buf += chunk.get("thinking", "")
+                    response_buf += chunk.get("response", "")
+        elapsed = _time.time() - t0
+        print(f"done ({elapsed:.1f}s)")
+        # response_buf が空の場合は thinking_buf を使う（<think>タグを除去）
+        full_response = response_buf.strip() or thinking_buf.strip()
+        clean = re.sub(r"<think>.*?</think>", "", full_response, flags=re.DOTALL)
+        return clean.strip() or full_response.strip()
+    except Exception as e:
+        print(f"  ⚠️ thinking model失敗 ({e}) → 通常モデルにフォールバック")
+        return ask_plain(prompt)
+# --- DUAL MODEL END ---
