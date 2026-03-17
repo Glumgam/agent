@@ -520,4 +520,26 @@ def _search_reddit(query: str) -> ToolResult:
     output = f"=== Reddit: {query} ===\n\n" + "\n\n".join(results)
     return ToolResult(ok=True, output=output)
 
-# --- SECRETARY TOOLS END ---
+
+# --- PYPI STATS START ---
+def tool_fetch_pypi_top(limit: int = 20) -> ToolResult:
+    """
+    PyPI の月間ダウンロード数トップパッケージを取得する。
+    hugovk/top-pypi-packages の公開JSONを使用（無料・APIキー不要）。
+    """
+    import urllib.request as _req
+    import json as _json2
+    try:
+        url = "https://hugovk.github.io/top-pypi-packages/top-pypi-packages-30-days.min.json"
+        with _req.urlopen(url, timeout=10) as r:
+            data = _json2.loads(r.read())
+        packages = data.get("rows", [])[:limit]
+        lines = ["=== PyPI 月間トップパッケージ ===\n"]
+        for i, pkg in enumerate(packages, 1):
+            name     = pkg.get("project", "")
+            dl_count = pkg.get("download_count", 0)
+            lines.append(f"{i:2}. {name} ({dl_count:,} downloads/month)")
+        return ToolResult(ok=True, output="\n".join(lines))
+    except Exception as e:
+        return ToolResult(ok=False, output=f"ERROR: {e}")
+# --- PYPI STATS END ---

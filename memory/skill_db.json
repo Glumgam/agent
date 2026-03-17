@@ -69,8 +69,8 @@
     "coding": {
       "name": "coding",
       "task_example": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
-      "success_count": 8,
-      "last_used": "2026-03-16T14:58:51.014598+00:00",
+      "success_count": 13,
+      "last_used": "2026-03-17T14:06:59.271967+00:00",
       "tools_used": [
         "create_file",
         "run"
@@ -115,8 +115,8 @@
     "bug_fix": {
       "name": "bug_fix",
       "task_example": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
-      "success_count": 5,
-      "last_used": "2026-03-16T17:13:36.147326+00:00",
+      "success_count": 8,
+      "last_used": "2026-03-17T14:08:40.822579+00:00",
       "tools_used": [
         "run"
       ],
@@ -138,13 +138,13 @@
         "datastore",
         "init"
       ],
-      "summary": "以下のバグありコードをbuggy_app.pyに書き、自分で発見・修正して動作させよ:\nimport json\n\nclass DataStore:\n    def __init__(self):\n        self.data = {}\n    \n    def save(self, key, value):\n        self.data[key] = value\n        # バ"
+      "summary": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))"
     },
     "testing": {
       "name": "testing",
       "task_example": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
-      "success_count": 7,
-      "last_used": "2026-03-16T15:11:05.178514+00:00",
+      "success_count": 11,
+      "last_used": "2026-03-17T14:12:55.767948+00:00",
       "tools_used": [
         "done",
         "run"
@@ -167,7 +167,7 @@
         "docs",
         "へ振り分けるスクリプトorganize"
       ],
-      "summary": "workspaceにtmp_sort/を作り、test.txt/test.py/test.mdの3ファイルを作成後、拡張子ごとにtexts//scripts//docs/へ振り分けるスクリプトorganize.pyを書いて実行せよ"
+      "summary": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ"
     },
     "file_operation": {
       "name": "file_operation",
@@ -308,6 +308,25 @@
         "一覧"
       ],
       "summary": "Flaskを使って以下のTODO APIを実装して起動テストせよ:\n- app.py: GET /todos, POST /todos, PUT /todos/<id>, DELETE /todos/<id>\n- todos.jsonで永続化\n- test_app.py: requestsでAPIをテスト(追加→一覧→更新→削除の順)\npython test_app.py を実行して全APIが動作"
+    },
+    "tool_httpx_request": {
+      "name": "tool_httpx_request",
+      "task_example": "[深掘り獲得] 非同期HTTPクライアント (from: Python 技術トレンド)",
+      "success_count": 1,
+      "last_used": "2026-03-17T02:12:15.694711+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [
+        "httpx"
+      ],
+      "keywords": [
+        "Python 技術トレンド",
+        "tool",
+        "httpx",
+        "request"
+      ],
+      "summary": "Deep Research により獲得。分野: Python 技術トレンド"
     }
   }
 }

@@ -189,19 +189,37 @@ def _summarize(label: str, collected: list) -> str:
 # =====================================================
 def _evolve_from_knowledge(topic: dict, result: dict) -> list:
     """
-    収集した情報をdeep_researcherに渡して機能獲得を試みる。
-    要約だけでなく「発見 → 深掘り → 実装 → テスト → 登録」を実行する。
+    収集した情報から機能獲得を試みる。
+    方針A: 収集情報から候補を発見（ask_plain で高速）
+    方針B: A で0件の場合、未習得の有用ライブラリを1つ自動習得
     """
-    # --- DEEP RESEARCH START ---
-    from deep_researcher import run_deep_research
+    # --- FAST EVOLVE START ---
+    from deep_researcher import (
+        run_deep_research, get_unacquired_libraries,
+        deep_research_candidate, implement_and_test, register_tool,
+    )
 
     content_text = "\n\n".join(
-        f"[{c['source']}] {c['query']}\n{c['content'][:400]}"
-        for c in result["collected"][:5]
+        f"[{c['source']}] {c['query']}\n{c['content'][:300]}"
+        for c in result["collected"][:4]
     )
 
     print(f"\n  ⚡ 深掘り研究開始: {topic['label']}")
     acquired = run_deep_research(topic["label"], content_text)
+
+    # 方針B: 収集情報から候補なし → 未習得の有用ライブラリを1つ習得
+    if not acquired:
+        unacquired = get_unacquired_libraries()
+        if unacquired:
+            target = unacquired[0]
+            print(f"  📚 未習得ライブラリを習得: {target['name']}")
+            research = deep_research_candidate(target)
+            if research["sufficient"]:
+                impl = implement_and_test(research)
+                if impl["success"]:
+                    registered = register_tool(impl, target, topic["label"])
+                    if registered:
+                        acquired.append(impl["tool_name"])
 
     if acquired:
         print(f"  🎉 新機能獲得: {acquired}")
@@ -209,7 +227,7 @@ def _evolve_from_knowledge(topic: dict, result: dict) -> list:
         print(f"  ℹ️  今回の獲得: なし")
 
     return acquired
-    # --- DEEP RESEARCH END ---
+    # --- FAST EVOLVE END ---
 
 
 def _parse_and_apply_evolution(response: str, topic: dict) -> list:
