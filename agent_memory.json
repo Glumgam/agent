@@ -1,13 +1,5 @@
 [
   {
-    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
-    "summary": "edited: buggy.py | ended_with: edit_file"
-  },
-  {
-    "task": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
-    "summary": "edited: calculator.py | ended_with: edit_file"
-  },
-  {
     "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
     "summary": "created: fizzbuzz.py | last_run_output: Error: repeated action detected (loop guard) | ended_with: create_file"
   },
@@ -77,6 +69,14 @@
   },
   {
     "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "summary": "no steps taken"
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ\n\n[RETRY HINT] 前回の試行に失敗した。別のアプローチを試み、完了したら {\"tool\": \"done\"} を返せ。",
+    "summary": "no steps taken"
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
     "summary": "no steps taken"
   }
 ]

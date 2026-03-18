@@ -1681,5 +1681,13 @@
   {
     "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
     "steps": []
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ\n\n[RETRY HINT] 前回の試行に失敗した。別のアプローチを試み、完了したら {\"tool\": \"done\"} を返せ。",
+    "steps": []
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+    "steps": []
   }
 ]

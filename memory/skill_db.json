@@ -69,8 +69,8 @@
     "coding": {
       "name": "coding",
       "task_example": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
-      "success_count": 46,
-      "last_used": "2026-03-18T09:15:43.362729+00:00",
+      "success_count": 47,
+      "last_used": "2026-03-18T09:17:18.155061+00:00",
       "tools_used": [
         "create_file",
         "run"
@@ -88,7 +88,7 @@
         "done",
         "を返せ"
       ],
-      "summary": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ"
+      "summary": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ\n\n[RETRY HINT] 前回の試行に失敗した。別のアプローチを試み、完了したら {\"tool\": \"done\"} を返せ。"
     },
     "data_analysis_plus_web_scraping": {
       "name": "data_analysis_plus_web_scraping",
@@ -123,8 +123,8 @@
     "bug_fix": {
       "name": "bug_fix",
       "task_example": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
-      "success_count": 32,
-      "last_used": "2026-03-18T09:10:53.722180+00:00",
+      "success_count": 34,
+      "last_used": "2026-03-18T09:18:51.563297+00:00",
       "tools_used": [
         "run",
         "done",
