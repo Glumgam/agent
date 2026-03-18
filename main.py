@@ -902,6 +902,22 @@ def run_agent():
                 strategy_hint=strategy
             )
 
+            # --- RAG START ---
+            try:
+                from rag_retriever import run_rag
+                # 短いタスク (< 150文字) は知識検索コストを避ける
+                rag_context = run_rag(task) if len(task) >= 150 else ""
+                if rag_context:
+                    print(f"  📚 RAG: {len(rag_context)}文字の関連知識を注入")
+                    prompt = (
+                        f"[背景知識]\n{rag_context}\n\n"
+                        f"上記の知識を参考にしてよい。"
+                        f"知識に記載がない場合は通常通り判断してよい。\n\n"
+                    ) + prompt
+            except Exception:
+                pass   # RAG失敗時はスキップ・エージェント停止させない
+            # --- RAG END ---
+
             if _should_use_tot(task, step, history):
                 candidates = generate_candidates(prompt)
                 action = select_best(candidates, task)

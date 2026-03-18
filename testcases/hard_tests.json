@@ -1,0 +1,82 @@
+[
+  {
+    "id": "H1",
+    "label": "マルチファイル依存解決",
+    "task": "以下を全て実装して動作させよ:\n- config.py: 設定値(DB_PATH, MAX_ITEMS, DEBUG)を定義\n- models.py: config.pyをimportしてItemクラス(id/name/price/created_at)を定義\n- storage.py: models.pyをimportしてJSONファイルへのCRUD操作を実装\n- validator.py: price>0, name長さ1-50文字のバリデーション\n- main.py: 全てをimportして商品を5件追加・バリデーション失敗を1件発生させ・一覧表示・1件削除・再表示\n全て実行してexit code 0にすること",
+    "expect_contains": "exit code 0",
+    "max_steps": 30,
+    "category": "hard"
+  },
+  {
+    "id": "H2",
+    "label": "データ変換パイプライン",
+    "task": "以下のパイプラインを実装して実行せよ:\n1. generate.py: 50人分のダミーデータ(名前/年齢/スコア/日付)をCSVで生成\n2. transform.py: CSVを読み込みスコアを偏差値に変換してJSONで出力\n3. report.py: JSONを読み込みtop10/bottom10/平均/標準偏差をMarkdownレポートとして出力\n4. pipeline.py: 1→2→3を順番に実行\npython pipeline.py を実行してreport.mdが生成されること",
+    "expect_contains": "exit code 0",
+    "max_steps": 30,
+    "category": "hard"
+  },
+  {
+    "id": "H3",
+    "label": "エラー連鎖修復",
+    "task": "以下の3つのバグを含むコードを修正してから実行せよ:\nbug1.py の内容:\n```\nimport json\nfrom pathlib import Path\n\ndata = {'items': [1, 2, 3, 4, 5]}\nPath('data.json').write_text(json.dump(data))  # bug1: dump→dumps\n\nloaded = json.loads(Path('data.json').read_text())\ntotal = sum(loaded['items'])\nprint(f'合計: {total}')\n\nresult = total / len(loaded['missing_key'])  # bug2: missing_key\nprint(f'平均: {result}')\n\nfor i, item in enumerate(loaded['items']):\n    print(loaded['items'][i+1])  # bug3: IndexError\n```\n全バグを修正してexit code 0にすること。出力に「合計: 15」を含むこと",
+    "expect_contains": "合計: 15",
+    "max_steps": 20,
+    "category": "hard"
+  },
+  {
+    "id": "H4",
+    "label": "非同期処理",
+    "task": "asyncioを使って以下を実装して実行せよ:\n- 3つのURLに同時にGETリクエストを送る(https://httpbin.org/delay/1 x3)\n- 各レスポンスのステータスコードと時間を記録\n- 逐次実行との時間比較を表示\n- 同時実行が逐次より速いことを確認\npython async_fetch.py を実行してexit code 0にすること",
+    "expect_contains": "exit code 0",
+    "max_steps": 20,
+    "category": "hard"
+  },
+  {
+    "id": "H5",
+    "label": "長期タスク: 完全なCLIアプリ",
+    "task": "以下の仕様で家計簿CLIアプリを作成して全コマンドを実行せよ:\nファイル構成:\n- models.py: Transaction(id/date/category/amount/memo)\n- storage.py: transactions.jsonへの保存・読み込み\n- calculator.py: カテゴリ別集計・月別集計・収支計算\n- cli.py: add/list/summary/delete/export コマンド\n動作確認(全て成功させること):\n1. python cli.py add --date 2026-03-18 --category 食費 --amount -1200 --memo 昼食\n2. python cli.py add --date 2026-03-18 --category 給料 --amount 300000 --memo 月給\n3. python cli.py add --date 2026-03-18 --category 交通費 --amount -500 --memo 電車\n4. python cli.py list\n5. python cli.py summary\n6. python cli.py export --format csv",
+    "expect_contains": "exit code 0",
+    "max_steps": 30,
+    "category": "hard"
+  },
+  {
+    "id": "T1",
+    "label": "オンデマンド: QRコード生成",
+    "task": "ユーザーから「QRコードを作って欲しい」というリクエストがあった。\nuser_request_handler.py を使わず、以下を自分で実装して実行せよ:\n1. qrcode ライブラリをインストール\n2. 'https://github.com/Glumgam/agent' のQRコードを生成\n3. workspace/agent_qr.png として保存\n4. ファイルサイズが0より大きいことを確認して表示\n実行してexit code 0にすること",
+    "expect_contains": "exit code 0",
+    "max_steps": 15,
+    "category": "ondemand"
+  },
+  {
+    "id": "T2",
+    "label": "オンデマンド: PDF→テキスト抽出",
+    "task": "以下を実装して実行せよ:\n1. reportlabでサンプルPDF(タイトル・本文3段落)を生成してsample.pdfとして保存\n2. pdfplumberでsample.pdfからテキストを抽出\n3. 抽出したテキストをextracted.txtに保存\n4. extracted.txtの内容を表示\n全て実行してexit code 0にすること",
+    "expect_contains": "exit code 0",
+    "max_steps": 20,
+    "category": "ondemand"
+  },
+  {
+    "id": "T3",
+    "label": "オンデマンド: 画像に文字を入れる",
+    "task": "Pillowを使って以下を実装して実行せよ:\n1. 800x600の白い画像を作成\n2. 中央に「Hello, Agent!」と黒字で描画\n3. 右下に現在日時を小さく描画\n4. workspace/output_image.png として保存\n5. ファイルが存在することを確認\nexit code 0にすること",
+    "expect_contains": "exit code 0",
+    "max_steps": 15,
+    "category": "ondemand"
+  },
+  {
+    "id": "T4",
+    "label": "オンデマンド: Excelグラフ付きレポート",
+    "task": "以下を実装して実行せよ:\n1. 月別売上データ(1〜12月)をランダム生成\n2. openpyxlでExcelファイルを作成\n3. データを書き込む\n4. 棒グラフを追加\n5. 条件付き書式で売上上位3ヶ月をハイライト\n6. workspace/sales_report.xlsx として保存\nexit code 0にすること",
+    "expect_contains": "exit code 0",
+    "max_steps": 20,
+    "category": "ondemand"
+  },
+  {
+    "id": "T5",
+    "label": "オンデマンド: toolkit統合確認",
+    "task": "以下を実装して実行せよ:\n1. toolkit_manager.pyをimportしてlist_toolkit_functions()を呼ぶ\n2. 現在のtoolkit一覧と各ツール関数を表示\n3. detect_category()で以下を判定して表示:\n   - 'tool_pdf_split' のカテゴリ\n   - 'tool_httpx_request' のカテゴリ\n   - 'tool_image_draw' のカテゴリ\n4. tools/toolkits/ のファイル一覧を表示\nexit code 0にすること",
+    "expect_contains": "exit code 0",
+    "max_steps": 10,
+    "category": "ondemand"
+  }
+]

@@ -220,6 +220,8 @@ def _evolve_from_knowledge(topic: dict, result: dict) -> list:
                     registered = register_tool(impl, target, topic["label"])
                     if registered:
                         acquired.append(impl["tool_name"])
+                else:
+                    print(f"  ❌ 実装失敗(B): {impl.get('reason', '?')}")
 
     if acquired:
         print(f"  🎉 新機能獲得: {acquired}")

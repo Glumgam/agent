@@ -50,6 +50,23 @@ To create or modify binary files, write a Python script using the appropriate li
 WRONG: {"tool": "create_file", "path": "sales.xlsx", "content": "..."}
 RIGHT: {"tool": "create_file", "path": "make_excel.py", "content": "import openpyxl; ..."}
 
+[RULE #8 — EXCEL PYTHON CODE MUST USE PYTHON SYNTAX]
+When writing Python scripts to create/read .xlsx files, ALWAYS use real Python code.
+NEVER write Excel formula strings (like =SUM(...), =A1*B1) inside Python code.
+NEVER run an .xlsx file as a Python script: "python sales.xlsx" is WRONG.
+CORRECT Python code to create xlsx:
+    import openpyxl
+    wb = openpyxl.Workbook()
+    ws = wb.active
+    ws.append(['Month', 'Sales', 'MoM'])
+    ws.append([1, 10000, 0])
+    wb.save('sales.xlsx')
+CORRECT Python code to read xlsx:
+    import pandas as pd
+    df = pd.read_excel('sales.xlsx')
+    print(df)
+Only .py files can be run with "python". Never "python filename.xlsx".
+
 [RULE #7 — 情報収集ツール（秘書機能）]
 web_search: 技術的な問題解決・ドキュメント検索
   {"tool": "web_search", "query": "python pandas merge dataframe"}
@@ -445,30 +462,24 @@ def ask_thinking(prompt: str, label: str = "THINKING") -> str:
     payload = {
         "model": THINKING_MODEL,
         "prompt": prompt,
-        "stream": True,
+        "stream": False,   # stream:True だと qwen3.5:9b は response フィールドが空になる
         "options": {
             "temperature": 0.6,
         }
     }
-    thinking_buf = ""
-    response_buf = ""
     try:
         import requests as _req
         print(f"  🧠 Thinking ({THINKING_MODEL})...", end=" ", flush=True)
         t0 = _time.time()
-        with _req.post(OLLAMA_URL, json=payload, stream=True, timeout=900) as r:
-            r.raise_for_status()
-            for line in r.iter_lines():
-                if line:
-                    chunk = json.loads(line)
-                    thinking_buf += chunk.get("thinking", "")
-                    response_buf += chunk.get("response", "")
+        resp = _req.post(OLLAMA_URL, json=payload, timeout=300)
+        resp.raise_for_status()
+        data = resp.json()
         elapsed = _time.time() - t0
         print(f"done ({elapsed:.1f}s)")
-        # response_buf が空の場合は thinking_buf を使う（<think>タグを除去）
-        full_response = response_buf.strip() or thinking_buf.strip()
-        clean = re.sub(r"<think>.*?</think>", "", full_response, flags=re.DOTALL)
-        return clean.strip() or full_response.strip()
+        # response フィールド優先、なければ thinking フィールドを使う
+        result = data.get("response", "").strip() or data.get("thinking", "").strip()
+        clean = re.sub(r"<think>.*?</think>", "", result, flags=re.DOTALL)
+        return clean.strip() or result.strip()
     except Exception as e:
         print(f"  ⚠️ thinking model失敗 ({e}) → 通常モデルにフォールバック")
         return ask_plain(prompt)
