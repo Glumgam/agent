@@ -1,0 +1,42 @@
+[
+  {
+    "id": "X1",
+    "label": "複数モジュール連携",
+    "task": "以下を実装して全て動作させよ:\n- models.py: Productクラス(id, name, price, stock)\n- db.py: JSONファイルへの保存・読み込み(save/load)\n- api.py: add_product/get_product/list_products/update_stock関数\n- main.py: apiをimportして商品を3件追加・一覧表示・在庫更新・再表示\n全て実行して正常終了させること",
+    "expect_contains": "exit code 0",
+    "max_steps": 25,
+    "category": "complex"
+  },
+  {
+    "id": "X2",
+    "label": "データ処理パイプライン",
+    "task": "以下のパイプラインを実装して実行せよ:\n1. generator.py: 100件のランダム売上データ(日付/商品名/金額)をCSVに生成\n2. analyzer.py: CSVを読み込み、月別集計・商品別ランキング・平均単価を計算してレポートをMarkdownで出力\n3. run_pipeline.py: generator→analyzerの順で実行\npython run_pipeline.py を実行して report.md が生成されること",
+    "expect_contains": "exit code 0",
+    "max_steps": 25,
+    "category": "complex"
+  },
+  {
+    "id": "X3",
+    "label": "エラー自己修復テスト",
+    "task": "以下のバグありコードをbuggy_app.pyに書き、自分で発見・修正して動作させよ:\nimport json\n\nclass DataStore:\n    def __init__(self):\n        self.data = {}\n    \n    def save(self, key, value):\n        self.data[key] = value\n        # バグ: ファイルに書き込んでいない\n    \n    def load(self, key):\n        return self.data[key]  # バグ: keyがない場合の処理なし\n\nstore = DataStore()\nstore.save('user', {'name': 'Alice', 'age': 30})\nprint(store.load('user'))\nprint(store.load('missing'))  # KeyError発生\n\n修正後にpython buggy_app.pyが正常終了すること",
+    "expect_contains": "Alice",
+    "max_steps": 20,
+    "category": "complex"
+  },
+  {
+    "id": "X4",
+    "label": "Webスクレイピング→Excel出力",
+    "task": "以下を実装して実行せよ:\n1. scraper.py: https://jsonplaceholder.typicode.com/posts から最初の10件を取得\n2. exporter.py: 取得データ(id/title/body)をopenpyxlでposts.xlsxに書き出し\n3. pipeline.py: scraper→exporterの順で実行してposts.xlsxを生成\npython pipeline.py を実行してposts.xlsxが存在すること",
+    "expect_contains": "exit code 0",
+    "max_steps": 20,
+    "category": "complex"
+  },
+  {
+    "id": "X5",
+    "label": "長期タスク: ミニWebアプリ",
+    "task": "Flaskを使って以下のTODO APIを実装して起動テストせよ:\n- app.py: GET /todos, POST /todos, PUT /todos/<id>, DELETE /todos/<id>\n- todos.jsonで永続化\n- test_app.py: requestsでAPIをテスト(追加→一覧→更新→削除の順)\npython test_app.py を実行して全APIが動作すること\n(Flaskがない場合はpip installすること)",
+    "expect_contains": "exit code 0",
+    "max_steps": 30,
+    "category": "complex"
+  }
+]

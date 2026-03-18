@@ -1,0 +1,77 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+
+# 仮想環境
+venv/
+env/
+.env
+.venv
+
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+.AppleDouble
+.LSOverride
+
+# ログ・一時ファイル
+logs/*.log
+/tmp/
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# 不正名ファイル（シェルスクリプト残骸）
+echo
+"EXIT: "
+EXIT:*
+
+# エージェント生成ファイル
+workspace/
+knowledge/
+daily_report.md
+failure_gen_report.md
+repair_log.md
+self_improve_log.md
+model_comparison.md
+evolution_log.md
+
+# テスト一時ファイル
+qa_report_round*.md
+
+# APIキー・秘密情報
+*.key
+*.pem
+secrets.json
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace

@@ -21,77 +21,50 @@ RESEARCH_LOG = AGENT_ROOT / "knowledge" / "deep_research_log.md"
 # =====================================================
 def discover_candidates(topic_label: str, collected_text: str) -> list:
     """
-    収集したテキストから「試してみる価値のある候補」を抽出する。
+    通常モデル（高速）で候補を発見する。thinkingモデルは使わない。
     """
-    # --- DEEP RESEARCH START ---
-    from llm import ask_thinking
+    # --- FAST DISCOVERY START ---
+    from llm import ask_plain
 
-    prompt = f"""
-以下の情報から、Pythonエージェントが新たに獲得できる「具体的な機能候補」を
-最大3つリストアップしてください。
-
+    prompt = f"""以下の情報から、Pythonエージェントが新たに獲得できる機能候補を最大2つ答えてください。
 分野: {topic_label}
 収集情報:
-{collected_text[:1500]}
-
-必須条件（全て満たすもののみ）:
-- PyPI に存在するPythonパッケージであること
-- pip install で入手可能であること
-- Node.js / JavaScript / Ruby 等の他言語パッケージは除外
-- エージェントのツールとして実用的なもの
-- 架空のパッケージ名は絶対に使わない
-
-出力前に自問してください:
-「このパッケージはpypi.org/project/XXXで実際に存在するか?」
-存在が確かでないものは CANDIDATE: none とすること。
-
+{collected_text[:800]}
+必須条件:
+- pypi.org に実在するPythonパッケージのみ
+- pip install で入手可能
+- Node.js/JS系は除外
+- 確信がなければ CANDIDATE: none
 出力形式:
-CANDIDATE: 正確なPyPIパッケージ名（例: requests, pandas, httpx）
+CANDIDATE: パッケージ名（例: httpx, rich, typer）
 PURPOSE: 何ができるか（1行）
-SEARCH_QUERY: 実装例を探すための検索クエリ
+SEARCH_QUERY: 検索クエリ
 ---
-（候補がなければ CANDIDATE: none のみ）
 """
     print("  🔍 候補を探索中...")
-    response = ask_thinking(prompt)
+    response = ask_plain(prompt)
 
-    # CANDIDATE: が一つも無い場合は none
-    if not re.search(r"CANDIDATE:", response, re.IGNORECASE):
-        print("  ℹ️  CANDIDATE: マーカーなし → 候補なし")
-        return []
-
-    # CANDIDATE: を直接全文から抽出（--- 区切りに依存しない）
     candidates = []
-    candidate_positions = [m.start() for m in re.finditer(r"CANDIDATE:", response, re.IGNORECASE)]
-
-    for i, pos in enumerate(candidate_positions):
-        # 次のCANDIDATE:またはEOFまでをブロックとして取得
-        end = candidate_positions[i + 1] if i + 1 < len(candidate_positions) else len(response)
-        block = response[pos:end]
-
-        name    = re.search(r"CANDIDATE:\s*(.+)", block, re.IGNORECASE)
-        purpose = re.search(r"PURPOSE:\s*(.+)", block, re.IGNORECASE)
-        query   = re.search(r"SEARCH_QUERY:\s*(.+)", block, re.IGNORECASE)
-
-        if name:
-            name_val = name.group(1).strip()
-            # "none" チェック（バリアントも含む）
-            if re.match(r'^none', name_val, re.IGNORECASE):
-                continue
-            # 有効なPyPIパッケージ名のみ受け入れる（英数字・ハイフン・アンダースコアのみ）
-            if not re.match(r'^[a-zA-Z0-9][a-zA-Z0-9_\-\.]*$', name_val):
-                continue
-            # 長すぎる名前（スペース含む等）は不正とみなす
-            if len(name_val) > 80 or " " in name_val:
-                continue
-            candidates.append({
-                "name":    name_val,
-                "purpose": purpose.group(1).strip() if purpose else "",
-                "query":   query.group(1).strip() if query else name_val,
-            })
-
+    for block in response.split("---"):
+        name    = re.search(r"CANDIDATE:\s*(\S+)", block)
+        purpose = re.search(r"PURPOSE:\s*(.+)",    block)
+        query   = re.search(r"SEARCH_QUERY:\s*(.+)", block)
+        if not name:
+            continue
+        raw_name = name.group(1).strip()
+        if re.match(r'^none', raw_name, re.IGNORECASE):
+            continue
+        if not re.match(r'^[a-zA-Z0-9][a-zA-Z0-9_\-\.]*$', raw_name):
+            continue
+        if len(raw_name) > 80 or " " in raw_name:
+            continue
+        candidates.append({
+            "name":    raw_name,
+            "purpose": purpose.group(1).strip() if purpose else "",
+            "query":   query.group(1).strip() if query else raw_name,
+        })
     return candidates
-    # --- DEEP RESEARCH END ---
+    # --- FAST DISCOVERY END ---
 
 
 # =====================================================
@@ -244,7 +217,30 @@ END_CODE
 
     tool_name = tool_name_m.group(1).strip()
     requires  = requires_m.group(1).strip() if requires_m else "none"
+    # --- FIX REQUIRES START ---
+    # "pip install xxx" → "xxx"、"none（不要なら...）" → "none" に正規化
+    requires = re.sub(r"pip\s+install\s+", "", requires, flags=re.IGNORECASE).strip()
+    requires_first = requires.split()[0] if requires.split() else "none"
+    requires = "none" if requires_first.lower().startswith("none") else requires_first
+    # --- FIX REQUIRES END ---
     code      = code_m.group(1).strip()
+
+    # --- FIX FULLWIDTH START ---
+    # 全角文字・全角括弧を半角に変換（LLMが全角を混入するバグ対策）
+    def _normalize_code(src: str) -> str:
+        replacements = {
+            '（': '(', '）': ')', '「': '"', '」': '"',
+            '：': ':', '；': ';', '，': ',', '。': '.',
+            '　': ' ', '＃': '#', '＝': '=', '＋': '+',
+            '－': '-', '＊': '*', '／': '/', '！': '!',
+            '？': '?', '＜': '<', '＞': '>', '｛': '{',
+            '｝': '}', '［': '[', '］': ']',
+        }
+        for full, half in replacements.items():
+            src = src.replace(full, half)
+        return src
+    code = _normalize_code(code)
+    # --- FIX FULLWIDTH END ---
 
     # 構文チェック
     try:
@@ -377,6 +373,154 @@ def _log_research(tool_name: str, candidate: dict, impl_result: dict):
         f.write(f"**候補:** {candidate['name']}\n")
         f.write(f"**目的:** {candidate['purpose']}\n")
         f.write(f"**テスト出力:** {impl_result.get('output', '')[:100]}\n")
+
+
+# =====================================================
+# 自己主導型ライブラリ習得
+# =====================================================
+# --- SELF_DIRECTED START ---
+USEFUL_LIBRARIES = [
+    {"name": "httpx",         "purpose": "非同期HTTPクライアント"},
+    {"name": "rich",          "purpose": "リッチなターミナル出力"},
+    {"name": "typer",         "purpose": "CLIアプリ構築"},
+    {"name": "schedule",      "purpose": "タスクスケジューリング"},
+    {"name": "loguru",        "purpose": "高機能ロギング"},
+    {"name": "pydantic",      "purpose": "データバリデーション"},
+    {"name": "arrow",         "purpose": "日時処理"},
+    {"name": "tqdm",          "purpose": "プログレスバー"},
+    {"name": "tabulate",      "purpose": "テーブル表示"},
+    {"name": "python-dotenv", "purpose": "環境変数管理"},
+]
+
+
+def get_unacquired_libraries() -> list:
+    """
+    USEFUL_LIBRARIES の中でまだ tools/evolved/ にもskill_dbにもないものを返す。
+    """
+    existing_files = {f.stem for f in EVOLVED_DIR.glob("*.py")}
+    # skill_db も確認
+    skill_db_path = AGENT_ROOT / "memory" / "skill_db.json"
+    existing_skills: set = set()
+    if skill_db_path.exists():
+        try:
+            db = json.loads(skill_db_path.read_text())
+            existing_skills = set(db.get("skills", {}).keys())
+        except Exception:
+            pass
+    result = []
+    for lib in USEFUL_LIBRARIES:
+        tool_name = f"tool_{lib['name'].replace('-', '_')}"
+        if tool_name not in existing_files and tool_name not in existing_skills:
+            result.append({
+                "name":    lib["name"],
+                "purpose": lib["purpose"],
+                "query":   f"{lib['name']} python example tutorial",
+            })
+    return result
+# --- SELF_DIRECTED END ---
+
+
+# =====================================================
+# スキル応用・発展
+# =====================================================
+# --- SKILL EVOLUTION START ---
+def evolve_existing_skills() -> list:
+    """
+    既存の獲得済みツールを「応用・発展」させる。
+    発展パターン:
+    - 単機能 → 複合機能（例: httpx単体 → httpx+パース+保存）
+    - 既存ツール同士を組み合わせて新ツールを生成
+    - 既存ツールに機能追加（エラー処理強化・出力形式改善等）
+    """
+    from llm import ask_plain
+
+    evolved_dir = AGENT_ROOT / "tools" / "evolved"
+    if not evolved_dir.exists():
+        return []
+
+    existing_tools = list(evolved_dir.glob("*.py"))
+    if not existing_tools:
+        return []
+
+    # 既存ツールの内容を読み込む
+    tools_summary = []
+    for tool_path in existing_tools[:5]:  # 最大5個
+        content = tool_path.read_text(encoding="utf-8")
+        func_match = re.search(r"def (tool_\w+)\(", content)
+        doc_match  = re.search(r'"""(.+?)"""', content, re.DOTALL)
+        if func_match:
+            func_name = func_match.group(1)
+            doc = doc_match.group(1).strip()[:100] if doc_match else ""
+            tools_summary.append(f"- {func_name}: {doc}")
+
+    tools_text = "\n".join(tools_summary)
+
+    prompt = f"""
+以下は既に獲得済みのPythonツール関数です。
+{tools_text}
+
+これらを「応用・発展」させた新しいツール関数を1つ提案してください。
+
+発展の方向性:
+1. 複数ツールを組み合わせた複合ツール
+2. 既存ツールに新機能を追加したもの
+3. 既存ツールの出力を別の形式に変換するもの
+
+条件:
+- pypi.org に実在するライブラリのみ使う
+- 既存ツールと重複しない新機能
+- 実用的で汎用性が高いもの
+
+出力形式:
+CANDIDATE: ツール名（tool_で始まる）
+PURPOSE: 何ができるか（1行）
+SEARCH_QUERY: 実装例を探すための検索クエリ
+BASED_ON: 元にした既存ツール名（なければ none）
+---
+"""
+    response = ask_plain(prompt)
+
+    # 候補を解析
+    candidates = []
+    name_m    = re.search(r"CANDIDATE:\s*(\S+)", response)
+    purpose_m = re.search(r"PURPOSE:\s*(.+)",    response)
+    query_m   = re.search(r"SEARCH_QUERY:\s*(.+)", response)
+    based_m   = re.search(r"BASED_ON:\s*(.+)",   response)
+
+    if name_m:
+        raw = name_m.group(1).strip()
+        if (not re.match(r'^none', raw, re.IGNORECASE) and
+                re.match(r'^[a-zA-Z0-9][a-zA-Z0-9_\-\.]*$', raw) and
+                len(raw) <= 80):
+            candidates.append({
+                "name":     raw,
+                "purpose":  purpose_m.group(1).strip() if purpose_m else "",
+                "query":    query_m.group(1).strip() if query_m else raw,
+                "based_on": based_m.group(1).strip() if based_m else "none",
+            })
+
+    if not candidates:
+        return []
+
+    # 深掘り → 実装 → テスト → 登録
+    acquired = []
+    for candidate in candidates:
+        print(f"  🔬 スキル発展: {candidate['name']} "
+              f"(based on: {candidate.get('based_on', 'none')})")
+        research = deep_research_candidate(candidate)
+        if not research["sufficient"]:
+            continue
+        impl = implement_and_test(research)
+        if not impl["success"]:
+            print(f"  ❌ 発展失敗: {impl['reason']}")
+            continue
+        registered = register_tool(impl, candidate, "スキル発展")
+        if registered:
+            acquired.append(impl["tool_name"])
+            print(f"  ⚡ スキル発展獲得: {impl['tool_name']}")
+
+    return acquired
+# --- SKILL EVOLUTION END ---
 
 
 # =====================================================
