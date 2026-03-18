@@ -268,6 +268,24 @@ def save_skill(skill: "Skill") -> None:
     _save_db(data)
     print(f"    💡 スキル保存: {skill.name} (成功{skills[skill.name]['success_count']}回)")
 
+    # --- TOOLKIT INTEGRATION START ---
+    # tools/evolved/{skill.name}.py があればtoolkitに統合する
+    evolved_dir = AGENT_ROOT / "tools" / "evolved"
+    tool_file   = evolved_dir / f"{skill.name}.py"
+    if tool_file.exists():
+        try:
+            from toolkit_manager import integrate_tool
+            code = tool_file.read_text(encoding="utf-8")
+            func_match = re.search(r"def (tool_\w+)\(", code)
+            if func_match:
+                func_name  = func_match.group(1)
+                func_start = code.find(f"def {func_name}(")
+                func_code  = code[func_start:].strip()
+                integrate_tool(func_name, func_code, skill.summary[:80])
+        except Exception as e:
+            print(f"    ⚠️ toolkit統合スキップ: {e}")
+    # --- TOOLKIT INTEGRATION END ---
+
 
 def search_skills(task_description: str, top_n: int = 3) -> list[dict]:
     """

@@ -112,7 +112,16 @@ REQUIRES_PARAMS: 追加で必要な情報のリスト（カンマ区切り、不
 # =====================================================
 
 def _find_existing_tool(tool_name: str) -> str | None:
-    """既存ツールを検索する（部分一致も対応）"""
+    """既存ツールを検索する（toolkit優先、evolved後方互換）"""
+    # --- TOOLKIT START ---
+    from toolkit_manager import find_tool_in_toolkits
+    toolkit_path, _ = find_tool_in_toolkits(tool_name)
+    if toolkit_path:
+        print(f"  ✅ toolkit内に発見: {Path(toolkit_path).name}")
+        return toolkit_path
+    # --- TOOLKIT END ---
+
+    # evolved/ も検索（後方互換）
     if EVOLVED_DIR.exists():
         exact = EVOLVED_DIR / f"{tool_name}.py"
         if exact.exists():
@@ -344,15 +353,29 @@ END_CODE
             capture_output=True,
         )
 
-    # ファイル保存
-    EVOLVED_DIR.mkdir(parents=True, exist_ok=True)
-    tool_path = EVOLVED_DIR / f"{tool_needed}.py"
-    tool_path.write_text(
-        f'"""\n自動生成ツール: {tool_needed}\n目的: {operation}\n'
-        f'生成日: {datetime.now().strftime("%Y-%m-%d")}\n"""\n\n' + code,
-        encoding="utf-8",
-    )
-    print(f"  ✅ ツール生成完了: {tool_path.name}")
+    # --- TOOLKIT START ---
+    # toolkit に統合（カテゴリ別ファイルに追記）
+    try:
+        from toolkit_manager import integrate_tool
+        # def から始まる関数コードのみ抽出
+        func_start = code.find(f"def {tool_needed}(")
+        func_code  = code[func_start:].strip() if func_start != -1 else code
+        toolkit_path = integrate_tool(tool_needed, func_code, operation)
+        print(f"  📦 toolkit統合: {Path(toolkit_path).name}")
+        final_path = toolkit_path
+    except Exception as e:
+        # toolkit統合失敗時は evolved/ に保存（後方互換）
+        print(f"  ⚠️ toolkit統合失敗({e})、evolved/に保存")
+        EVOLVED_DIR.mkdir(parents=True, exist_ok=True)
+        tool_path = EVOLVED_DIR / f"{tool_needed}.py"
+        tool_path.write_text(
+            f'"""\n自動生成ツール: {tool_needed}\n目的: {operation}\n'
+            f'生成日: {datetime.now().strftime("%Y-%m-%d")}\n"""\n\n' + code,
+            encoding="utf-8",
+        )
+        final_path = str(tool_path)
+    print(f"  ✅ ツール生成完了: {Path(final_path).name}")
+    # --- TOOLKIT END ---
 
     # skill_db に登録
     try:
@@ -370,7 +393,7 @@ END_CODE
     except Exception:
         pass
 
-    return str(tool_path)
+    return final_path
 
 
 # =====================================================
