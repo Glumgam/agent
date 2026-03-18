@@ -217,7 +217,30 @@ END_CODE
 
     tool_name = tool_name_m.group(1).strip()
     requires  = requires_m.group(1).strip() if requires_m else "none"
+    # --- FIX REQUIRES START ---
+    # "pip install xxx" → "xxx"、"none（不要なら...）" → "none" に正規化
+    requires = re.sub(r"pip\s+install\s+", "", requires, flags=re.IGNORECASE).strip()
+    requires_first = requires.split()[0] if requires.split() else "none"
+    requires = "none" if requires_first.lower().startswith("none") else requires_first
+    # --- FIX REQUIRES END ---
     code      = code_m.group(1).strip()
+
+    # --- FIX FULLWIDTH START ---
+    # 全角文字・全角括弧を半角に変換（LLMが全角を混入するバグ対策）
+    def _normalize_code(src: str) -> str:
+        replacements = {
+            '（': '(', '）': ')', '「': '"', '」': '"',
+            '：': ':', '；': ';', '，': ',', '。': '.',
+            '　': ' ', '＃': '#', '＝': '=', '＋': '+',
+            '－': '-', '＊': '*', '／': '/', '！': '!',
+            '？': '?', '＜': '<', '＞': '>', '｛': '{',
+            '｝': '}', '［': '[', '］': ']',
+        }
+        for full, half in replacements.items():
+            src = src.replace(full, half)
+        return src
+    code = _normalize_code(code)
+    # --- FIX FULLWIDTH END ---
 
     # 構文チェック
     try:
@@ -372,13 +395,22 @@ USEFUL_LIBRARIES = [
 
 def get_unacquired_libraries() -> list:
     """
-    USEFUL_LIBRARIES の中でまだ tools/evolved/ にないものを返す。
+    USEFUL_LIBRARIES の中でまだ tools/evolved/ にもskill_dbにもないものを返す。
     """
-    existing = {f.stem for f in EVOLVED_DIR.glob("*.py")}
+    existing_files = {f.stem for f in EVOLVED_DIR.glob("*.py")}
+    # skill_db も確認
+    skill_db_path = AGENT_ROOT / "memory" / "skill_db.json"
+    existing_skills: set = set()
+    if skill_db_path.exists():
+        try:
+            db = json.loads(skill_db_path.read_text())
+            existing_skills = set(db.get("skills", {}).keys())
+        except Exception:
+            pass
     result = []
     for lib in USEFUL_LIBRARIES:
         tool_name = f"tool_{lib['name'].replace('-', '_')}"
-        if tool_name not in existing:
+        if tool_name not in existing_files and tool_name not in existing_skills:
             result.append({
                 "name":    lib["name"],
                 "purpose": lib["purpose"],

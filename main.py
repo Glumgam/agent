@@ -38,6 +38,26 @@ _code_context_cache = {}
 
 
 # -------------------------
+# ON-DEMAND TOOL REQUEST
+# -------------------------
+
+# --- ON_DEMAND START ---
+def _is_user_tool_request(task: str) -> bool:
+    """
+    ユーザーがツール生成を伴うリクエストをしているか判断する。
+    エージェントの通常タスクと区別する。
+    """
+    tool_request_keywords = [
+        "して欲しい", "してほしい", "したい", "お願い",
+        "分割", "統合", "結合", "変換", "抽出",
+        "印字", "スタンプ", "透かし", "ウォーターマーク",
+        "split", "merge", "convert", "extract", "stamp",
+    ]
+    return any(kw in task for kw in tool_request_keywords)
+# --- ON_DEMAND END ---
+
+
+# -------------------------
 # TASK CLASSIFICATION
 # -------------------------
 

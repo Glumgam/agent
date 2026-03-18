@@ -17,5 +17,5 @@ echo ""
 # -d: ディスプレイスリープを防止
 caffeinate -i -d bash -c "
   cd '${AGENT_DIR}'
-  '${PYTHON}' autonomous_loop.py --hours 18 --interval 30
+  '${PYTHON}' autonomous_loop.py --hours 18 --interval 0
 "
