@@ -43,6 +43,11 @@ logs/*.log
 *.swo
 *~
 
+# 不正名ファイル（シェルスクリプト残骸）
+echo
+"EXIT: "
+EXIT:*
+
 # エージェント生成ファイル
 workspace/
 knowledge/
