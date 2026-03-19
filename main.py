@@ -970,7 +970,7 @@ def run_agent():
                 # succeeded=True: done 検出時点では history に done が未append
                 _skill = extract_skill(task, history, succeeded=True)
                 if _skill:
-                    save_skill(_skill)
+                    save_skill(_skill, history=history)
             except Exception as _sk_err:
                 print(f"  ⚠️ スキル抽出スキップ: {_sk_err}")
             # --- SKILL LEARNING END ---

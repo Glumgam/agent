@@ -53,6 +53,9 @@ CATEGORY_FILES = {
     # --- COMPLEX TEST START ---
     "complex": "complex_tests.json",
     # --- COMPLEX TEST END ---
+    # --- HARD TEST START ---
+    "hard": "hard_tests.json",   # hard + ondemand カテゴリを含む
+    # --- HARD TEST END ---
 }
 
 ALL_CATEGORIES = list(CATEGORY_FILES.keys())
@@ -349,7 +352,7 @@ def run_test_suite(
                 _fake_history = [{"action": {"tool": t}} for t in _tools_uniq]
                 _skill = extract_skill(task_str, _fake_history, succeeded=True)
                 if _skill:
-                    save_skill(_skill)
+                    save_skill(_skill, history=_fake_history)
             except Exception as _sk_err:
                 pass  # スキル保存失敗は無視
             # --- SKILL SAVE END ---
