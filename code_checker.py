@@ -42,6 +42,8 @@ def check_code(code: str, source_label: str = "") -> list[dict]:
     _check_run_binary(code, source_label, problems)
     _check_shell_injection(code, source_label, problems)
     _check_bare_except(code, source_label, problems)
+    _check_async_in_sync(code, source_label, problems)
+    _check_duplicate_except(code, source_label, problems)
     _check_empty_function(code, source_label, problems)
     _check_toolkit_prefix(code, source_label, problems)
 
@@ -230,6 +232,96 @@ def _check_empty_function(code: str, label: str, out: list[dict]) -> None:
                 "rule": "EMPTY-FUNC",
                 "msg": f"{label}: 空関数 `{node.name}()` — 本体なし (pass/... のみ)",
             })
+
+
+def _check_async_in_sync(code: str, label: str, out: list[dict]) -> None:
+    """
+    通常の def (非async) の直接ボディで await / async with / async for を使っていないか検出する。
+    ネストされた async def の中は除外する。
+    """
+    try:
+        tree = ast.parse(code)
+    except SyntaxError:
+        return
+
+    def _walk_skip_async_def(node):
+        """ast.walk と同様だが、ネストされた AsyncFunctionDef には降りない。"""
+        for child in ast.iter_child_nodes(node):
+            if isinstance(child, ast.AsyncFunctionDef):
+                continue  # ネストされた async def の内部はスキップ
+            yield child
+            yield from _walk_skip_async_def(child)
+
+    def _direct_async_usage(func_node: ast.FunctionDef):
+        """func_node 直下のボディで async 構文を使っている箇所を返す。"""
+        for child in _walk_skip_async_def(func_node):
+            if isinstance(child, (ast.AsyncWith, ast.AsyncFor, ast.Await)):
+                return child
+        return None
+
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.FunctionDef):
+            continue
+        # ネストされた async def を除いた直接ボディを確認
+        problem = _direct_async_usage(node)
+        if problem:
+            kind = {
+                ast.AsyncWith: "async with",
+                ast.AsyncFor:  "async for",
+                ast.Await:     "await",
+            }.get(type(problem), "async 構文")
+            line = getattr(problem, "lineno", "?")
+            out.append({
+                "level": "error",
+                "rule": "ASYNC-IN-SYNC",
+                "msg": (
+                    f"{label}: 非async def `{node.name}()` 直下で "
+                    f"`{kind}` を使用 → 呼び出し時にSyntaxError (行{line})"
+                ),
+            })
+            break
+
+
+def _check_duplicate_except(code: str, label: str, out: list[dict]) -> None:
+    """
+    同一 try ブロック内に重複する except Exception ハンドラや
+    到達不能な except ハンドラを検出する。
+    """
+    try:
+        tree = ast.parse(code)
+    except SyntaxError:
+        return
+
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Try):
+            continue
+        handlers = node.handlers
+        seen_types: list[str] = []
+        for h in handlers:
+            if h.type is None:
+                type_str = "bare"
+            else:
+                type_str = ast.unparse(h.type) if hasattr(ast, "unparse") else getattr(h.type, "id", "?")
+            # Exception より広い型が既に出た後の handler は到達不能
+            if "Exception" in seen_types or "BaseException" in seen_types:
+                out.append({
+                    "level": "warn",
+                    "rule": "DEAD-EXCEPT",
+                    "msg": (
+                        f"{label}: `except {type_str}` は到達不能 "
+                        f"— 前の `except Exception` がすべてを捕捉する (行{h.lineno})"
+                    ),
+                })
+                break
+            # 同一型の重複
+            if type_str in seen_types:
+                out.append({
+                    "level": "warn",
+                    "rule": "DUP-EXCEPT",
+                    "msg": f"{label}: `except {type_str}` が重複 (行{h.lineno})",
+                })
+                break
+            seen_types.append(type_str)
 
 
 def _check_toolkit_prefix(code: str, label: str, out: list[dict]) -> None:
