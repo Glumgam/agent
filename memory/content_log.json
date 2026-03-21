@@ -78,5 +78,37 @@
     "rag_hits": 4,
     "word_count": 4035,
     "generated_at": "2026-03-21T20:35:02.539053"
+  },
+  {
+    "title": "Pythonで並列処理を実装する3つの方法",
+    "genre": "python_tips",
+    "path": "/Volumes/ESD-EHA/agent/content/20260321_pythonで並列処理を実装する3つの方法.md",
+    "rag_hits": 4,
+    "word_count": 3937,
+    "generated_at": "2026-03-21T20:39:57.052282"
+  },
+  {
+    "title": "OllamaでローカルLLMを動かす完全ガイド",
+    "genre": "ai_tools",
+    "path": "/Volumes/ESD-EHA/agent/content/20260321_ollamaでローカルllmを動かす完全ガイド.md",
+    "rag_hits": 4,
+    "word_count": 3263,
+    "generated_at": "2026-03-21T20:41:43.631486"
+  },
+  {
+    "title": "typerでPython CLIツールを簡単に作る",
+    "genre": "library_intro",
+    "path": "/Volumes/ESD-EHA/agent/content/20260321_typerでpython_cliツールを簡単に作る.md",
+    "rag_hits": 0,
+    "word_count": 1828,
+    "generated_at": "2026-03-21T20:42:59.231695"
+  },
+  {
+    "title": "PythonでファイルをGit自動管理する方法",
+    "genre": "automation",
+    "path": "/Volumes/ESD-EHA/agent/content/20260321_pythonでファイルをgit自動管理する方法.md",
+    "rag_hits": 4,
+    "word_count": 4204,
+    "generated_at": "2026-03-21T20:45:02.686493"
   }
 ]
