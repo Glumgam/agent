@@ -140,6 +140,12 @@ def run_autonomous_loop():
             content_result = _run_content_generation()
             if content_result.get("path"):
                 _log(f"  📝 記事生成: {content_result['path']}")
+                # 自動投稿
+                pub_result = _run_zenn_publish()
+                if pub_result.get("success"):
+                    _log(f"  🚀 Zenn投稿: {pub_result.get('slug', '完了')}")
+                else:
+                    _log(f"  ℹ️  Zenn投稿スキップ")
             else:
                 _log(f"  ℹ️  コンテンツ生成スキップ")
         # --- CONTENT GENERATION END ---
@@ -313,6 +319,24 @@ print(json.dumps({{
 
 
 # --- CONTENT GENERATION START ---
+def _run_zenn_publish() -> dict:
+    """生成した記事をZennに自動投稿する"""
+    try:
+        result = subprocess.run(
+            [PYTHON, "zenn_publisher.py"],
+            cwd=AGENT_ROOT, capture_output=True, text=True, timeout=120,
+        )
+        if result.stdout:
+            _log(result.stdout[-200:])
+        return {"success": result.returncode == 0}
+    except subprocess.TimeoutExpired:
+        _log("  ⚠️ Zenn投稿タイムアウト（2分）")
+        return {}
+    except Exception as e:
+        _log(f"  ⚠️ Zenn投稿エラー: {e}")
+        return {}
+
+
 def _run_content_generation() -> dict:
     """コンテンツを1記事生成する"""
     try:
