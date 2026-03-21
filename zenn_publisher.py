@@ -150,7 +150,7 @@ def _make_slug(article_path: Path) -> str:
         "pathlib":          "pathlib",
     }
 
-    slug_parts = [date_prefix] if date_prefix else []
+    slug_parts = []  # 日付プレフィックスなし
     for ja, en in keyword_map.items():
         if ja in stem and en not in slug_parts:
             slug_parts.append(en)
