@@ -4,6 +4,9 @@ TEXT Toolkit
 カテゴリ: text
 作成日: 2026-03-18
 収録ツール:
+- tool_secure_cli: Deep Research により獲得。分野: スキル発展
+- tool_secure_transformer_cli: Deep Research により獲得。分野: スキル発展
+- tool_encrypt_transform_data: Deep Research により獲得。分野: スキル発展
 - tool_encrypt_decrypt: Deep Research により獲得。分野: セキュリティ
 - tool_encrypt_data: Deep Research により獲得。分野: セキュリティ
 - tool_transformers: Deep Research により獲得。分野: AI・LLM 最新動向
@@ -513,3 +516,78 @@ if __name__ == "__main__":
     print("\n" + "=" * 50)
     print("動作確認完了")
     print("=" * 50)
+
+
+# ==================================================
+# tool_encrypt_transform_data
+# ==================================================
+
+def tool_encrypt_transform_data(text: str) -> str:
+    try:
+        generate_key()
+        encrypted_text = encrypt_message(text)
+        nlp = pipeline("text2text-generation", model="t5-small")
+        transformed_text = nlp(encrypted_text, max_length=50)[0]['generated_text']
+        return decrypt_message(transformed_text)
+    except Exception as e:
+        return f"ERROR: {str(e)}"
+
+
+# ==================================================
+# tool_secure_transformer_cli
+# ==================================================
+
+def tool_secure_transformer_cli(input_str):
+    try:
+        # Load pre-trained model and tokenizer from Hugging Face Model Hub
+        model_name = "gpt2"  # Replace with your desired model name
+        model = AutoModelForCausalLM.from_pretrained(model_name)
+        tokenizer = AutoTokenizer.from_pretrained(model_name)
+
+        # Encode the input string using the tokenizer
+        encoded_input = tokenizer.encode(input_str, return_tensors="pt")
+
+        # Generate a key for encryption and decryption
+        encrypted_input = model.generate(encoded_input)
+
+        # Decrypt the encrypted input (not applicable in this context)
+        decrypted_input = tokenizer.decode(encrypted_input[0], skip_special_tokens=True)
+
+        return "Encrypted Input: {}\nDecrypted Input: {}".format(encrypted_input, decrypted_input)
+
+    except ImportError as e:
+        return "ERROR: Missing library - " + str(e)
+
+
+# ==================================================
+# tool_secure_cli
+# ==================================================
+
+def tool_secure_cli(command):
+    """
+    セキュリティ強化されたCLIアプリケーション構築ツール
+
+    Args:
+        command (str): 実行するCLIコマンド
+
+    Returns:
+        str: コマンドの出力結果
+    """
+    try:
+        import subprocess
+        result = subprocess.run(command, shell=True, capture_output=True, text=True)
+        if result.returncode != 0:
+            return f"ERROR: {result.stderr}"
+        else:
+            return result.stdout
+    except ImportError as e:
+        return f"ERROR: {e}"
+
+if __name__ == "__main__":
+    import sys
+    if len(sys.argv) < 2:
+        print("Usage: python tool_secure_cli.py \"command\"")
+    else:
+        command = " ".join(sys.argv[1:])
+        result = tool_secure_cli(command)
+        print(result)

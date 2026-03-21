@@ -382,9 +382,12 @@ def generate_article(
     template = ARTICLE_TEMPLATES.get(genre["template"], ARTICLE_TEMPLATES["tips"])
     prompt   = _QUALITY_RULES + template.format(topic=topic, context=context[:3000])
 
-    # 記事生成（品質チェック付きリトライあり）
+    # 記事生成（品質チェック + レビュー付きリトライあり）
     from llm import ask_plain
     content = ""
+    review_score    = 0
+    review_passed   = True
+    review_feedback = "レビューなし"
     for attempt in range(max_retries):
         print(f"  🧠 生成中 (qwen2.5-coder:7b)"
               f"{' 再試行 ' + str(attempt) if attempt > 0 else ''}...")
@@ -392,21 +395,48 @@ def generate_article(
         # 中国語文字を除去（置換リストで対応済みの文字を日本語化）
         content = _remove_chinese_chars(content)
         passed, reason = _quality_check_v2(content)
-        if passed:
-            break
-        if attempt < max_retries - 1:
-            print(f"  ⚠️ 品質不足: {reason} → リトライ {attempt + 1}/{max_retries - 1}")
-            prompt = (
-                prompt
-                + f"\n\n【重要・再試行{attempt + 1}回目】\n"
-                + f"前回の出力が品質基準を満たしませんでした。理由: {reason}\n"
-                + "必ず1500文字以上・見出し(##)3個以上・コード例(```python)1個以上"
-                + "・まとめセクションを含めてください。"
-                + "\n必ず日本語で書いてください。中国語（简体字）は絶対に使わないこと。"
-            )
-        else:
-            print(f"  ❌ 品質基準未達: {reason}")
-            return {"error": f"品質基準未達: {reason}"}
+        if not passed:
+            if attempt < max_retries - 1:
+                print(f"  ⚠️ 品質不足: {reason} → リトライ {attempt + 1}/{max_retries - 1}")
+                prompt = (
+                    prompt
+                    + f"\n\n【重要・再試行{attempt + 1}回目】\n"
+                    + f"前回の出力が品質基準を満たしませんでした。理由: {reason}\n"
+                    + "必ず1500文字以上・見出し(##)3個以上・コード例(```python)1個以上"
+                    + "・まとめセクションを含めてください。"
+                    + "\n必ず日本語で書いてください。中国語（简体字）は絶対に使わないこと。"
+                )
+                continue
+            else:
+                print(f"  ❌ 品質基準未達: {reason}")
+                return {"error": f"品質基準未達: {reason}"}
+
+        # --- QUALITY REVIEW START ---
+        from article_reviewer import review_article
+        review = review_article(content, topic)
+        print(f"  📊 品質スコア: {review['score']}/10 "
+              f"({'✅ pass' if review['passed'] else '❌ fail'})")
+        if review["issues"]:
+            print(f"  ⚠️ 問題点: {', '.join(review['issues'][:3])}")
+        if not review["passed"]:
+            if review["score"] >= 5:
+                # スコア5以上なら低品質でも許容して保存
+                print(f"  ⚠️ 低品質だが許容範囲（score={review['score']}）→ 保存")
+            elif attempt < max_retries - 1:
+                # スコア5未満かつリトライ可能 → フィードバック付きで再生成
+                print(f"  🔄 フィードバック: {review['feedback']} → リトライ")
+                prompt = (prompt
+                          + f"\n\n【品質レビューのフィードバック】\n{review['feedback']}\n"
+                          + f"以下の問題を修正してください: {', '.join(review['issues'])}")
+                continue
+            else:
+                # 最終リトライ失敗 → 強制保存（記事ゼロを防ぐ）
+                print(f"  ❌ 最終リトライ失敗（score={review['score']}）→ 強制保存")
+        review_score    = review["score"]
+        review_passed   = review["passed"]
+        review_feedback = review["feedback"]
+        # --- QUALITY REVIEW END ---
+        break
 
     # フッターを追加
     content = _add_footer(content, topic)
@@ -429,13 +459,16 @@ def generate_article(
 
     # メタデータ記録
     result = {
-        "title":        topic,
-        "genre":        genre_id,
-        "content":      content,
-        "path":         str(path),
-        "rag_hits":     rag_hits,
-        "word_count":   len(content),
-        "generated_at": datetime.now().isoformat(),
+        "title":           topic,
+        "genre":           genre_id,
+        "content":         content,
+        "path":            str(path),
+        "rag_hits":        rag_hits,
+        "word_count":      len(content),
+        "generated_at":    datetime.now().isoformat(),
+        "review_score":    review_score,
+        "review_passed":   review_passed,
+        "review_feedback": review_feedback,
     }
     _log_performance(result)
     print(f"  ✅ 生成完了: {path.name} ({len(content)}文字)")
@@ -508,6 +541,12 @@ def show_content_stats() -> str:
         lines.append(f"平均文字数: {avg_words:.0f}文字")
         lines.append(f"平均RAGヒット: {avg_rag:.1f}件")
         lines.append(f"品質通過率: {quality_pass}/{len(logs)} ({quality_pass / len(logs) * 100:.0f}%)")
+        scores = [l.get("review_score", 0) for l in logs if l.get("review_score")]
+        if scores:
+            avg_score  = sum(scores) / len(scores)
+            fail_count = sum(1 for l in logs if not l.get("review_passed", True))
+            lines.append(f"平均品質スコア: {avg_score:.1f}/10")
+            lines.append(f"fail率: {fail_count}/{len(logs)} ({fail_count / len(logs) * 100:.0f}%)")
         lines.append("")
         lines.append("### 最新5件")
         for log in reversed(logs[-5:]):

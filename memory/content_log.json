@@ -130,5 +130,28 @@
     "generated_at": "2026-03-22T00:06:59.742563",
     "quality_passed": true,
     "quality_reason": "OK"
+  },
+  {
+    "title": "Pythonのデコレータを使いこなす実践テクニック",
+    "genre": "python_tips",
+    "path": "/Volumes/ESD-EHA/agent/content/20260322_pythonのデコレータを使いこなす実践テクニック.md",
+    "rag_hits": 4,
+    "word_count": 3512,
+    "generated_at": "2026-03-22T05:06:35.171487",
+    "quality_passed": true,
+    "quality_reason": "OK"
+  },
+  {
+    "title": "Pythonの内包表記とジェネレータの使い分け",
+    "genre": "python_tips",
+    "path": "/Volumes/ESD-EHA/agent/content/20260322_pythonの内包表記とジェネレータの使い分け.md",
+    "rag_hits": 4,
+    "word_count": 2561,
+    "generated_at": "2026-03-22T08:22:16.650083",
+    "review_score": 7,
+    "review_passed": true,
+    "review_feedback": "実践例の重複を削除し、ジェネレータの条件分岐機能についても補足すべきです。",
+    "quality_passed": true,
+    "quality_reason": "OK"
   }
 ]

@@ -211,95 +211,99 @@ def publish_article(
     article_path: Path,
     dry_run: bool = False,
 ) -> dict:
-    """
-    1記事をZennに投稿する。
-    Returns:
-        {"success": bool, "slug": str, "zenn_path": str}
-    """
+    """1記事をZennフォーマットに変換してファイルを書き込む（git操作なし）"""
     log = _load_publish_log()
 
-    # 既に投稿済みか確認
     key = article_path.name
     if key in log:
-        print(f"  ℹ️  投稿済みスキップ: {article_path.name}")
         return {"success": False, "reason": "already_published"}
 
-    # Zennフォーマットに変換
     zenn_content = convert_to_zenn(article_path)
+    slug         = _make_slug(article_path)
+    zenn_path    = ZENN_ARTICLES / f"{slug}.md"
 
-    # スラッグ生成
-    slug      = _make_slug(article_path)
-    zenn_path = ZENN_ARTICLES / f"{slug}.md"
-
-    # 重複回避
-    counter = 1
-    while zenn_path.exists():
-        zenn_path = ZENN_ARTICLES / f"{slug}-{counter}.md"
-        counter += 1
+    # 重複回避（既存ファイルがある場合はスキップ）
+    if zenn_path.exists():
+        print(f"  ⚠️ ファイル既存スキップ: {zenn_path.name}")
+        return {"success": False, "reason": "file_exists"}
 
     if dry_run:
-        # フロントマターの2行目（title行）を表示
-        title_line = zenn_content.split("\n")[1] if "\n" in zenn_content else ""
         print(f"  🔍 DRY RUN: {zenn_path.name}")
-        print(f"     {title_line}")
         return {"success": True, "dry_run": True, "slug": slug}
 
-    # ファイル書き込み
     ZENN_ARTICLES.mkdir(parents=True, exist_ok=True)
     zenn_path.write_text(zenn_content, encoding="utf-8")
+    print(f"  ✅ 変換完了: {zenn_path.name}")
 
-    # git add & commit & push
+    log[key] = {
+        "slug":         slug,
+        "zenn_path":    str(zenn_path),
+        "published_at": datetime.now().isoformat(),
+    }
+    _save_publish_log(log)
+    return {"success": True, "slug": slug, "zenn_path": str(zenn_path)}
+
+
+def publish_all(dry_run: bool = False) -> dict:
+    """未投稿の記事を全て変換して1回だけgit pushする"""
+    log      = _load_publish_log()
+    articles = sorted(CONTENT_DIR.glob("*.md"))
+
+    # ログ同期（zenn-contentに存在しないファイルはログから削除）
+    cleaned = 0
+    for key, meta in list(log.items()):
+        zenn_path = Path(meta.get("zenn_path", ""))
+        if not zenn_path.exists():
+            del log[key]
+            cleaned += 1
+    if cleaned > 0:
+        _save_publish_log(log)
+        print(f"  🔄 ログ同期: {cleaned}件削除")
+
+    unpublished = [a for a in articles
+                   if not a.name.startswith("._") and a.name not in log]
+
+    print(f"\n{'='*50}")
+    print(f"  Zenn自動投稿")
+    print(f"  未投稿記事: {len(unpublished)}件")
+    print(f"{'='*50}\n")
+
+    if not unpublished:
+        print("  投稿する記事なし")
+        return {"success": 0, "skipped": len(articles), "failed": 0}
+
+    results = {"success": 0, "skipped": len(articles) - len(unpublished), "failed": 0}
+
+    # 全記事をファイルに書き込む
+    for article in unpublished:
+        result = publish_article(article, dry_run=dry_run)
+        if result.get("success"):
+            results["success"] += 1
+        elif result.get("reason") != "already_published":
+            results["failed"] += 1
+
+    if dry_run or results["success"] == 0:
+        return results
+
+    # 1回だけgit add & commit & push
     try:
         subprocess.run(
-            ["git", "add", str(zenn_path)],
+            ["git", "add", "articles/"],
             cwd=ZENN_REPO, check=True, capture_output=True,
         )
         subprocess.run(
-            ["git", "commit", "-m", f"feat: {article_path.stem[:50]}"],
+            ["git", "commit", "-m",
+             f"feat: {results['success']}件の記事を追加"],
             cwd=ZENN_REPO, check=True, capture_output=True,
         )
         subprocess.run(
             ["git", "push", "origin", "main"],
             cwd=ZENN_REPO, check=True, capture_output=True,
         )
-        print(f"  ✅ 投稿完了: {zenn_path.name}")
-
-        # ログに記録
-        log[key] = {
-            "slug":         slug,
-            "zenn_path":    str(zenn_path),
-            "published_at": datetime.now().isoformat(),
-        }
-        _save_publish_log(log)
-        return {"success": True, "slug": slug, "zenn_path": str(zenn_path)}
-
+        print(f"\n  ✅ push完了: {results['success']}件")
     except subprocess.CalledProcessError as e:
-        print(f"  ❌ push失敗: {e}")
-        zenn_path.unlink(missing_ok=True)
-        return {"success": False, "reason": str(e)}
-
-
-def publish_all(dry_run: bool = False) -> dict:
-    """未投稿の記事を全て投稿する"""
-    log      = _load_publish_log()
-    articles = sorted(CONTENT_DIR.glob("[0-9]*.md"))
-    pending  = [a for a in articles if a.name not in log]
-    results  = {"success": 0, "skipped": 0, "failed": 0}
-
-    print(f"\n{'='*50}")
-    print(f"  Zenn自動投稿")
-    print(f"  未投稿記事: {len(pending)}件")
-    print(f"{'='*50}\n")
-
-    for article in articles:
-        if article.name in log:
-            results["skipped"] += 1
-            continue
-        result = publish_article(article, dry_run=dry_run)
-        if result.get("success"):
-            results["success"] += 1
-        elif result.get("reason") != "already_published":
-            results["failed"] += 1
+        print(f"\n  ❌ push失敗: {e}")
+        results["failed"] += 1
 
     return results
 

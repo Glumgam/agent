@@ -304,20 +304,26 @@ Any other tool name will cause an ERROR. Never invent tool names.
 
 def _clean_llm_output(text: str) -> str:
     """
-    Extract JSON safely from LLM output.
+    LLMの出力からJSONを安全に抽出する。
+    JSONラップ用の ```json ... ``` のみ除去する。
+    通常のコードブロック（```python 等）は除去しない。
+    この関数は ask() / _call_ollama() 経由のみで呼ばれる（JSON応答専用）。
     """
-
     text = text.strip()
 
-    text = re.sub(r"```json", "", text)
-    text = re.sub(r"```", "", text)
+    # ```json のみ除去（JSONのラッパーブロック開始タグ）
+    text = re.sub(r"```json\s*", "", text)
 
+    # JSON抽出: { から } の範囲を取り出す
     start = text.find("{")
-    end = text.rfind("}")
+    end   = text.rfind("}")
 
     if start == -1 or end == -1:
-        return text
+        # JSONが見つからない場合は末尾の単独 ``` だけ除去して返す
+        text = re.sub(r"^```\s*$", "", text, flags=re.MULTILINE)
+        return text.strip()
 
+    # JSON外の ``` ラッパーは除去されているので、そのまま返す
     return text[start:end + 1].strip()
 
 

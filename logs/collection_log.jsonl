@@ -21,3 +21,9 @@
 {"timestamp": "2026-03-22T00:03:58.772531", "topic_id": "finance", "source": "news", "query": "economic news 2026", "item_count": 1, "urls": [], "acquired": []}
 {"timestamp": "2026-03-22T00:03:59.179218", "topic_id": "finance", "source": "reddit", "query": "日本株 最新", "item_count": 1, "urls": [], "acquired": []}
 {"timestamp": "2026-03-22T00:04:00.227008", "topic_id": "finance", "source": "reddit", "query": "economic news 2026", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-22T01:30:12.336970", "topic_id": "science", "source": "arxiv", "query": "science breakthrough 2026", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-22T01:30:13.053614", "topic_id": "science", "source": "arxiv", "query": "physics biology research", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-22T01:30:14.111934", "topic_id": "science", "source": "news", "query": "science breakthrough 2026", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-22T01:30:14.588001", "topic_id": "science", "source": "news", "query": "physics biology research", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-22T01:40:27.792736", "topic_id": "food", "source": "news", "query": "ラーメン 新店 2026", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-22T01:40:28.560034", "topic_id": "food", "source": "news", "query": "グルメ おすすめ", "item_count": 1, "urls": [], "acquired": []}

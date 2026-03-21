@@ -73,8 +73,8 @@
     "coding": {
       "name": "coding",
       "task_example": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
-      "success_count": 240,
-      "last_used": "2026-03-21T15:10:24.640954+00:00",
+      "success_count": 281,
+      "last_used": "2026-03-21T21:21:06.385185+00:00",
       "tools_used": [
         "create_file",
         "run",
@@ -133,8 +133,8 @@
     "bug_fix": {
       "name": "bug_fix",
       "task_example": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
-      "success_count": 166,
-      "last_used": "2026-03-21T15:15:12.642408+00:00",
+      "success_count": 194,
+      "last_used": "2026-03-21T21:00:50.823669+00:00",
       "tools_used": [
         "run",
         "done",
@@ -169,8 +169,8 @@
     "testing": {
       "name": "testing",
       "task_example": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
-      "success_count": 158,
-      "last_used": "2026-03-21T15:03:56.724556+00:00",
+      "success_count": 185,
+      "last_used": "2026-03-21T21:06:51.473957+00:00",
       "tools_used": [
         "done",
         "run",
@@ -597,6 +597,104 @@
         "secure",
         "cli",
         "command"
+      ],
+      "summary": "Deep Research により獲得。分野: スキル発展"
+    },
+    "tool_batch_encrypt_decrypt": {
+      "name": "tool_batch_encrypt_decrypt",
+      "task_example": "[深掘り獲得] ファイルまたはディレクトリ内のデータを一括で暗号化・復号化する機能を提供します。 (from: スキル発展)",
+      "success_count": 1,
+      "last_used": "2026-03-21T16:41:36.785599+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [
+        "cryptography"
+      ],
+      "keywords": [
+        "スキル発展",
+        "tool",
+        "batch",
+        "encrypt",
+        "decrypt"
+      ],
+      "summary": "Deep Research により獲得。分野: スキル発展"
+    },
+    "tool_batch_cli_encrypt_decrypt": {
+      "name": "tool_batch_cli_encrypt_decrypt",
+      "task_example": "[深掘り獲得] 複数ファイルを一括で暗号化・復号化するCLIツール (from: スキル発展)",
+      "success_count": 1,
+      "last_used": "2026-03-21T18:00:37.546481+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [
+        "cryptography"
+      ],
+      "keywords": [
+        "スキル発展",
+        "tool",
+        "batch",
+        "cli",
+        "encrypt",
+        "decrypt"
+      ],
+      "summary": "Deep Research により獲得。分野: スキル発展"
+    },
+    "tool_encrypt_transform_data": {
+      "name": "tool_encrypt_transform_data",
+      "task_example": "[深掘り獲得] データを暗号化してその後、Hugging FaceのLLMモデルを使用して変換を行う。 (from: スキル発展)",
+      "success_count": 1,
+      "last_used": "2026-03-21T19:40:27.425185+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [
+        "transformers"
+      ],
+      "keywords": [
+        "スキル発展",
+        "tool",
+        "encrypt",
+        "transform",
+        "data"
+      ],
+      "summary": "Deep Research により獲得。分野: スキル発展"
+    },
+    "tool_secure_transformer_cli": {
+      "name": "tool_secure_transformer_cli",
+      "task_example": "[深掘り獲得] CLIアプリケーションでHugging FaceのLLMモデルを使用してデータを暗号化・復号化します。 (from: スキル発展)",
+      "success_count": 1,
+      "last_used": "2026-03-21T20:34:41.526850+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [
+        "transformers"
+      ],
+      "keywords": [
+        "スキル発展",
+        "tool",
+        "secure",
+        "transformer",
+        "cli"
+      ],
+      "summary": "Deep Research により獲得。分野: スキル発展"
+    },
+    "tool_secure_cli": {
+      "name": "tool_secure_cli",
+      "task_example": "[深掘り獲得] セキュリティ強化されたCLIアプリケーション構築ツール (from: スキル発展)",
+      "success_count": 1,
+      "last_used": "2026-03-21T21:26:11.684936+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [],
+      "keywords": [
+        "スキル発展",
+        "tool",
+        "secure",
+        "cli"
       ],
       "summary": "Deep Research により獲得。分野: スキル発展"
     }
