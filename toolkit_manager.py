@@ -69,6 +69,20 @@ def integrate_tool(tool_name: str, code: str, description: str = "") -> str:
     Returns:
         統合先のtoolkitパス文字列
     """
+    # --- CODE CHECK START ---
+    try:
+        from code_checker import check_code, format_report
+        issues = check_code(code, source_label=f"evolved/{tool_name}")
+        if issues:
+            report = format_report(issues, source=tool_name)
+            print(report)
+            errors = [i for i in issues if i["level"] == "error"]
+            if errors:
+                print(f"  ⚠️ toolkit登録警告: {tool_name} に{len(errors)}件のエラー (登録は継続)")
+    except Exception:
+        pass  # チェック失敗時はスキップ
+    # --- CODE CHECK END ---
+
     category     = detect_category(tool_name, code)
     toolkit_path = get_toolkit_path(category)
 

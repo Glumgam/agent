@@ -229,11 +229,31 @@ def extract_skill(
     )
 
 
-def save_skill(skill: "Skill") -> None:
+def save_skill(skill: "Skill", history: list[dict] | None = None) -> None:
     """
     スキルを memory/skill_db.json に upsert する。
     同名スキルが存在すれば success_count をインクリメントして更新。
+
+    Args:
+        skill:   extract_skill() が返した Skill オブジェクト
+        history: main.py の history リスト。渡すとコードチェックが実行される。
     """
+    # --- CODE CHECK START ---
+    if history:
+        try:
+            from code_checker import check_history_code, format_report
+            issues = check_history_code(history, skill.task_example)
+            if issues:
+                report = format_report(issues, source=skill.name)
+                print(report)
+                # error レベルがある場合は保存前に警告 (保存はブロックしない)
+                errors = [i for i in issues if i["level"] == "error"]
+                if errors:
+                    print(f"    ⚠️ コード品質警告: {len(errors)}件のエラーがあります (保存は継続)")
+        except Exception as _ce:
+            pass  # チェック失敗時はスキップ
+    # --- CODE CHECK END ---
+
     data = _load_db()
     skills = data.setdefault("skills", {})
 

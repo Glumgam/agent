@@ -1,0 +1,52 @@
+[
+  {
+    "id": "python_official",
+    "name": "Python 公式ドキュメント（標準ライブラリ）",
+    "url": "https://docs.python.org/ja/3/library/functions.html",
+    "version_url": null,
+    "version_pattern": null,
+    "static_version": "3.13",
+    "format": "html",
+    "permanent": true
+  },
+  {
+    "id": "pip_docs",
+    "name": "pip ユーザーガイド",
+    "url": "https://pip.pypa.io/en/stable/user_guide/",
+    "version_url": null,
+    "version_pattern": null,
+    "static_version": "stable",
+    "format": "html",
+    "permanent": true
+  },
+  {
+    "id": "ollama_docs",
+    "name": "Ollama 公式ドキュメント",
+    "url": "https://github.com/ollama/ollama/blob/main/README.md",
+    "version_url": "https://api.github.com/repos/ollama/ollama/releases/latest",
+    "version_pattern": "tag_name",
+    "static_version": null,
+    "format": "html",
+    "permanent": true
+  },
+  {
+    "id": "qdrant_docs",
+    "name": "Qdrant Python クライアント ドキュメント",
+    "url": "https://python-client.qdrant.tech/",
+    "version_url": "https://api.github.com/repos/qdrant/qdrant-client/releases/latest",
+    "version_pattern": "tag_name",
+    "static_version": null,
+    "format": "html",
+    "permanent": true
+  },
+  {
+    "id": "japanese_copyright_law",
+    "name": "著作権法（e-Gov法令検索）",
+    "url": "https://laws.e-gov.go.jp/law/345AC0000000048",
+    "version_url": null,
+    "version_pattern": null,
+    "static_version": "2024",
+    "format": "html",
+    "permanent": true
+  }
+]

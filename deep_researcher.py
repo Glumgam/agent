@@ -200,30 +200,55 @@ END_CODE
     print(f"  🔨 コード生成中: {candidate['name']}")
     response = ask_thinking(prompt)
 
-    tool_name_m = re.search(r"TOOL_NAME:\s*(\S+)", response, re.IGNORECASE)
-    requires_m  = re.search(r"REQUIRES:\s*(.+)", response, re.IGNORECASE)
+    # --- CODE EXTRACT FIX START ---
+    def _extract_code_from_response(resp: str) -> tuple:
+        """
+        LLMの応答からツール名・コード・依存ライブラリを抽出する。
+        複数のパターンを試みる。{name} 等のf-string未展開を検出して除外する。
+        """
+        tool_name_mx = re.search(r"TOOL_NAME:\s*([a-zA-Z][a-zA-Z0-9_]+)", resp)
+        requires_mx  = re.search(r"REQUIRES:\s*(.+)",                       resp, re.IGNORECASE)
 
-    # コード抽出: 複数パターンを順番に試す
-    code_m = (
-        re.search(r"CODE:\s*\n(.*?)END_CODE",   response, re.DOTALL | re.IGNORECASE)
-        or re.search(r"```python\s*\n(.*?)```",  response, re.DOTALL)
-        or re.search(r"```\s*\n(.*?)```",        response, re.DOTALL)
-    )
+        code_val = None
+        patterns = [
+            r"CODE:\s*\n```python\n(.*?)```\s*END_CODE",
+            r"CODE:\s*\n```python\n(.*?)```",
+            r"CODE:\s*\n```\n(.*?)```\s*END_CODE",
+            r"CODE:\s*\n```\n(.*?)```",
+            r"CODE:\s*\n(.*?)END_CODE",
+            r"```python\n(def tool_\w+.*?)```",
+            r"```\n(def tool_\w+.*?)```",
+            r"```python\n(.*?)```",
+        ]
+        for pat in patterns:
+            m = re.search(pat, resp, re.DOTALL | re.IGNORECASE)
+            if m:
+                candidate = m.group(1).strip()
+                # {name} 等のf-string未展開を検出して除外
+                if re.search(r"\{[a-z_]+\}", candidate[:80]):
+                    continue
+                if len(candidate) > 50:
+                    code_val = candidate
+                    break
 
-    if not (tool_name_m and code_m):
+        req_val = "none"
+        if requires_mx:
+            req_raw = re.sub(r"pip\s+install\s+", "", requires_mx.group(1).strip(),
+                             flags=re.IGNORECASE).strip()
+            req_first = req_raw.split()[0] if req_raw.split() else "none"
+            req_val = "none" if req_first.lower().startswith("none") else req_first
+
+        return tool_name_mx, code_val, req_val
+
+    tool_name_m, code, requires = _extract_code_from_response(response)
+    # --- CODE EXTRACT FIX END ---
+
+    if not (tool_name_m and code):
         # デバッグ: 失敗時に応答の先頭200文字をログ出力
         print(f"  ⚠️ コード抽出失敗 (応答先頭): {repr(response[:200])}")
         return {"success": False, "reason": "コード抽出失敗"}
 
     tool_name = tool_name_m.group(1).strip()
-    requires  = requires_m.group(1).strip() if requires_m else "none"
-    # --- FIX REQUIRES START ---
-    # "pip install xxx" → "xxx"、"none（不要なら...）" → "none" に正規化
-    requires = re.sub(r"pip\s+install\s+", "", requires, flags=re.IGNORECASE).strip()
-    requires_first = requires.split()[0] if requires.split() else "none"
-    requires = "none" if requires_first.lower().startswith("none") else requires_first
-    # --- FIX REQUIRES END ---
-    code      = code_m.group(1).strip()
 
     # --- FIX FULLWIDTH START ---
     # 全角文字・全角括弧を半角に変換（LLMが全角を混入するバグ対策）
@@ -247,6 +272,25 @@ END_CODE
         compile(code, "<string>", "exec")
     except SyntaxError as e:
         return {"success": False, "reason": f"構文エラー: {e}"}
+
+    # --- CODE CHECK START ---
+    try:
+        from code_checker import check_and_fix as _check_and_fix
+        print(f"  🔍 コードチェック中: {tool_name}")
+        code, check_passed, check_issues = _check_and_fix(
+            code=code,
+            tool_name=tool_name,
+            use_llm=True,
+            max_fix_attempts=2,
+        )
+        if not check_passed:
+            return {
+                "success": False,
+                "reason":  f"コードチェック失敗: {[i['desc'][:50] for i in check_issues[:2]]}",
+            }
+    except Exception as _ce:
+        print(f"  ⚠️ コードチェックエラー（スキップ）: {_ce}")
+    # --- CODE CHECK END ---
 
     # 依存ライブラリのインストール（必要な場合）
     if requires.lower() != "none":

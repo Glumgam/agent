@@ -1,0 +1,14 @@
+{
+  "python_release_notes": {
+    "version": "3.14",
+    "source": "https://docs.python.org/3/whatsnew/",
+    "chunks": 2,
+    "last_updated": "2026-03-20T20:59:09.864632"
+  },
+  "ollama_docs": {
+    "version": "0.18.2-0a3ab00f",
+    "source": "https://github.com/ollama/ollama/blob/main/README.md",
+    "chunks": 37,
+    "last_updated": "2026-03-20T21:15:17.386986"
+  }
+}

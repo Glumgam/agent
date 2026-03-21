@@ -10,17 +10,17 @@
   {
     "id": "E2",
     "label": "Excel集計",
-    "task": "pandasでsales.xlsxを読み込み、合計/平均/最大月を計算して表示するanalyze.pyを書いて実行せよ。sales.xlsxがなければ先に生成せよ",
+    "task": "以下を実装して実行せよ:\n1. make_excel.py: openpyxlで売上データ(商品名/月/金額)を含むsales.xlsxを新規作成して保存\n2. aggregate.py: sales.xlsxを読み込み商品別・月別に集計してresult.xlsxに保存\n3. python make_excel.py を実行してsales.xlsxが存在することを確認\n4. python aggregate.py を実行\n注意: 既存のsales.xlsxは使わず必ず新規作成すること",
     "expect_contains": "exit code 0",
-    "max_steps": 15,
+    "max_steps": 30,
     "category": "excel"
   },
   {
     "id": "E3",
     "label": "Excel→CSV変換",
-    "task": "pandasでsales.xlsxをsales.csvに変換するconvert.pyを書いて実行せよ。変換後にcsvの内容を表示すること",
+    "task": "以下を順番に実装して実行せよ:\n1. create_excel.py: openpyxlで10行のサンプルデータを含むdata.xlsxを新規作成\n2. convert.py: pandasでdata.xlsxを読み込みdata.csvに変換して保存\n3. verify.py: data.csvが存在してデータが正しいか確認\n4. python create_excel.py → python convert.py → python verify.py の順に実行\n注意: 同じコマンドを2回以上実行しないこと。前のステップの結果をよく確認してから次に進むこと",
     "expect_contains": "exit code 0",
-    "max_steps": 10,
+    "max_steps": 30,
     "category": "excel"
   },
   {
