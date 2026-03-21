@@ -174,7 +174,6 @@ def generate_article(
     Returns:
         {"title", "content", "path", "rag_hits", "word_count"}
     """
-    from llm import ask_thinking
     print(f"\n  📝 記事生成: {topic}")
 
     # RAGで関連情報を取得
@@ -204,16 +203,13 @@ def generate_article(
     template = ARTICLE_TEMPLATES.get(genre["template"], ARTICLE_TEMPLATES["tips"])
     prompt   = _QUALITY_RULES + template.format(topic=topic, context=context[:3000])
 
-    # 記事生成（thinkingモデルで品質重視、失敗時はask_plainにフォールバック）
-    print(f"  🧠 生成中...")
-    try:
-        content = ask_thinking(prompt)
-    except Exception:
-        from llm import ask_plain
-        content = ask_plain(prompt)
+    # 記事生成（qwen2.5-coder:7b で高速生成）
+    from llm import ask_plain
+    print(f"  🧠 生成中 (qwen2.5-coder:7b)...")
+    content = ask_plain(prompt)
 
-    if not content or len(content) < 200:
-        return {"error": "生成失敗: コンテンツが短すぎる"}
+    if not content or len(content) < 100:
+        return {"error": f"生成失敗: コンテンツが短すぎる ({len(content) if content else 0}文字)"}
 
     # ファイル保存
     path = _save_article(topic, content)
@@ -230,6 +226,16 @@ def generate_article(
     }
     _log_performance(result)
     print(f"  ✅ 生成完了: {path.name} ({len(content)}文字)")
+
+    # Qdrantクライアントの明示的クローズ（終了時 __del__ エラー抑制）
+    try:
+        import rag_retriever
+        if rag_retriever._qdrant_client is not None:
+            rag_retriever._qdrant_client.close()
+            rag_retriever._qdrant_client = None  # __del__ 二重呼び出し防止
+    except Exception:
+        pass
+
     return result
 
 

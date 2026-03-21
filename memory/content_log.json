@@ -14,5 +14,37 @@
     "rag_hits": 4,
     "word_count": 2537,
     "generated_at": "2026-03-21T17:17:18.137507"
+  },
+  {
+    "title": "Python型ヒントの活用で保守性を上げる方法",
+    "genre": "python_tips",
+    "path": "/Volumes/ESD-EHA/agent/content/20260321_python型ヒントの活用で保守性を上げる方法.md",
+    "rag_hits": 0,
+    "word_count": 459,
+    "generated_at": "2026-03-21T19:32:40.620705"
+  },
+  {
+    "title": "PythonでExcelレポートを自動生成する",
+    "genre": "automation",
+    "path": "/Volumes/ESD-EHA/agent/content/20260321_pythonでexcelレポートを自動生成する.md",
+    "rag_hits": 0,
+    "word_count": 3096,
+    "generated_at": "2026-03-21T19:53:03.386118"
+  },
+  {
+    "title": "Sentence Transformersでテキスト検索を実装する",
+    "genre": "ai_tools",
+    "path": "/Volumes/ESD-EHA/agent/content/20260321_sentence_transformersでテキスト検索を実.md",
+    "rag_hits": 4,
+    "word_count": 1710,
+    "generated_at": "2026-03-21T20:02:46.208202"
+  },
+  {
+    "title": "richでPythonのCLI出力を美しくする",
+    "genre": "library_intro",
+    "path": "/Volumes/ESD-EHA/agent/content/20260321_richでpythonのcli出力を美しくする.md",
+    "rag_hits": 4,
+    "word_count": 1876,
+    "generated_at": "2026-03-21T20:06:54.766423"
   }
 ]
