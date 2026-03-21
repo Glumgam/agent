@@ -441,7 +441,27 @@ def ask(prompt: str) -> str:
 
 
 def ask_plain(prompt: str) -> str:
-    return ask_planner(prompt)
+    """
+    Plain-text generation for articles / planning.
+    _call_ollama を経由しないことで _clean_llm_output（コードブロック除去・
+    JSON切り取り）を回避する。num_predict=4096 で生成トークン上限を拡張。
+    """
+    payload = {
+        "model":  PLANNER_MODEL,
+        "prompt": prompt,
+        "stream": False,
+        "options": {
+            "temperature": 0.7,
+            "num_ctx":     8192,   # コンテキストウィンドウ
+            "num_predict": 4096,   # 生成トークン上限を拡張
+        },
+    }
+    try:
+        resp = requests.post(OLLAMA_URL, json=payload, timeout=300)
+        resp.raise_for_status()
+        return resp.json().get("response", "").strip()
+    except Exception:
+        return ask_planner(prompt)  # フォールバック
 
 
 # --- DUAL MODEL START ---

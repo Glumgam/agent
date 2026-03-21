@@ -43,6 +43,12 @@ TECH_GENRES = [
 
 # 全テンプレートに適用する品質ルール
 _QUALITY_RULES = """
+【絶対条件】
+- 最低1500文字以上で書くこと（これより短い場合は失敗とみなす）
+- ## 見出しを最低3つ以上含めること
+- コード例（```python）を最低2つ以上含めること
+- 記事と無関係なコード（Flask、JWT等）は絶対に含めないこと
+
 【品質ルール（必ず守ること）】
 1. プレースホルダー禁止: 「よくある質問1」「回答」のような仮の内容は絶対に書かない
 2. 繰り返し禁止: 同じコード例や説明を複数セクションで繰り返さない
@@ -160,10 +166,45 @@ Q&A形式で書いてください。
 }
 
 
+# --- TOPIC KNOWLEDGE START ---
+def _get_topic_knowledge(topic: str) -> str:
+    """
+    トピックに応じた正確な技術知識を返す。
+    RAGが取得できない場合の補完として使用する。
+    """
+    topic_lower = topic.lower()
+    if "ollama" in topic_lower:
+        return """
+【Ollamaの正確な使い方】
+- Ollamaはapi_keyが不要。ローカルで動作する。
+- Pythonからの呼び出し例:
+  import requests
+  response = requests.post('http://localhost:11434/api/generate',
+      json={"model": "qwen2.5-coder:7b", "prompt": "Hello", "stream": False})
+  print(response.json()["response"])
+- または公式ライブラリ:
+  import ollama
+  response = ollama.generate(model='llama2', prompt='Hello')
+  print(response['response'])
+- モデル一覧取得: ollama.list()
+- チャット形式: ollama.chat(model='llama2', messages=[...])
+"""
+    if "fastapi" in topic_lower or "flask" in topic_lower:
+        return """
+【WebフレームワークAPIの正確な使い方】
+- Flask: from flask import Flask, jsonify; app = Flask(__name__)
+- FastAPI: from fastapi import FastAPI; app = FastAPI()
+- どちらもapi_keyは不要（ローカル開発時）
+"""
+    return ""
+# --- TOPIC KNOWLEDGE END ---
+
+
 def generate_article(
     topic: str,
     genre_id: str = "python_tips",
     extra_context: str = "",
+    max_retries: int = 3,
 ) -> dict:
     """
     RAGを使って技術記事を生成する。
@@ -171,6 +212,7 @@ def generate_article(
         topic:         記事のトピック
         genre_id:      ジャンルID
         extra_context: 追加コンテキスト
+        max_retries:   生成リトライ上限（デフォルト3）
     Returns:
         {"title", "content", "path", "rag_hits", "word_count"}
     """
@@ -185,12 +227,27 @@ def generate_article(
         rag_context = format_context(results, max_chars=2000)
         rag_hits    = len(results)
         if rag_context:
-            print(f"  📚 RAG: {rag_hits}件の関連知識を注入")
+            # 無関係コードの混入チェック
+            noise_patterns = [
+                "return jsonify", "app.route", "@app.",
+                "JWT", "client.generate(text=", "{'error':",
+            ]
+            if any(p in rag_context for p in noise_patterns):
+                print(f"  ⚠️ RAGコンテキストに無関係コード混入 → スキップ")
+                rag_context = ""
+                rag_hits    = 0
+            else:
+                print(f"  📚 RAG: {rag_hits}件の関連知識を注入")
     except Exception as e:
         print(f"  ⚠️ RAGスキップ: {e}")
 
     # コンテキストを合成
     context = ""
+    # トピック固有知識を注入（RAGより優先して先頭に配置）
+    topic_knowledge = _get_topic_knowledge(topic)
+    if topic_knowledge:
+        context += topic_knowledge + "\n\n"
+        print(f"  📖 トピック知識を注入: {topic[:30]}")
     if rag_context:
         context += f"【最新情報・公式ドキュメント】\n{rag_context}\n\n"
     if extra_context:
@@ -203,13 +260,21 @@ def generate_article(
     template = ARTICLE_TEMPLATES.get(genre["template"], ARTICLE_TEMPLATES["tips"])
     prompt   = _QUALITY_RULES + template.format(topic=topic, context=context[:3000])
 
-    # 記事生成（qwen2.5-coder:7b で高速生成）
+    # 記事生成（リトライあり）
     from llm import ask_plain
-    print(f"  🧠 生成中 (qwen2.5-coder:7b)...")
-    content = ask_plain(prompt)
+    content = ""
+    for attempt in range(max_retries):
+        label = f"再試行 {attempt}/{max_retries - 1}" if attempt > 0 else ""
+        print(f"  🧠 生成中 (qwen2.5-coder:7b) {label}".rstrip())
+        content = ask_plain(prompt)
+        if content and len(content) >= 1000:
+            break
+        if attempt < max_retries - 1:
+            print(f"  ⚠️ 短すぎる({len(content) if content else 0}文字) → リトライ {attempt + 1}/{max_retries - 1}")
+            prompt = prompt + "\n\n【重要】前回の出力が短すぎました。必ず1500文字以上で、見出し(##)を3つ以上含め、コード例を複数含めて書いてください。"
 
     if not content or len(content) < 100:
-        return {"error": f"生成失敗: コンテンツが短すぎる ({len(content) if content else 0}文字)"}
+        return {"error": f"生成失敗: {len(content) if content else 0}文字"}
 
     # ファイル保存
     path = _save_article(topic, content)
