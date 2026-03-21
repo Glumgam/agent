@@ -3,12 +3,16 @@
     "data_analysis": {
       "name": "data_analysis",
       "task_example": "pandasを使ってデータを分析してください",
-      "success_count": 9,
-      "last_used": "2026-03-16T17:12:00.865276+00:00",
+      "success_count": 31,
+      "last_used": "2026-03-21T02:55:46.652976+00:00",
       "tools_used": [
         "create_file",
         "run",
-        "done"
+        "done",
+        "make_dir",
+        "read_directory",
+        "delete_file",
+        "edit_file"
       ],
       "key_imports": [
         "pandas",
@@ -31,13 +35,13 @@
         "以下のパイプラインを実装して実行せよ",
         "generator"
       ],
-      "summary": "以下のパイプラインを実装して実行せよ:\n1. generator.py: 100件のランダム売上データ(日付/商品名/金額)をCSVに生成\n2. analyzer.py: CSVを読み込み、月別集計・商品別ランキング・平均単価を計算してレポートをMarkdownで出力\n3. run_pipeline.py: generator→analyzerの順で実行\npython run_pipeline.p"
+      "summary": "以下の仕様で家計簿CLIアプリを作成して全コマンドを実行せよ:\nファイル構成:\n- models.py: Transaction(id/date/category/amount/memo)\n- storage.py: transactions.jsonへの保存・読み込み\n- calculator.py: カテゴリ別集計・月別集計・収支計算\n- cli.py: add/list/summary/de"
     },
     "web_scraping": {
       "name": "web_scraping",
       "task_example": "Scrape product data from website and save to CSV",
-      "success_count": 5,
-      "last_used": "2026-03-16T17:15:56.621247+00:00",
+      "success_count": 11,
+      "last_used": "2026-03-21T01:31:30.871534+00:00",
       "tools_used": [
         "create_file",
         "run",
@@ -69,11 +73,12 @@
     "coding": {
       "name": "coding",
       "task_example": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
-      "success_count": 47,
-      "last_used": "2026-03-18T09:17:18.155061+00:00",
+      "success_count": 231,
+      "last_used": "2026-03-21T03:33:02.344398+00:00",
       "tools_used": [
         "create_file",
-        "run"
+        "run",
+        "done"
       ],
       "key_imports": [],
       "keywords": [
@@ -86,9 +91,14 @@
         "完了したら",
         "tool",
         "done",
-        "を返せ"
+        "を返せ",
+        "pillowを使って以下を実装して実行せよ",
+        "800x600の白い画像を作成",
+        "中央に",
+        "hello",
+        "agent"
       ],
-      "summary": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ\n\n[RETRY HINT] 前回の試行に失敗した。別のアプローチを試み、完了したら {\"tool\": \"done\"} を返せ。"
+      "summary": "Pillowを使って以下を実装して実行せよ:\n1. 800x600の白い画像を作成\n2. 中央に「Hello, Agent!」と黒字で描画\n3. 右下に現在日時を小さく描画\n4. workspace/output_image.png として保存\n5. ファイルが存在することを確認\nexit code 0にすること"
     },
     "data_analysis_plus_web_scraping": {
       "name": "data_analysis_plus_web_scraping",
@@ -123,12 +133,18 @@
     "bug_fix": {
       "name": "bug_fix",
       "task_example": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
-      "success_count": 34,
-      "last_used": "2026-03-18T09:18:51.563297+00:00",
+      "success_count": 159,
+      "last_used": "2026-03-21T02:34:03.920349+00:00",
       "tools_used": [
         "run",
         "done",
-        "ask_user"
+        "ask_user",
+        "create_file",
+        "make_dir",
+        "read_directory",
+        "delete_file",
+        "edit_file",
+        "_self_improve"
       ],
       "key_imports": [],
       "keywords": [
@@ -148,13 +164,13 @@
         "datastore",
         "init"
       ],
-      "summary": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))"
+      "summary": "以下の3つのバグを含むコードを修正してから実行せよ:\nbug1.py の内容:\n```\nimport json\nfrom pathlib import Path\n\ndata = {'items': [1, 2, 3, 4, 5]}\nPath('data.json').write_text(json.dump(data))  # bug1: dump→dumps\n\nloaded = json.loa"
     },
     "testing": {
       "name": "testing",
       "task_example": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
-      "success_count": 35,
-      "last_used": "2026-03-18T09:13:52.445246+00:00",
+      "success_count": 153,
+      "last_used": "2026-03-20T22:22:44.224825+00:00",
       "tools_used": [
         "done",
         "run",
@@ -164,7 +180,8 @@
         "ask_user"
       ],
       "key_imports": [
-        "calculator"
+        "calculator",
+        "unittest"
       ],
       "keywords": [
         "calculator",
@@ -183,13 +200,13 @@
         "docs",
         "へ振り分けるスクリプトorganize"
       ],
-      "summary": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ"
+      "summary": "workspaceにtmp_sort/を作り、test.txt/test.py/test.mdの3ファイルを作成後、拡張子ごとにtexts//scripts//docs/へ振り分けるスクリプトorganize.pyを書いて実行せよ"
     },
     "file_operation": {
       "name": "file_operation",
       "task_example": "同じ内容'hello'のファイルをdup1.txt/dup2.txt/dup3.txtとして作成し、ハッシュで重複を検出して1つだけ残すfind_dups.pyを書いて実行せよ",
-      "success_count": 4,
-      "last_used": "2026-03-16T15:14:40.701674+00:00",
+      "success_count": 7,
+      "last_used": "2026-03-20T22:35:51.772591+00:00",
       "tools_used": [
         "run",
         "done",
@@ -213,13 +230,20 @@
     "pdf_operation": {
       "name": "pdf_operation",
       "task_example": "reportlabを使ってタイトル'Agent QA Report'と現在日時・'TEST PASSED'の文字列を含むreport.pdfを生成するmake_pdf.pyを書いて実行せよ",
-      "success_count": 12,
-      "last_used": "2026-03-16T16:00:53.700839+00:00",
+      "success_count": 43,
+      "last_used": "2026-03-21T03:48:54.494303+00:00",
       "tools_used": [
         "run",
-        "done"
+        "done",
+        "make_dir",
+        "create_file"
       ],
-      "key_imports": [],
+      "key_imports": [
+        "reportlab",
+        "requests",
+        "socket",
+        "urllib"
+      ],
       "keywords": [
         "reportlabを使ってタイトル",
         "agent",
@@ -237,18 +261,23 @@
         "txtに保存するextract",
         "pdfがなければreportlabで先に作成せよ"
       ],
-      "summary": "pypdfを使って2つのPDFをreportlabで生成しmerged.pdfとして結合するmerge_pdf.pyを書いて実行せよ。結合後のページ数を表示すること"
+      "summary": "以下を実装して実行せよ:\n1. toolkit_manager.pyをimportしてlist_toolkit_functions()を呼ぶ\n2. 現在のtoolkit一覧と各ツール関数を表示\n3. detect_category()で以下を判定して表示:\n   - 'tool_pdf_split' のカテゴリ\n   - 'tool_httpx_request' のカテゴリ\n   - 'tool_"
     },
     "excel_operation": {
       "name": "excel_operation",
       "task_example": "openpyxlで月/売上/前月比の3列・6行のデータを含むsales.xlsxを生成するmake_excel.pyを書いて実行せよ。売上は10000〜50000のランダム値",
-      "success_count": 10,
-      "last_used": "2026-03-16T16:32:02.060708+00:00",
+      "success_count": 24,
+      "last_used": "2026-03-21T03:41:08.684456+00:00",
       "tools_used": [
         "run",
-        "done"
+        "done",
+        "create_file",
+        "edit_file"
       ],
-      "key_imports": [],
+      "key_imports": [
+        "openpyxl",
+        "random"
+      ],
       "keywords": [
         "openpyxlで月",
         "売上",
@@ -266,13 +295,13 @@
         "sales",
         "xlsxがなければ先に生成せよ"
       ],
-      "summary": "openpyxlでsales.xlsxの売上データに棒グラフを追加してsales_chart.xlsxとして保存するadd_chart.pyを書いて実行せよ"
+      "summary": "以下を実装して実行せよ:\n1. 月別売上データ(1〜12月)をランダム生成\n2. openpyxlでExcelファイルを作成\n3. データを書き込む\n4. 棒グラフを追加\n5. 条件付き書式で売上上位3ヶ月をハイライト\n6. workspace/sales_report.xlsx として保存\nexit code 0にすること"
     },
     "api_client": {
       "name": "api_client",
       "task_example": "requestsでhttps://httpbin.org/jsonにGETリクエストを送り、レスポンスJSONを整形して表示するfetch.pyを書いて実行せよ",
-      "success_count": 6,
-      "last_used": "2026-03-16T17:04:13.930742+00:00",
+      "success_count": 21,
+      "last_used": "2026-03-21T03:06:08.383555+00:00",
       "tools_used": [
         "run",
         "done"
@@ -295,13 +324,13 @@
         "fetch",
         "取得したtitle値を表示すること"
       ],
-      "summary": "以下を実装して全て動作させよ:\n- models.py: Productクラス(id, name, price, stock)\n- db.py: JSONファイルへの保存・読み込み(save/load)\n- api.py: add_product/get_product/list_products/update_stock関数\n- main.py: apiをimportして商品を3件追加・一覧表示"
+      "summary": "ユーザーから「QRコードを作って欲しい」というリクエストがあった。\nuser_request_handler.py を使わず、以下を自分で実装して実行せよ:\n1. qrcode ライブラリをインストール\n2. 'https://github.com/Glumgam/agent' のQRコードを生成\n3. workspace/agent_qr.png として保存\n4. ファイルサイズが0より大きいこ"
     },
     "web_app": {
       "name": "web_app",
       "task_example": "Flaskを使って以下のTODO APIを実装して起動テストせよ:\n- app.py: GET /todos, POST /todos, PUT /todos/<id>, DELETE /todos/<id>\n- todos.jsonで永続化\n- test_app.py: requestsでAPIをテスト(追加→一覧→更新→削除の順)\npython test_app.py を実行して全APIが動作すること\n(Flaskがない場合はpip installすること)",
-      "success_count": 1,
-      "last_used": "2026-03-16T17:31:55.455014+00:00",
+      "success_count": 4,
+      "last_used": "2026-03-21T01:58:57.493426+00:00",
       "tools_used": [
         "done"
       ],
@@ -433,6 +462,101 @@
         "tool",
         "transformers",
         "inference"
+      ],
+      "summary": "Deep Research により獲得。分野: AI 論文"
+    },
+    "tool_typer_cli": {
+      "name": "tool_typer_cli",
+      "task_example": "[深掘り獲得] CLIアプリ構築 (from: AI・LLM 最新動向)",
+      "success_count": 1,
+      "last_used": "2026-03-19T02:46:38.269792+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [
+        "typer"
+      ],
+      "keywords": [
+        "AI・LLM 最新動向",
+        "tool",
+        "typer",
+        "cli"
+      ],
+      "summary": "Deep Research により獲得。分野: AI・LLM 最新動向"
+    },
+    "tool_transformers": {
+      "name": "tool_transformers",
+      "task_example": "[深掘り獲得] Hugging FaceのLLMモデルを簡単に使用できるライブラリ (from: AI・LLM 最新動向)",
+      "success_count": 1,
+      "last_used": "2026-03-19T05:23:24.102642+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [
+        "transformers"
+      ],
+      "keywords": [
+        "AI・LLM 最新動向",
+        "tool",
+        "transformers"
+      ],
+      "summary": "Deep Research により獲得。分野: AI・LLM 最新動向"
+    },
+    "tool_encrypt_data": {
+      "name": "tool_encrypt_data",
+      "task_example": "[深掘り獲得] セキュリティ関連の暗号化機能を提供します。 (from: セキュリティ)",
+      "success_count": 1,
+      "last_used": "2026-03-19T06:15:02.494457+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [
+        "pycryptodome"
+      ],
+      "keywords": [
+        "セキュリティ",
+        "tool",
+        "encrypt",
+        "data"
+      ],
+      "summary": "Deep Research により獲得。分野: セキュリティ"
+    },
+    "tool_encrypt_decrypt": {
+      "name": "tool_encrypt_decrypt",
+      "task_example": "[深掘り獲得] セキュリティ関連の暗号化機能を提供 (from: セキュリティ)",
+      "success_count": 1,
+      "last_used": "2026-03-19T09:13:14.319642+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [
+        "pycryptodome"
+      ],
+      "keywords": [
+        "セキュリティ",
+        "tool",
+        "encrypt",
+        "decrypt"
+      ],
+      "summary": "Deep Research により獲得。分野: セキュリティ"
+    },
+    "tool_create_cli_command": {
+      "name": "tool_create_cli_command",
+      "task_example": "[深掘り獲得] CLIアプリ構築 (from: AI 論文)",
+      "success_count": 1,
+      "last_used": "2026-03-19T19:03:23.371569+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [
+        "typer"
+      ],
+      "keywords": [
+        "AI 論文",
+        "tool",
+        "create",
+        "cli",
+        "command"
       ],
       "summary": "Deep Research により獲得。分野: AI 論文"
     }

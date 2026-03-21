@@ -118,10 +118,26 @@ def _research_topic(topic: dict, dry_run: bool = False) -> dict:
 
     collected = []
 
+    # --- DEDUP START ---
+    try:
+        from collection_log import get_recent_queries, log_collection
+        _recent_queries = get_recent_queries(topic["id"], days=3)
+    except Exception:
+        _recent_queries = []
+        log_collection = None
+    # --- DEDUP END ---
+
     for source in topic.get("sources", ["news"]):
         for query in topic.get("queries", []):
             if not query.strip():
                 continue
+
+            # --- DEDUP CHECK ---
+            if query in _recent_queries:
+                print(f"  スキップ（既収集）: {query[:40]}")
+                continue
+            # --- DEDUP CHECK END ---
+
             print(f"  収集: [{source}] {query[:40]}")
             try:
                 if source == "news":
@@ -141,6 +157,18 @@ def _research_topic(topic: dict, dry_run: bool = False) -> dict:
                         "query":   query,
                         "content": r.output,
                     })
+                    # --- LOG COLLECTION ---
+                    if log_collection:
+                        try:
+                            log_collection(
+                                topic_id=topic["id"],
+                                source=source,
+                                query=query,
+                                item_count=1,
+                            )
+                        except Exception:
+                            pass
+                    # --- LOG COLLECTION END ---
                 else:
                     print(f"    ⚠️ 取得失敗: {r.output[:80]}")
             except Exception as e:

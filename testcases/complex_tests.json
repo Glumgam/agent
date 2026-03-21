@@ -17,10 +17,10 @@
   },
   {
     "id": "X3",
-    "label": "エラー自己修復テスト",
-    "task": "以下のバグありコードをbuggy_app.pyに書き、自分で発見・修正して動作させよ:\nimport json\n\nclass DataStore:\n    def __init__(self):\n        self.data = {}\n    \n    def save(self, key, value):\n        self.data[key] = value\n        # バグ: ファイルに書き込んでいない\n    \n    def load(self, key):\n        return self.data[key]  # バグ: keyがない場合の処理なし\n\nstore = DataStore()\nstore.save('user', {'name': 'Alice', 'age': 30})\nprint(store.load('user'))\nprint(store.load('missing'))  # KeyError発生\n\n修正後にpython buggy_app.pyが正常終了すること",
-    "expect_contains": "Alice",
-    "max_steps": 20,
+    "label": "エラー連鎖修復",
+    "task": "以下のバグを含むbug1.pyを作成して全バグを修正してから実行せよ:\n\nbug1.py の内容:\n```\nimport json\nfrom pathlib import Path\n\ndata = {'items': [1, 2, 3, 4, 5]}\nPath('data.json').write_text(json.dumps(data))\n\nloaded = json.loads(Path('data.json').read_text())\ntotal = sum(loaded['items'])\nprint(f'合計: {total}')\n\nresult = total / len(loaded['items'])\nprint(f'平均: {result}')\n\nfor i, item in enumerate(loaded['items']):\n    if i < len(loaded['items']) - 1:\n        print(loaded['items'][i])\n```\n\nこのコードを作成してpython bug1.pyを実行せよ。出力に「合計: 15」が含まれること",
+    "expect_contains": "合計: 15",
+    "max_steps": 15,
     "category": "complex"
   },
   {

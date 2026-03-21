@@ -1,12 +1,13 @@
 """
-18時間自律ループ。
+自律ループ（24/365 永続稼働対応）。
 サイクル:
   情報収集 → ゲットアビリティ → テスト → 情報収集 → ...
 安全設計:
-- テストが18/23未満になったら一時停止
+- テストが閾値未満になったら警告
 - ループログを毎サイクル保存
-- Ctrl+C で安全に停止
+- Ctrl+C / SIGTERM で安全に停止
 - macOS がスリープしても再開可能
+- --forever フラグで無期限実行
 """
 import time
 import json
@@ -85,6 +86,14 @@ def run_autonomous_loop():
         _log(f"  サイクル {cycle_num} | 残り {_fmt_duration(remaining)}")
         _log(f"{'='*60}")
 
+        # --- Phase 0: 公式ドキュメント収集（8サイクルに1回）---
+        if cycle_num % 8 == 1:
+            _log(f"\n[Phase 0] 公式ドキュメント収集")
+            doc_result = _run_doc_collection()
+            _log(f"  registered={doc_result['registered']} "
+                 f"skipped={doc_result['skipped']} "
+                 f"failed={doc_result['failed']}")
+
         # --- Phase 1: 情報収集 + ゲットアビリティ ---
         topic = topic_queue[0]
         topic_queue = topic_queue[1:] + [topic_queue[0]]  # ローテーション
@@ -112,6 +121,17 @@ def run_autonomous_loop():
             else:
                 _log(f"  ℹ️  発展スキルなし")
         # --- SKILL EVOLUTION END ---
+
+        # --- PERIODIC CHECK START ---
+        # Phase 1.6: 定期コードチェック（10サイクルに1回）
+        if cycle_num % 10 == 0:
+            _log(f"\n[Phase 1.6] 定期コードチェック")
+            check_result = _run_toolkit_check()
+            _log(f"  passed={check_result['passed']} failed={check_result['failed']} "
+                 f"warnings={check_result.get('warnings', 0)}")
+            if check_result['failed'] > 0:
+                _log(f"  ⚠️  失敗ファイル: {check_result.get('failed_files', [])}")
+        # --- PERIODIC CHECK END ---
 
         # --- Phase 2: テスト ---
         _log(f"\n[Phase 2] テスト実行")
@@ -246,6 +266,71 @@ print(json.dumps({"passed": passed, "total": total}))
                 "timestamp": datetime.now().isoformat()}
 
 
+# --- DOC COLLECTION START ---
+def _run_doc_collection(force: bool = False) -> dict:
+    """公式ドキュメントを収集して official_docs に登録する"""
+    try:
+        result = subprocess.run(
+            [PYTHON, "-c", f"""\
+import sys; sys.path.insert(0, '.')
+from official_doc_collector import run_doc_collection
+import json
+r = run_doc_collection(force={force})
+print(json.dumps({{
+    "registered": r["registered"],
+    "skipped":    r["skipped"],
+    "failed":     r["failed"],
+}}))\
+"""],
+            cwd=AGENT_ROOT,
+            capture_output=True,
+            text=True,
+            timeout=300,   # 最大5分
+        )
+        for line in result.stdout.split("\n"):
+            line = line.strip()
+            if line.startswith("{"):
+                return json.loads(line)
+        return {"registered": 0, "skipped": 0, "failed": 0}
+    except subprocess.TimeoutExpired:
+        _log("  ⚠️ ドキュメント収集タイムアウト（5分）")
+        return {"registered": 0, "skipped": 0, "failed": 0}
+    except Exception as e:
+        _log(f"  ⚠️ ドキュメント収集エラー: {e}")
+        return {"registered": 0, "skipped": 0, "failed": 0}
+# --- DOC COLLECTION END ---
+
+
+# --- PERIODIC CHECK START ---
+def _run_toolkit_check() -> dict:
+    """tools/toolkits/ の全ファイルをコードチェックする"""
+    try:
+        result = subprocess.run(
+            [PYTHON, "-c", """
+import sys; sys.path.insert(0, '.')
+from code_checker import check_all_toolkits
+import json
+r = check_all_toolkits()
+print(json.dumps({
+    "passed":       len(r["passed"]),
+    "failed":       len(r["failed"]),
+    "warnings":     len(r["warnings"]),
+    "failed_files": r["failed"],
+}))
+"""],
+            cwd=AGENT_ROOT, capture_output=True, text=True, timeout=120,
+        )
+        for line in result.stdout.split("\n"):
+            line = line.strip()
+            if line.startswith("{"):
+                return json.loads(line)
+        return {"passed": 0, "failed": 0, "warnings": 0}
+    except Exception as e:
+        _log(f"  ⚠️ チェックエラー: {e}")
+        return {"passed": 0, "failed": 0, "warnings": 0}
+# --- PERIODIC CHECK END ---
+
+
 # --- SKILL EVOLUTION START ---
 def _run_skill_evolution() -> list:
     """獲得済みスキルを応用・発展させる"""
@@ -365,16 +450,18 @@ def _generate_final_report(
 # =====================================================
 if __name__ == "__main__":
     import argparse
-    parser = argparse.ArgumentParser(description="18時間自律ループ")
+    parser = argparse.ArgumentParser(description="自律ループ（24/365永続稼働対応）")
     parser.add_argument("--hours",     type=float, default=18,
-                        help="実行時間（時間）")
+                        help="実行時間（時間）。--forever 指定時は無視")
+    parser.add_argument("--forever",   action="store_true",
+                        help="無期限実行（終了させるまで継続）")
     parser.add_argument("--interval",  type=int,   default=30,
                         help="サイクル間隔（分）")
     parser.add_argument("--full-test", action="store_true",
                         help="全カテゴリテストを実行（低速）")
     args = parser.parse_args()
 
-    CONFIG["max_hours"]       = args.hours
+    CONFIG["max_hours"]       = 876000 if args.forever else args.hours  # 876000h ≈ 100年
     CONFIG["cycle_interval"]  = args.interval
     CONFIG["quick_test_only"] = not args.full_test
 

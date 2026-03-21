@@ -58,6 +58,16 @@
       "description": "detect_loop 閾値を緩和: WINDOW = 6 → WINDOW = 8",
       "success": true,
       "signature": "loop_detected"
+    },
+    {
+      "timestamp": "2026-03-18T18:43:55.829714",
+      "error_type": "loop_detected",
+      "file_repaired": "main.py",
+      "strategy": "rule_loop_threshold_relaxed",
+      "commit_hash": "e03642f",
+      "description": "detect_loop 閾値を緩和: WINDOW = 8 → WINDOW = 10",
+      "success": true,
+      "signature": "loop_detected::bug1"
     }
   ],
   "patterns": {
@@ -82,8 +92,8 @@
       {
         "strategy": "rule_loop_threshold_relaxed",
         "description": "detect_loop 閾値を緩和: REPEAT_THRESHOLD = 3 → REPEAT_THRESHOLD = 4",
-        "count": 3,
-        "last_success": "2026-03-16T06:27:35.795406"
+        "count": 4,
+        "last_success": "2026-03-18T18:43:55.829714"
       }
     ],
     "no_run": [
@@ -157,6 +167,14 @@
         "description": "detect_loop 閾値を緩和: WINDOW = 6 → WINDOW = 8",
         "count": 1,
         "last_success": "2026-03-16T06:27:35.795406"
+      }
+    ],
+    "loop_detected::bug1": [
+      {
+        "strategy": "rule_loop_threshold_relaxed",
+        "description": "detect_loop 閾値を緩和: WINDOW = 8 → WINDOW = 10",
+        "count": 1,
+        "last_success": "2026-03-18T18:43:55.829714"
       }
     ]
   }

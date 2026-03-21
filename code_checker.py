@@ -24,7 +24,217 @@ from __future__ import annotations
 
 import ast
 import re
+from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any
+
+AGENT_ROOT = Path(__file__).parent
+
+
+# =====================================================
+# 新 API: CheckResult + LLMベースチェック
+# =====================================================
+
+@dataclass
+class CheckResult:
+    passed:   bool
+    issues:   list = field(default_factory=list)
+    severity: str = "ok"   # "ok" / "warning" / "error"
+
+
+def static_check(code: str, source_label: str = "") -> CheckResult:
+    """
+    ルールベースの静的チェック。check_code() を呼び CheckResult に変換する。
+    """
+    problems = check_code(code, source_label=source_label)
+    errors   = [p for p in problems if p.get("level") == "error"]
+    warnings = [p for p in problems if p.get("level") == "warn"]
+    severity = "error" if errors else ("warning" if warnings else "ok")
+    # CheckResult.issues を統一フォーマット（rule/line/desc/severity）に変換
+    issues = []
+    for p in problems:
+        issues.append({
+            "rule":     p.get("rule", "UNKNOWN"),
+            "line":     0,
+            "desc":     p.get("msg", ""),
+            "severity": "error" if p.get("level") == "error" else "warning",
+        })
+    return CheckResult(
+        passed=len(errors) == 0,
+        issues=issues,
+        severity=severity,
+    )
+
+
+def llm_review(code: str, tool_name: str) -> dict:
+    """ask_plain() を使ってコードをレビューする（qwen2.5-coder:7b）"""
+    from llm import ask_plain
+
+    prompt = f"""Review this Python code for bugs. Tool: {tool_name}
+Check for:
+1. Logic errors (wrong conditions, swapped parameters)
+2. Type errors
+3. Undefined variables
+4. Cryptography misuse (e.g. wrong key length, wrong cipher usage)
+
+Reply exactly "LGTM" if no bugs found. Otherwise list bugs as:
+BUG: description
+LINE: number
+FIX: how to fix
+---
+Code:
+```python
+{code[:1500]}
+```"""
+
+    try:
+        response = ask_plain(prompt)
+    except Exception:
+        return {"has_bugs": False, "bugs": []}
+
+    if not response or "LGTM" in response.upper()[:100]:
+        return {"has_bugs": False, "bugs": []}
+
+    bugs = []
+    for block in response.split("---"):
+        bug_m  = re.search(r"BUG:\s*(.+)",   block)
+        line_m = re.search(r"LINE:\s*(\d+)", block)
+        fix_m  = re.search(r"FIX:\s*(.+)",   block)
+        if bug_m:
+            bugs.append({
+                "desc": bug_m.group(1).strip(),
+                "line": int(line_m.group(1)) if line_m else 0,
+                "fix":  fix_m.group(1).strip() if fix_m else "",
+            })
+    return {"has_bugs": len(bugs) > 0, "bugs": bugs}
+
+
+def auto_fix(code: str, issues: list, tool_name: str) -> str:
+    """検出されたバグを LLM で自動修正する。修正できなければ元コードを返す。"""
+    from llm import ask_plain
+
+    issues_text = "\n".join(
+        f"- [{i.get('rule', 'BUG')}] line {i.get('line', '?')}: {i['desc'][:80]}"
+        for i in issues[:5]
+    )
+    prompt = f"""Fix ALL bugs in this Python code for tool: {tool_name}
+Output ONLY the fixed code enclosed in triple backticks, no explanation.
+
+Bugs to fix:
+{issues_text}
+
+Code:
+```python
+{code}
+```
+
+FIXED_CODE:"""
+
+    try:
+        response = ask_plain(prompt)
+    except Exception:
+        return code
+
+    for pattern in [
+        r"FIXED_CODE:\s*```python\n(.*?)```",
+        r"FIXED_CODE:\s*```\n(.*?)```",
+        r"```python\n(.*?)```",
+        r"```\n(.*?)```",
+    ]:
+        m = re.search(pattern, response, re.DOTALL)
+        if m:
+            fixed = m.group(1).strip()
+            if fixed and len(fixed) > 30:
+                return fixed
+    return code
+
+
+def check_and_fix(
+    code: str,
+    tool_name: str,
+    use_llm: bool = True,
+    max_fix_attempts: int = 2,
+) -> tuple:
+    """
+    コードをチェックし、問題があれば自動修正を試みる。
+    Returns: (final_code, passed: bool, issues: list)
+    """
+    current_code = code
+
+    for attempt in range(max_fix_attempts + 1):
+        result = static_check(current_code, source_label=tool_name)
+
+        llm_result = {"has_bugs": False, "bugs": []}
+        if result.passed and use_llm:
+            print(f"    🔍 LLMレビュー: {tool_name}")
+            llm_result = llm_review(current_code, tool_name)
+
+        all_issues = result.issues + [
+            {
+                "rule":     "LLM",
+                "line":     b["line"],
+                "desc":     b["desc"],
+                "severity": "warning",
+            }
+            for b in llm_result["bugs"]
+        ]
+        errors = [i for i in all_issues if i.get("severity") == "error"]
+
+        if not errors and not llm_result["has_bugs"]:
+            if all_issues:
+                print(f"    ⚠️  警告{len(all_issues)}件（登録継続）")
+            else:
+                print(f"    ✅ チェック通過: {tool_name}")
+            return current_code, True, all_issues
+
+        print(f"    ⚠️  問題{len(all_issues)}件 (error:{len(errors)})")
+        for issue in all_issues[:3]:
+            print(f"       [{issue['rule']}] {issue['desc'][:60]}")
+
+        if attempt < max_fix_attempts:
+            print(f"    🔧 自動修正 {attempt + 1}/{max_fix_attempts}")
+            current_code = auto_fix(current_code, all_issues, tool_name)
+        else:
+            if errors:
+                print(f"    ❌ 修正失敗: 登録スキップ")
+                return current_code, False, all_issues
+            else:
+                print(f"    ⚠️  警告のみ: 登録継続")
+                return current_code, True, all_issues
+
+    return current_code, True, []
+
+
+def check_all_toolkits() -> dict:
+    """tools/toolkits/ の全ファイルを static_check する"""
+    toolkits_dir = AGENT_ROOT / "tools" / "toolkits"
+    results: dict = {"passed": [], "failed": [], "warnings": []}
+    if not toolkits_dir.exists():
+        return results
+
+    for toolkit in sorted(p for p in toolkits_dir.glob("*.py") if not p.name.startswith(".")):
+        try:
+            code = toolkit.read_text(encoding="utf-8", errors="replace")
+        except Exception as e:
+            results["failed"].append(toolkit.name)
+            print(f"\n  チェック: {toolkit.name}")
+            print(f"    ❌ 読み込みエラー: {e}")
+            continue
+        print(f"\n  チェック: {toolkit.name}")
+        result = static_check(code, source_label=toolkit.name)
+        if result.severity == "error":
+            results["failed"].append(toolkit.name)
+            for i in result.issues:
+                if i.get("severity") == "error":
+                    print(f"    ❌ [{i['rule']}] {i['desc'][:80]}")
+        elif result.severity == "warning":
+            results["warnings"].append(toolkit.name)
+            print(f"    ⚠️  警告{len(result.issues)}件")
+        else:
+            results["passed"].append(toolkit.name)
+            print(f"    ✅ OK")
+
+    return results
 
 
 # =====================================================
