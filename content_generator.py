@@ -166,6 +166,54 @@ Q&A形式で書いてください。
 }
 
 
+# --- QUALITY FILTER START ---
+def _quality_check(content: str) -> tuple:
+    """
+    記事の品質をチェックする。
+    Returns: (passed: bool, reason: str)
+    """
+    if not content or len(content) < 1500:
+        return False, f"文字数不足: {len(content) if content else 0}文字（最低1500文字）"
+    heading_count = content.count("\n## ")
+    if heading_count < 3:
+        return False, f"見出し不足: {heading_count}個（最低3個）"
+    if "```python" not in content and "```bash" not in content:
+        return False, "コードブロックなし（最低1個必要）"
+    if "## まとめ" not in content:
+        return False, "まとめセクションなし"
+    return True, "OK"
+# --- QUALITY FILTER END ---
+
+
+# --- MONETIZATION FOOTER START ---
+_FOOTER_TEMPLATE = """
+---
+## 🛠️ この記事で紹介した環境・ツール
+| ツール | 用途 | 入手先 |
+|--------|------|--------|
+| Python | プログラミング言語 | python.org |
+| VS Code | コードエディタ | code.visualstudio.com |
+| Ollama | ローカルLLM実行 | ollama.ai |
+
+## 📚 関連記事
+- Pythonで始めるAI開発
+- ローカルLLMの活用法
+- 自動化スクリプトの作り方
+
+---
+*この記事はAIエージェントによって自動生成されました。*
+*誤りや改善点があればコメントでお知らせください。*
+"""
+
+
+def _add_footer(content: str, topic: str) -> str:
+    """記事末尾に収益導線フッターを追加する"""
+    if "この記事で紹介した環境" in content:
+        return content  # 既にフッターがある場合はスキップ
+    return content + _FOOTER_TEMPLATE
+# --- MONETIZATION FOOTER END ---
+
+
 # --- TOPIC KNOWLEDGE START ---
 def _get_topic_knowledge(topic: str) -> str:
     """
@@ -260,21 +308,31 @@ def generate_article(
     template = ARTICLE_TEMPLATES.get(genre["template"], ARTICLE_TEMPLATES["tips"])
     prompt   = _QUALITY_RULES + template.format(topic=topic, context=context[:3000])
 
-    # 記事生成（リトライあり）
+    # 記事生成（品質チェック付きリトライあり）
     from llm import ask_plain
     content = ""
     for attempt in range(max_retries):
-        label = f"再試行 {attempt}/{max_retries - 1}" if attempt > 0 else ""
-        print(f"  🧠 生成中 (qwen2.5-coder:7b) {label}".rstrip())
+        print(f"  🧠 生成中 (qwen2.5-coder:7b)"
+              f"{' 再試行 ' + str(attempt) if attempt > 0 else ''}...")
         content = ask_plain(prompt)
-        if content and len(content) >= 1000:
+        passed, reason = _quality_check(content)
+        if passed:
             break
         if attempt < max_retries - 1:
-            print(f"  ⚠️ 短すぎる({len(content) if content else 0}文字) → リトライ {attempt + 1}/{max_retries - 1}")
-            prompt = prompt + "\n\n【重要】前回の出力が短すぎました。必ず1500文字以上で、見出し(##)を3つ以上含め、コード例を複数含めて書いてください。"
+            print(f"  ⚠️ 品質不足: {reason} → リトライ {attempt + 1}/{max_retries - 1}")
+            prompt = (
+                prompt
+                + f"\n\n【重要・再試行{attempt + 1}回目】\n"
+                + f"前回の出力が品質基準を満たしませんでした。理由: {reason}\n"
+                + "必ず1500文字以上・見出し(##)3個以上・コード例(```python)1個以上"
+                + "・まとめセクションを含めてください。"
+            )
+        else:
+            print(f"  ❌ 品質基準未達: {reason}")
+            return {"error": f"品質基準未達: {reason}"}
 
-    if not content or len(content) < 100:
-        return {"error": f"生成失敗: {len(content) if content else 0}文字"}
+    # フッターを追加
+    content = _add_footer(content, topic)
 
     # ファイル保存
     path = _save_article(topic, content)
@@ -330,6 +388,10 @@ def _log_performance(result: dict):
         except Exception:
             pass
     log_entry = {k: v for k, v in result.items() if k != "content"}
+    # 品質チェック結果を追加
+    passed, reason = _quality_check(result.get("content", ""))
+    log_entry["quality_passed"] = passed
+    log_entry["quality_reason"] = reason
     logs.append(log_entry)
     logs = logs[-500:]
     PERF_LOG.write_text(
@@ -350,10 +412,12 @@ def show_content_stats() -> str:
         f"総生成数:   {len(logs)}件",
     ]
     if logs:
-        avg_words = sum(l.get("word_count", 0) for l in logs) / len(logs)
-        avg_rag   = sum(l.get("rag_hits",   0) for l in logs) / len(logs)
+        avg_words    = sum(l.get("word_count", 0) for l in logs) / len(logs)
+        avg_rag      = sum(l.get("rag_hits",   0) for l in logs) / len(logs)
+        quality_pass = sum(1 for l in logs if l.get("quality_passed", True))
         lines.append(f"平均文字数: {avg_words:.0f}文字")
         lines.append(f"平均RAGヒット: {avg_rag:.1f}件")
+        lines.append(f"品質通過率: {quality_pass}/{len(logs)} ({quality_pass / len(logs) * 100:.0f}%)")
         lines.append("")
         lines.append("### 最新5件")
         for log in reversed(logs[-5:]):

@@ -110,5 +110,15 @@
     "rag_hits": 4,
     "word_count": 4204,
     "generated_at": "2026-03-21T20:45:02.686493"
+  },
+  {
+    "title": "Pythonのloggingモジュール実践入門",
+    "genre": "python_tips",
+    "path": "/Volumes/ESD-EHA/agent/content/20260321_pythonのloggingモジュール実践入門.md",
+    "rag_hits": 4,
+    "word_count": 3883,
+    "generated_at": "2026-03-21T21:03:48.302220",
+    "quality_passed": true,
+    "quality_reason": "OK"
   }
 ]
