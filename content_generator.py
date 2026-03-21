@@ -6,6 +6,7 @@ Python・技術ネタの記事を自動生成する。
 """
 import re
 import json
+import unicodedata
 from pathlib import Path
 from datetime import datetime
 
@@ -185,6 +186,58 @@ def _quality_check(content: str) -> tuple:
 # --- QUALITY FILTER END ---
 
 
+# --- CJK FILTER START ---
+_ZH_REPLACEMENTS = {
+    "网络": "ネットワーク",
+    "环境": "環境",
+    "连接": "接続",
+    "安装": "インストール",
+    "运行": "実行",
+    "错误": "エラー",
+    "程序": "プログラム",
+    "文件": "ファイル",
+    "数据": "データ",
+    "系统": "システム",
+    "接口": "インターフェース",
+    "库": "ライブラリ",
+    "模型": "モデル",
+    "语言": "言語",
+    "代码": "コード",
+    "功能": "機能",
+    "方法": "メソッド",
+    "类": "クラス",
+    "对象": "オブジェクト",
+    "变量": "変数",
+}
+
+_ZH_DETECT_PATTERNS = [
+    "网络", "环境", "连接", "安装", "运行", "错误",
+    "程序", "文件", "数据", "系统", "接口",
+]
+
+
+def _remove_chinese_chars(text: str) -> str:
+    """
+    中国語固有の文字を除去または日本語に置換する。
+    qwen2.5-coder:7b が中国語文字を混入するバグへの対策。
+    """
+    for zh, ja in _ZH_REPLACEMENTS.items():
+        text = text.replace(zh, ja)
+    return text
+
+
+def _quality_check_v2(content: str) -> tuple:
+    """品質チェック + 中国語文字検出"""
+    passed, reason = _quality_check(content)
+    if not passed:
+        return passed, reason
+    found = [p for p in _ZH_DETECT_PATTERNS if p in content]
+    if found:
+        return False, f"中国語文字が混入: {found}"
+    return True, "OK"
+# --- CJK FILTER END ---
+
+
 # --- MONETIZATION FOOTER START ---
 _FOOTER_TEMPLATE = """
 ---
@@ -315,7 +368,9 @@ def generate_article(
         print(f"  🧠 生成中 (qwen2.5-coder:7b)"
               f"{' 再試行 ' + str(attempt) if attempt > 0 else ''}...")
         content = ask_plain(prompt)
-        passed, reason = _quality_check(content)
+        # 中国語文字を除去（置換リストで対応済みの文字を日本語化）
+        content = _remove_chinese_chars(content)
+        passed, reason = _quality_check_v2(content)
         if passed:
             break
         if attempt < max_retries - 1:
@@ -326,6 +381,7 @@ def generate_article(
                 + f"前回の出力が品質基準を満たしませんでした。理由: {reason}\n"
                 + "必ず1500文字以上・見出し(##)3個以上・コード例(```python)1個以上"
                 + "・まとめセクションを含めてください。"
+                + "\n必ず日本語で書いてください。中国語（简体字）は絶対に使わないこと。"
             )
         else:
             print(f"  ❌ 品質基準未達: {reason}")

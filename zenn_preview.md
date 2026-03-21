@@ -1,3 +1,11 @@
+---
+title: "OllamaのモデルをPythonから使う実践ガイド"
+emoji: "🤖"
+type: "tech"
+topics: ["python", "ollama", "llm", "ai"]
+published: false
+---
+
 # OllamaのモデルをPythonから使う実践ガイド
 
 この記事では、OllamaのモデルをPythonから使った経験やメソッドを詳しく解説します。OllamaはAPIキー不要でローカルで動作するため、Pythonエンジニアにとって非常に使いやすいツールと言えます。このガイドでは、環境準備から実用化までの流れを丁寧に説明し、実際に動くコード例も紹介します。
