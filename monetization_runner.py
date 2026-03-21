@@ -57,7 +57,7 @@ SEED_TOPICS = {
 
 
 def select_topic(genre_id: str) -> str:
-    """未生成のトピックをランダムに選ぶ"""
+    """未生成・未飽和のトピックをランダムに選ぶ"""
     generated = set()
     perf_log  = AGENT_ROOT / "memory" / "content_log.json"
     if perf_log.exists():
@@ -66,10 +66,24 @@ def select_topic(genre_id: str) -> str:
             generated = {l.get("title", "") for l in logs}
         except Exception:
             pass
+
     candidates = SEED_TOPICS.get(genre_id, SEED_TOPICS["python_tips"])
-    remaining  = [t for t in candidates if t not in generated]
+
+    # 未生成かつ未飽和のトピックを選ぶ
+    try:
+        from content_checker import check_topic_saturation
+        remaining = []
+        for t in candidates:
+            if t in generated:
+                continue
+            saturated, _ = check_topic_saturation(genre_id, t)
+            if not saturated:
+                remaining.append(t)
+    except Exception:
+        remaining = [t for t in candidates if t not in generated]
+
     if not remaining:
-        remaining = candidates
+        remaining = candidates  # 全て生成済みならランダム選択
     return random.choice(remaining)
 
 

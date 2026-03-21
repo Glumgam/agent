@@ -73,8 +73,8 @@
     "coding": {
       "name": "coding",
       "task_example": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
-      "success_count": 234,
-      "last_used": "2026-03-21T14:11:37.108107+00:00",
+      "success_count": 240,
+      "last_used": "2026-03-21T15:10:24.640954+00:00",
       "tools_used": [
         "create_file",
         "run",
@@ -133,8 +133,8 @@
     "bug_fix": {
       "name": "bug_fix",
       "task_example": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
-      "success_count": 161,
-      "last_used": "2026-03-21T14:13:34.247034+00:00",
+      "success_count": 166,
+      "last_used": "2026-03-21T15:15:12.642408+00:00",
       "tools_used": [
         "run",
         "done",
@@ -169,8 +169,8 @@
     "testing": {
       "name": "testing",
       "task_example": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
-      "success_count": 155,
-      "last_used": "2026-03-21T14:19:39.544327+00:00",
+      "success_count": 158,
+      "last_used": "2026-03-21T15:03:56.724556+00:00",
       "tools_used": [
         "done",
         "run",
@@ -430,8 +430,8 @@
     "tool_create_cli": {
       "name": "tool_create_cli",
       "task_example": "[深掘り獲得] CLIアプリ構築 (from: AI・LLM 最新動向)",
-      "success_count": 1,
-      "last_used": "2026-03-18T05:24:59.252609+00:00",
+      "success_count": 2,
+      "last_used": "2026-03-21T14:31:50.739132+00:00",
       "tools_used": [
         "evolved_tool"
       ],
@@ -442,9 +442,10 @@
         "AI・LLM 最新動向",
         "tool",
         "create",
-        "cli"
+        "cli",
+        "セキュリティ"
       ],
-      "summary": "Deep Research により獲得。分野: AI・LLM 最新動向"
+      "summary": "Deep Research により獲得。分野: セキュリティ"
     },
     "tool_transformers_inference": {
       "name": "tool_transformers_inference",
@@ -580,6 +581,24 @@
         "typer"
       ],
       "summary": "Deep Research により獲得。分野: AI・LLM 最新動向"
+    },
+    "tool_secure_cli_command": {
+      "name": "tool_secure_cli_command",
+      "task_example": "[深掘り獲得] 安全なCLIアプリケーションを構築するためのツール (from: スキル発展)",
+      "success_count": 1,
+      "last_used": "2026-03-21T14:32:13.896042+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [],
+      "keywords": [
+        "スキル発展",
+        "tool",
+        "secure",
+        "cli",
+        "command"
+      ],
+      "summary": "Deep Research により獲得。分野: スキル発展"
     }
   }
 }

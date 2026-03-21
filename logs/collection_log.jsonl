@@ -9,3 +9,15 @@
 {"timestamp": "2026-03-21T23:03:58.656208", "topic_id": "ai_news", "source": "hackernews", "query": "Claude GPT Gemini update", "item_count": 1, "urls": [], "acquired": []}
 {"timestamp": "2026-03-21T23:19:40.287195", "topic_id": "arxiv_ai", "source": "arxiv", "query": "LLM tool use agent", "item_count": 1, "urls": [], "acquired": []}
 {"timestamp": "2026-03-21T23:19:40.870115", "topic_id": "arxiv_ai", "source": "arxiv", "query": "autonomous AI learning", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-21T23:30:34.457870", "topic_id": "security", "source": "hackernews", "query": "cybersecurity 2026", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-21T23:30:40.879622", "topic_id": "security", "source": "hackernews", "query": "vulnerability security tool", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-21T23:30:41.530444", "topic_id": "security", "source": "news", "query": "cybersecurity 2026", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-21T23:30:42.505210", "topic_id": "security", "source": "news", "query": "vulnerability security tool", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-21T23:47:44.225995", "topic_id": "gadget", "source": "hackernews", "query": "latest gadget 2026", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-21T23:47:48.666534", "topic_id": "gadget", "source": "hackernews", "query": "Apple Google tech", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-21T23:47:49.309540", "topic_id": "gadget", "source": "news", "query": "latest gadget 2026", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-21T23:47:50.033988", "topic_id": "gadget", "source": "news", "query": "Apple Google tech", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-22T00:03:57.516801", "topic_id": "finance", "source": "news", "query": "日本株 最新", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-22T00:03:58.772531", "topic_id": "finance", "source": "news", "query": "economic news 2026", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-22T00:03:59.179218", "topic_id": "finance", "source": "reddit", "query": "日本株 最新", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-22T00:04:00.227008", "topic_id": "finance", "source": "reddit", "query": "economic news 2026", "item_count": 1, "urls": [], "acquired": []}

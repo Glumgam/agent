@@ -4,6 +4,7 @@ CLI Toolkit
 カテゴリ: cli
 作成日: 2026-03-19
 収録ツール:
+- tool_create_cli: Deep Research により獲得。分野: セキュリティ
 - tool_create_cli_with_typer: Deep Research により獲得。分野: AI・LLM 最新動向
 - tool_create_cli_command: Deep Research により獲得。分野: AI 論文
 - tool_typer_cli: Deep Research により獲得。分野: AI・LLM 最新動向
@@ -139,3 +140,23 @@ def tool_create_cli_with_typer(command_name: str, command_description: str) -> s
 
 if __name__ == "__main__":
     tool_create_cli_with_typer("greet", "A simple greet command")
+
+
+# ==================================================
+# tool_create_cli
+# ==================================================
+
+def tool_create_cli():
+    try:
+        app = typer.Typer()
+
+        @app.command()
+        def hello(name: str):
+            return f"Hello {name}!"
+
+        if __name__ == "__main__":
+            app()
+
+        return "CLI created successfully!"
+    except ImportError:
+        return "ERROR: Unable to import typer. Please install the package using pip install typer."

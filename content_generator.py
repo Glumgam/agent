@@ -232,13 +232,18 @@ def _remove_chinese_chars(text: str) -> str:
 
 
 def _quality_check_v2(content: str) -> tuple:
-    """品質チェック + 中国語文字検出"""
+    """品質チェック + 中国語文字検出 + f-string未展開検出"""
     passed, reason = _quality_check(content)
     if not passed:
         return passed, reason
     found = [p for p in _ZH_DETECT_PATTERNS if p in content]
     if found:
         return False, f"中国語文字が混入: {found}"
+    # コードブロックを除いた本文でf-string未展開チェック
+    no_code = re.sub(r"```.*?```", "", content, flags=re.DOTALL)
+    fstring_hits = re.findall(r"\{[a-z_]+[\.\[][^}\n]{1,40}\}", no_code)
+    if fstring_hits:
+        return False, f"f-string未展開が混入: {fstring_hits[:3]}"
     return True, "OK"
 # --- CJK FILTER END ---
 
@@ -324,6 +329,17 @@ def generate_article(
     """
     print(f"\n  📝 記事生成: {topic}")
 
+    # --- DEDUP CHECK START ---
+    try:
+        from content_checker import check_topic_saturation
+        saturated, sat_reason = check_topic_saturation(genre_id, topic)
+        if saturated:
+            print(f"  ⚠️ {sat_reason} → スキップ")
+            return {"error": f"トピック飽和: {sat_reason}"}
+    except Exception as e:
+        print(f"  ⚠️ 重複チェックスキップ: {e}")
+    # --- DEDUP CHECK END ---
+
     # RAGで関連情報を取得
     rag_context = ""
     rag_hits    = 0
@@ -398,6 +414,19 @@ def generate_article(
     # ファイル保存
     path = _save_article(topic, content)
 
+    # --- DEDUP REGISTER START ---
+    try:
+        from content_checker import is_duplicate, register_article
+        is_dup, dup_reason = is_duplicate(topic, content)
+        if is_dup:
+            print(f"  ⚠️ 重複検出: {dup_reason} → 保存をスキップ")
+            path.unlink(missing_ok=True)
+            return {"error": f"重複: {dup_reason}"}
+        register_article(topic, content, str(path))
+    except Exception as e:
+        print(f"  ⚠️ 重複登録スキップ: {e}")
+    # --- DEDUP REGISTER END ---
+
     # メタデータ記録
     result = {
         "title":        topic,
@@ -428,7 +457,7 @@ def _save_article(topic: str, content: str) -> Path:
     CONTENT_DIR.mkdir(exist_ok=True)
     date_str = datetime.now().strftime("%Y%m%d")
     slug     = re.sub(r"[^\w\s-]", "", topic.lower())
-    slug     = re.sub(r"\s+", "_", slug.strip())[:30] or "article"
+    slug     = re.sub(r"\s+", "_", slug.strip())[:40] or "article"
     filename = f"{date_str}_{slug}.md"
     path     = CONTENT_DIR / filename
     counter  = 1

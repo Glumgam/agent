@@ -82,12 +82,29 @@ published: false
 def _detect_genre(content: str) -> str:
     """コンテンツからジャンルを推定する"""
     content_lower = content.lower()
-    if any(w in content_lower for w in ["ollama", "llm", "ai", "gpt", "bert"]):
-        return "ai_tools"
-    if any(w in content_lower for w in ["自動化", "automation", "スクリプト"]):
-        return "automation"
-    if any(w in content_lower for w in ["pip install", "ライブラリ"]):
+    # ライブラリ紹介を最初に判定（pip install等は他ジャンルにも含まれるため先行チェック）
+    if any(w in content_lower for w in [
+        "インストール方法", "類似ライブラリ",
+        "typer", "rich", "httpx", "loguru", "pydantic",
+        "schedule", "arrow", "tqdm", "tabulate",
+    ]):
         return "library_intro"
+    # AI・LLMツール
+    if any(w in content_lower for w in [
+        "ollama", "llm", "gpt", "bert", "transformer",
+        "hugging face", "sentence-transformer",
+    ]):
+        return "ai_tools"
+    # 自動化
+    if any(w in content_lower for w in [
+        "自動化", "automation", "自動生成", "自動管理",
+        "スクリプト", "cron",
+    ]):
+        return "automation"
+    # pip install だけならライブラリ紹介
+    if "pip install" in content_lower:
+        return "library_intro"
+    # デフォルト: Python tips
     return "python_tips"
 
 
