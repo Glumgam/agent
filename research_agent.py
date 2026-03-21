@@ -190,7 +190,7 @@ def _research_topic(topic: dict, dry_run: bool = False) -> dict:
 
 
 def _summarize(label: str, collected: list) -> str:
-    from llm import ask_thinking
+    from llm import ask_plain
 
     content_text = ""
     for item in collected[:5]:
@@ -208,8 +208,8 @@ def _summarize(label: str, collected: list) -> str:
 - ポイント1
 - ポイント2
 """
-    print(f"  🧠 要約中...")
-    return ask_thinking(prompt)
+    print(f"  🧠 要約中 (qwen2.5-coder:7b)...")
+    return ask_plain(prompt)
 
 
 # =====================================================

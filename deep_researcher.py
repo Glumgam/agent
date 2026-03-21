@@ -165,7 +165,7 @@ def implement_and_test(research_result: dict) -> dict:
     調査結果を元にコードを生成し、実際に動作テストする。
     """
     # --- DEEP RESEARCH START ---
-    from llm import ask_thinking
+    from llm import ask_plain
 
     candidate = research_result["candidate"]
     data_text = "\n\n".join(
@@ -198,7 +198,7 @@ CODE:
 END_CODE
 """
     print(f"  🔨 コード生成中: {candidate['name']}")
-    response = ask_thinking(prompt)
+    response = ask_plain(prompt)
 
     # --- CODE EXTRACT FIX START ---
     def _extract_code_from_response(resp: str) -> tuple:
