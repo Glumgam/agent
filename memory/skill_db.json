@@ -73,8 +73,8 @@
     "coding": {
       "name": "coding",
       "task_example": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
-      "success_count": 231,
-      "last_used": "2026-03-21T03:33:02.344398+00:00",
+      "success_count": 234,
+      "last_used": "2026-03-21T14:11:37.108107+00:00",
       "tools_used": [
         "create_file",
         "run",
@@ -98,7 +98,7 @@
         "hello",
         "agent"
       ],
-      "summary": "Pillowを使って以下を実装して実行せよ:\n1. 800x600の白い画像を作成\n2. 中央に「Hello, Agent!」と黒字で描画\n3. 右下に現在日時を小さく描画\n4. workspace/output_image.png として保存\n5. ファイルが存在することを確認\nexit code 0にすること"
+      "summary": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ"
     },
     "data_analysis_plus_web_scraping": {
       "name": "data_analysis_plus_web_scraping",
@@ -133,8 +133,8 @@
     "bug_fix": {
       "name": "bug_fix",
       "task_example": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
-      "success_count": 159,
-      "last_used": "2026-03-21T02:34:03.920349+00:00",
+      "success_count": 161,
+      "last_used": "2026-03-21T14:13:34.247034+00:00",
       "tools_used": [
         "run",
         "done",
@@ -164,13 +164,13 @@
         "datastore",
         "init"
       ],
-      "summary": "以下の3つのバグを含むコードを修正してから実行せよ:\nbug1.py の内容:\n```\nimport json\nfrom pathlib import Path\n\ndata = {'items': [1, 2, 3, 4, 5]}\nPath('data.json').write_text(json.dump(data))  # bug1: dump→dumps\n\nloaded = json.loa"
+      "summary": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))"
     },
     "testing": {
       "name": "testing",
       "task_example": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
-      "success_count": 153,
-      "last_used": "2026-03-20T22:22:44.224825+00:00",
+      "success_count": 155,
+      "last_used": "2026-03-21T14:19:39.544327+00:00",
       "tools_used": [
         "done",
         "run",
@@ -200,7 +200,7 @@
         "docs",
         "へ振り分けるスクリプトorganize"
       ],
-      "summary": "workspaceにtmp_sort/を作り、test.txt/test.py/test.mdの3ファイルを作成後、拡張子ごとにtexts//scripts//docs/へ振り分けるスクリプトorganize.pyを書いて実行せよ"
+      "summary": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ"
     },
     "file_operation": {
       "name": "file_operation",
@@ -559,6 +559,27 @@
         "command"
       ],
       "summary": "Deep Research により獲得。分野: AI 論文"
+    },
+    "tool_create_cli_with_typer": {
+      "name": "tool_create_cli_with_typer",
+      "task_example": "[深掘り獲得] CLIアプリ構築 (from: AI・LLM 最新動向)",
+      "success_count": 1,
+      "last_used": "2026-03-21T14:04:47.158129+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [
+        "typer"
+      ],
+      "keywords": [
+        "AI・LLM 最新動向",
+        "tool",
+        "create",
+        "cli",
+        "with",
+        "typer"
+      ],
+      "summary": "Deep Research により獲得。分野: AI・LLM 最新動向"
     }
   }
 }

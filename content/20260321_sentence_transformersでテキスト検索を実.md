@@ -1,3 +1,5 @@
+# sentence transformersでテキスト検索を実
+
 {texts[i]}: {score.item():.4f}")
 
 

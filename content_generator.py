@@ -45,6 +45,7 @@ TECH_GENRES = [
 # 全テンプレートに適用する品質ルール
 _QUALITY_RULES = """
 【絶対条件】
+- 必ず最初の行を「# 記事タイトル」の形式で始めること（例: # Pythonで並列処理を実装する3つの方法）
 - 最低1500文字以上で書くこと（これより短い場合は失敗とみなす）
 - ## 見出しを最低3つ以上含めること
 - コード例（```python）を最低2つ以上含めること
@@ -175,6 +176,10 @@ def _quality_check(content: str) -> tuple:
     """
     if not content or len(content) < 1500:
         return False, f"文字数不足: {len(content) if content else 0}文字（最低1500文字）"
+    # 最初の非空行が # タイトルであることを確認
+    first_line = next((l for l in content.split("\n") if l.strip()), "")
+    if not first_line.startswith("# "):
+        return False, f"タイトル行なし（最初の行が '# 記事タイトル' 形式でない）: {first_line[:50]!r}"
     heading_count = content.count("\n## ")
     if heading_count < 3:
         return False, f"見出し不足: {heading_count}個（最低3個）"

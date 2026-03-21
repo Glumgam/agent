@@ -4,6 +4,7 @@ CLI Toolkit
 カテゴリ: cli
 作成日: 2026-03-19
 収録ツール:
+- tool_create_cli_with_typer: Deep Research により獲得。分野: AI・LLM 最新動向
 - tool_create_cli_command: Deep Research により獲得。分野: AI 論文
 - tool_typer_cli: Deep Research により獲得。分野: AI・LLM 最新動向
 """
@@ -117,3 +118,24 @@ if __name__ == "__main__":
         args="name"
     )
     print(result)
+
+
+# ==================================================
+# tool_create_cli_with_typer
+# ==================================================
+
+def tool_create_cli_with_typer(command_name: str, command_description: str) -> str:
+    try:
+        app = typer.Typer()
+
+        @app.command(name=command_name)
+        def my_command():
+            typer.echo(f"Command {command_name} executed with Typer.")
+
+        return app()
+    
+    except Exception as e:
+        return f"ERROR: {str(e)}"
+
+if __name__ == "__main__":
+    tool_create_cli_with_typer("greet", "A simple greet command")

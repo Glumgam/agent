@@ -50,8 +50,12 @@ def convert_to_zenn(article_path: Path, genre_id: str = None) -> str:
         if line.startswith("# "):
             title = line.lstrip("# ").strip()
             break
+    # タイトルが取得できない場合はファイル名から生成（日付プレフィックス除去）
     if not title:
-        title = article_path.stem.replace("_", " ")
+        stem = article_path.stem
+        stem = re.sub(r"^\d{8}_?", "", stem)   # 日付除去
+        title = stem.replace("_", " ").strip()
+        print(f"  ⚠️ タイトル抽出失敗 → ファイル名から生成: {title}")
 
     # ジャンル判定
     if not genre_id:

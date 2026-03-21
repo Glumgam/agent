@@ -1,29 +1,5 @@
 [
   {
-    "task": "requestsでhttps://httpbin.org/jsonにGETリクエストを送り、レスポンスJSONを整形して表示するfetch.pyを書いて実行せよ",
-    "summary": "created: fetch.py | last_run_output: Error: repeated action detected (loop guard) | ended_with: create_file"
-  },
-  {
-    "task": "requestsとBeautifulSoupでhttps://example.comのHTMLを取得し、h1タグとpタグのテキストを抽出して表示するscrape.pyを書いて実行せよ",
-    "summary": "created: scrape.py | last_run_output: [exit code 1]\n[stderr]\nTraceback (most recent call last):\n  File \"/Volumes/ESD-EHA/agent/venv/lib/python3.14/site-packages/urllib3/connectionpool.py\", line 464, in _make_request\n    self._validate_con...(truncated) | ended_with: create_file"
-  },
-  {
-    "task": "https://jsonplaceholder.typicode.com/todos/1からデータを取得しtodo.jsonに保存するapi_fetch.pyを書いて実行せよ。取得したtitle値を表示すること",
-    "summary": "created: api_fetch.py | last_run_output: Error: repeated action detected (loop guard) | ended_with: create_file"
-  },
-  {
-    "task": "以下を実装して全て動作させよ:\n- models.py: Productクラス(id, name, price, stock)\n- db.py: JSONファイルへの保存・読み込み(save/load)\n- api.py: add_product/get_product/list_products/update_stock関数\n- main.py: apiをimportして商品を3件追加・一覧表示・在庫更新・再表示\n全て実行して正常終了させること",
-    "summary": "created: add_chart.py | last_run_output: [exit code 0] | ended_with: run"
-  },
-  {
-    "task": "以下のパイプラインを実装して実行せよ:\n1. generator.py: 100件のランダム売上データ(日付/商品名/金額)をCSVに生成\n2. analyzer.py: CSVを読み込み、月別集計・商品別ランキング・平均単価を計算してレポートをMarkdownで出力\n3. run_pipeline.py: generator→analyzerの順で実行\npython run_pipeline.py を実行して report.md が生成されること",
-    "summary": "created: run_pipeline.py | last_run_output: [exit code 1]\n[stderr]\nTraceback (most recent call last):\n  File \"/Volumes/ESD-EHA/agent/workspace/run_pipeline.py\", line 2, in <module>\n    import analyzer\n  File \"/Volumes/ESD-EHA/agent/workspace/an...(truncated) | ended_with: run"
-  },
-  {
-    "task": "以下のパイプラインを実装して実行せよ:\n1. generator.py: 100件のランダム売上データ(日付/商品名/金額)をCSVに生成\n2. analyzer.py: CSVを読み込み、月別集計・商品別ランキング・平均単価を計算してレポートをMarkdownで出力\n3. run_pipeline.py: generator→analyzerの順で実行\npython run_pipeline.py を実行して report.md が生成されること\n\n[RETRY HINT] 前の試行でimportエラーが発生した（unknown）。まず {\"tool\": \"run\", \"command\": \"pip install unknown\"} でインストールせよ。インストール後に再度スクリプトを実行せよ。",
-    "summary": "last_run_output: Error: repeated action detected (loop guard) | ended_with: run"
-  },
-  {
     "task": "以下のバグを含むbug1.pyを作成して全バグを修正してから実行せよ:\n\nbug1.py の内容:\n```\nimport json\nfrom pathlib import Path\n\ndata = {'items': [1, 2, 3, 4, 5]}\nPath('data.json').write_text(json.dumps(data))\n\nloaded = json.loads(Path('data.json').read_text())\ntotal = sum(loaded['items'])\nprint(f'合計: {total}')\n\nresult = total / len(loaded['items'])\nprint(f'平均: {result}')\n\nfor i, item in enumerate(loaded['items']):\n    if i < len(loaded['items']) - 1:\n        print(loaded['items'][i])\n```\n\nこのコードを作成してpython bug1.pyを実行せよ。出力に「合計: 15」が含まれること",
     "summary": "created: bug1.py | last_run_output: [exit code 0]\n合計: 15\n平均: 3.0\n1\n2\n3\n4 | ended_with: run"
   },
@@ -78,5 +54,29 @@
   {
     "task": "以下を実装して実行せよ:\n1. toolkit_manager.pyをimportしてlist_toolkit_functions()を呼ぶ\n2. 現在のtoolkit一覧と各ツール関数を表示\n3. detect_category()で以下を判定して表示:\n   - 'tool_pdf_split' のカテゴリ\n   - 'tool_httpx_request' のカテゴリ\n   - 'tool_image_draw' のカテゴリ\n4. tools/toolkits/ のファイル一覧を表示\nexit code 0にすること",
     "summary": "created: task_script.py | last_run_output: Error: repeated action detected (loop guard) | ended_with: create_file"
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "summary": "created: fizzbuzz.py | last_run_output: [exit code 0]\n1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz\n16\n17\nFizz\n19\nBuzz | ended_with: run"
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+    "summary": "created: buggy.py | last_run_output: [exit code 0]\n7 | ended_with: run"
+  },
+  {
+    "task": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
+    "summary": "created: calculator.py | last_run_output: [exit code 0] | ended_with: run"
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "summary": "created: fizzbuzz.py | last_run_output: Error: repeated action detected (loop guard) | ended_with: create_file"
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+    "summary": "created: buggy.py | last_run_output: [exit code 0]\n7 | ended_with: run"
+  },
+  {
+    "task": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
+    "summary": "edited: calculator.py | ended_with: edit_file"
   }
 ]

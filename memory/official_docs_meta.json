@@ -10,5 +10,23 @@
     "source": "https://github.com/ollama/ollama/blob/main/README.md",
     "chunks": 37,
     "last_updated": "2026-03-20T21:15:17.386986"
+  },
+  "python_official": {
+    "version": "3.13-b5a7b671",
+    "source": "https://docs.python.org/ja/3/library/functions.html",
+    "chunks": 72,
+    "last_updated": "2026-03-21T22:56:56.031664"
+  },
+  "pip_docs": {
+    "version": "stable-d506118a",
+    "source": "https://pip.pypa.io/en/stable/user_guide/",
+    "chunks": 64,
+    "last_updated": "2026-03-21T22:57:02.921942"
+  },
+  "qdrant_docs": {
+    "version": "1.17.1-00418643",
+    "source": "https://python-client.qdrant.tech/",
+    "chunks": 23,
+    "last_updated": "2026-03-21T22:57:10.186033"
   }
 }
