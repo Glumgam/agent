@@ -148,6 +148,12 @@ def run_autonomous_loop():
                     _log(f"  ℹ️  Zenn投稿スキップ")
             else:
                 _log(f"  ℹ️  コンテンツ生成スキップ")
+            # X投稿（24サイクルに1回）
+            x_result = _run_x_post()
+            if x_result.get("success"):
+                _log(f"  🐦 X投稿完了")
+            else:
+                _log(f"  ℹ️  X投稿スキップ（APIキー未設定または上限）")
         # --- CONTENT GENERATION END ---
 
         # --- Phase 2: テスト ---
@@ -318,7 +324,6 @@ print(json.dumps({{
 # --- DOC COLLECTION END ---
 
 
-# --- CONTENT GENERATION START ---
 def _run_zenn_publish() -> dict:
     """生成した記事をZennに自動投稿する"""
     try:
@@ -337,6 +342,25 @@ def _run_zenn_publish() -> dict:
         return {}
 
 
+def _run_x_post() -> dict:
+    """はてな投稿済み記事をXに投稿する（1日3件まで）"""
+    try:
+        result = subprocess.run(
+            [PYTHON, "x_poster.py"],
+            cwd=AGENT_ROOT, capture_output=True, text=True, timeout=120,
+        )
+        _log(result.stdout[-200:] if result.stdout else "")
+        return {"success": result.returncode == 0}
+    except subprocess.TimeoutExpired:
+        _log("  ⚠️ X投稿タイムアウト（2分）")
+        return {}
+    except Exception as e:
+        _log(f"  ⚠️ X投稿エラー: {e}")
+        return {}
+# --- X POST END ---
+
+
+# --- CONTENT GENERATION START ---
 def _run_content_generation() -> dict:
     """コンテンツを1記事生成する"""
     try:

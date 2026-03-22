@@ -4,6 +4,7 @@ SYSTEM Toolkit
 カテゴリ: system
 作成日: 2026-03-22
 収録ツール:
+- tool_encrypt_data_with_metadata: Deep Research により獲得。分野: スキル発展
 - tool_batch_cli_encrypt_decrypt: Deep Research により獲得。分野: スキル発展
 - tool_batch_encrypt_decrypt: Deep Research により獲得。分野: スキル発展
 """
@@ -82,3 +83,41 @@ def tool_batch_cli_encrypt_decrypt(input_folder, output_folder, key=None):
     
     except Exception as e:
         return f"ERROR: {str(e)}"
+
+
+# ==================================================
+# tool_encrypt_data_with_metadata
+# ==================================================
+
+def tool_encrypt_data_with_metadata(data: str, metadata: dict, key_path: str) -> str:
+    try:
+        # Generate and save key if it doesn't exist
+        try:
+            load_key(key_path)
+        except FileNotFoundError:
+            key = generate_key()
+            save_key(key, key_path)
+
+        # Load the encryption key
+        key = load_key(key_path)
+        fernet = Fernet(key)
+
+        # Encrypt data
+        encrypted_data = fernet.encrypt(data.encode())
+
+        # Add metadata to the encrypted data (simple JSON format for demonstration purposes)
+        import json
+        metadata_str = json.dumps(metadata)
+        final_data = f"{encrypted_data.decode()}\n{metadata_str}"
+
+        return final_data
+    except Exception as e:
+        return f"ERROR: {str(e)}"
+
+if __name__ == "__main__":
+    data = "Sensitive information"
+    metadata = {"source": "User input", "timestamp": "2023-10-05T12:00:00Z"}
+    key_path = "encryption_key.key"
+    
+    result = tool_encrypt_data_with_metadata(data, metadata, key_path)
+    print(result)

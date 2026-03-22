@@ -12,10 +12,10 @@
     "last_updated": "2026-03-20T21:15:17.386986"
   },
   "python_official": {
-    "version": "3.13-b5a7b671",
+    "version": "3.13-d107f7d5",
     "source": "https://docs.python.org/ja/3/library/functions.html",
     "chunks": 72,
-    "last_updated": "2026-03-21T22:56:56.031664"
+    "last_updated": "2026-03-22T18:40:17.925423"
   },
   "pip_docs": {
     "version": "stable-d506118a",

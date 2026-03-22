@@ -76,3 +76,4 @@ secrets.json
 *.sublime-project
 *.sublime-workspace
 config/hatena_config.json
+config/x_config.json

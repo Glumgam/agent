@@ -24,3 +24,13 @@
 {"timestamp": "2026-03-22T17:03:33.583448", "topic_id": "gadget", "source": "hackernews", "query": "Apple Google tech 2026", "item_count": 1, "urls": [], "acquired": []}
 {"timestamp": "2026-03-22T17:03:34.254254", "topic_id": "gadget", "source": "news", "query": "latest gadget 2026-03", "item_count": 1, "urls": [], "acquired": []}
 {"timestamp": "2026-03-22T17:03:35.046444", "topic_id": "gadget", "source": "news", "query": "Apple Google tech 2026", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-22T17:27:17.297265", "topic_id": "finance", "source": "news", "query": "日本株 最新", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-22T17:27:18.006151", "topic_id": "finance", "source": "news", "query": "economic news 2026-03", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-22T17:27:18.544220", "topic_id": "finance", "source": "reddit", "query": "日本株 最新", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-22T17:27:19.437821", "topic_id": "finance", "source": "reddit", "query": "economic news 2026-03", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-22T17:50:58.838965", "topic_id": "science", "source": "arxiv", "query": "science breakthrough 2026-03", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-22T17:50:59.451910", "topic_id": "science", "source": "arxiv", "query": "physics biology research", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-22T17:51:00.372996", "topic_id": "science", "source": "news", "query": "science breakthrough 2026-03", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-22T17:51:00.787387", "topic_id": "science", "source": "news", "query": "physics biology research", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-22T18:19:20.618457", "topic_id": "food", "source": "news", "query": "ラーメン 新店 2026", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-22T18:19:21.761858", "topic_id": "food", "source": "news", "query": "グルメ おすすめ", "item_count": 1, "urls": [], "acquired": []}
