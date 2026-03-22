@@ -231,5 +231,70 @@
     "review_feedback": "記事の内容と意図が明確に伝わり、Pythonの強力さを効果的に示しています。ただし、一部の表現が不自然で、中国語混入があるため、改善が必要と感じられます。",
     "quality_passed": true,
     "quality_reason": "OK"
+  },
+  {
+    "title": "Pythonのpathlib完全活用ガイド",
+    "genre": "python_tips",
+    "path": "/Volumes/ESD-EHA/agent/content/20260323_pythonのpathlib完全活用ガイド_zenn.md",
+    "rag_hits": 0,
+    "word_count": 1384,
+    "generated_at": "2026-03-23T07:50:31.821322",
+    "review_score": 8,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "quality_passed": false,
+    "quality_reason": "文字数不足: 1384文字（最低1500文字）"
+  },
+  {
+    "title": "Python型ヒントの活用で保守性を上げる方法",
+    "genre": "python_tips",
+    "path": "/Volumes/ESD-EHA/agent/content/20260323_python型ヒントの活用で保守性を上げる方法_zenn.md",
+    "rag_hits": 0,
+    "word_count": 1346,
+    "generated_at": "2026-03-23T08:06:42.855217",
+    "review_score": 9,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "quality_passed": false,
+    "quality_reason": "文字数不足: 1346文字（最低1500文字）"
+  },
+  {
+    "title": "Python型ヒントの活用で保守性を上げる方法",
+    "genre": "python_tips",
+    "path": "/Volumes/ESD-EHA/agent/content/20260323_python型ヒントの活用で保守性を上げる方法_hatena.md",
+    "rag_hits": 0,
+    "word_count": 3318,
+    "generated_at": "2026-03-23T08:14:53.041613",
+    "review_score": 8,
+    "review_passed": true,
+    "review_feedback": "「メソッド」の誤用と中国語混入が見つかったため、注意が必要です。それ以外は良好です。",
+    "quality_passed": true,
+    "quality_reason": "OK"
+  },
+  {
+    "title": "PythonでAIエージェントを自作する方法",
+    "genre": "ai_tools",
+    "path": "/Volumes/ESD-EHA/agent/content/20260323_pythonでaiエージェントを自作する方法_zenn.md",
+    "rag_hits": 0,
+    "word_count": 2663,
+    "generated_at": "2026-03-23T08:21:33.571839",
+    "review_score": 9,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "quality_passed": true,
+    "quality_reason": "OK"
+  },
+  {
+    "title": "PythonでAIエージェントを自作する方法",
+    "genre": "ai_tools",
+    "path": "/Volumes/ESD-EHA/agent/content/20260323_pythonでaiエージェントを自作する方法_hatena.md",
+    "rag_hits": 0,
+    "word_count": 4147,
+    "generated_at": "2026-03-23T08:26:34.537903",
+    "review_score": 8,
+    "review_passed": true,
+    "review_feedback": "APIキー認証エラーの対策を追加することで、記事の品質は向上します。",
+    "quality_passed": true,
+    "quality_reason": "OK"
   }
 ]

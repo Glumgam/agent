@@ -369,13 +369,13 @@ def _run_content_generation() -> dict:
             cwd=AGENT_ROOT,
             capture_output=True,
             text=True,
-            timeout=1800,   # 最大30分
+            timeout=3600,   # 最大1時間（品質優先）
         )
         if result.stdout:
             _log(result.stdout[-300:])
         return {"path": "生成完了"} if result.returncode == 0 else {}
     except subprocess.TimeoutExpired:
-        _log("  ⚠️ コンテンツ生成タイムアウト（30分）")
+        _log("  ⚠️ コンテンツ生成タイムアウト（1時間）")
         return {}
     except Exception as e:
         _log(f"  ⚠️ コンテンツ生成エラー: {e}")

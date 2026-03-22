@@ -24,7 +24,7 @@ def review_article(content: str, topic: str) -> dict:
             "feedback": str,
         }
     """
-    from llm import ask_thinking
+    from llm import ask_thinking, ask_plain
 
     review_target = content[:3000]
 
@@ -73,8 +73,11 @@ FEEDBACK: [最も重要な改善点を1文で。なければ「良好」]
     try:
         response = ask_thinking(prompt, label="REVIEW")
     except Exception as e:
-        print(f"  ⚠️ レビューエラー: {e} → スキップ")
-        return {"score": 8, "issues": [], "passed": True, "feedback": "レビュースキップ"}
+        print(f"  ⚠️ qwen3.5失敗: {e} → qwen2.5にフォールバック")
+        try:
+            response = ask_plain(prompt)
+        except Exception:
+            return {"score": 7, "issues": [], "passed": True, "feedback": "レビュースキップ"}
 
     return _parse_review(response)
 

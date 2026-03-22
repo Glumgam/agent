@@ -73,8 +73,8 @@
     "coding": {
       "name": "coding",
       "task_example": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
-      "success_count": 351,
-      "last_used": "2026-03-22T21:15:44.919055+00:00",
+      "success_count": 360,
+      "last_used": "2026-03-22T22:34:01.745249+00:00",
       "tools_used": [
         "create_file",
         "run",
@@ -133,8 +133,8 @@
     "bug_fix": {
       "name": "bug_fix",
       "task_example": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
-      "success_count": 248,
-      "last_used": "2026-03-22T21:17:51.056877+00:00",
+      "success_count": 254,
+      "last_used": "2026-03-22T23:18:05.637388+00:00",
       "tools_used": [
         "run",
         "done",
@@ -169,8 +169,8 @@
     "testing": {
       "name": "testing",
       "task_example": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
-      "success_count": 237,
-      "last_used": "2026-03-22T21:23:12.872348+00:00",
+      "success_count": 242,
+      "last_used": "2026-03-22T22:43:46.634042+00:00",
       "tools_used": [
         "done",
         "run",
@@ -831,6 +831,27 @@
         "encrypt",
         "decrypt",
         "transformer"
+      ],
+      "summary": "Deep Research により獲得。分野: スキル発展"
+    },
+    "tool_encrypt_decrypt_with_metadata": {
+      "name": "tool_encrypt_decrypt_with_metadata",
+      "task_example": "[深掘り獲得] データ暗号化とメタデータ保存を同時に行う機能 (from: スキル発展)",
+      "success_count": 1,
+      "last_used": "2026-03-22T22:44:40.310901+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [
+        "cryptography"
+      ],
+      "keywords": [
+        "スキル発展",
+        "tool",
+        "encrypt",
+        "decrypt",
+        "with",
+        "metadata"
       ],
       "summary": "Deep Research により獲得。分野: スキル発展"
     }

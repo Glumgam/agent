@@ -497,7 +497,7 @@ def ask_thinking(prompt: str, label: str = "THINKING") -> str:
         import requests as _req
         print(f"  🧠 Thinking ({THINKING_MODEL})...", end=" ", flush=True)
         t0 = _time.time()
-        resp = _req.post(OLLAMA_URL, json=payload, timeout=300)
+        resp = _req.post(OLLAMA_URL, json=payload, timeout=600)
         resp.raise_for_status()
         data = resp.json()
         elapsed = _time.time() - t0

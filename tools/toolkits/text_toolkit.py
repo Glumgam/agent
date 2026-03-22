@@ -4,6 +4,7 @@ TEXT Toolkit
 カテゴリ: text
 作成日: 2026-03-18
 収録ツール:
+- tool_encrypt_decrypt_with_metadata: Deep Research により獲得。分野: スキル発展
 - tool_cli_encrypt_decrypt_transformer: Deep Research により獲得。分野: スキル発展
 - tool_combined_cli: Deep Research により獲得。分野: スキル発展
 - tool_secure_transformers: Deep Research により獲得。分野: スキル発展
@@ -711,4 +712,35 @@ if __name__ == "__main__":
     print(f"Encrypted Text: {encrypted_text}")
 
     decrypted_text = tool_cli_encrypt_decrypt_transformer(encrypted_text, key=encryption_key, action='decrypt')
+    print(f"Decrypted Text: {decrypted_text}")
+
+
+# ==================================================
+# tool_encrypt_decrypt_with_metadata
+# ==================================================
+
+def tool_encrypt_decrypt_with_metadata(data, action):
+    try:
+        if not hasattr(tool_encrypt_decrypt_with_metadata, 'key'):
+            generate_key()
+            tool_encrypt_decrypt_with_metadata.key = load_key()
+        
+        fernet = Fernet(tool_encrypt_decrypt_with_metadata.key)
+        
+        if action == "encrypt":
+            encrypted_data = fernet.encrypt(data.encode())
+            return encrypted_data.decode()
+        elif action == "decrypt":
+            decrypted_data = fernet.decrypt(data.encode()).decode()
+            return decrypted_data
+        else:
+            raise ValueError("Invalid action. Use 'encrypt' or 'decrypt'.")
+    except Exception as e:
+        return f"ERROR: {str(e)}"
+
+if __name__ == "__main__":
+    encrypted_text = tool_encrypt_decrypt_with_metadata("Hello, World!", "encrypt")
+    print(f"Encrypted Text: {encrypted_text}")
+    
+    decrypted_text = tool_encrypt_decrypt_with_metadata(encrypted_text, "decrypt")
     print(f"Decrypted Text: {decrypted_text}")
