@@ -58,5 +58,10 @@
     "slug": "impl-sentence-transformer-search",
     "zenn_path": "/Users/glumgam/zenn-content/articles/impl-sentence-transformer-search.md",
     "published_at": "2026-03-22T07:24:13.562297"
+  },
+  "20260322_pythonの内包表記とジェネレータの使い分け.md": {
+    "slug": "python-comparison-comprehension",
+    "zenn_path": "/Users/glumgam/zenn-content/articles/python-comparison-comprehension.md",
+    "published_at": "2026-03-22T14:56:34.133744"
   }
 }

@@ -4,6 +4,8 @@ TEXT Toolkit
 カテゴリ: text
 作成日: 2026-03-18
 収録ツール:
+- tool_secure_transformers: Deep Research により獲得。分野: スキル発展
+- tool_transformers_example: Deep Research により獲得。分野: AI・LLM 最新動向
 - tool_secure_cli: Deep Research により獲得。分野: スキル発展
 - tool_secure_transformer_cli: Deep Research により獲得。分野: スキル発展
 - tool_encrypt_transform_data: Deep Research により獲得。分野: スキル発展
@@ -591,3 +593,53 @@ if __name__ == "__main__":
         command = " ".join(sys.argv[1:])
         result = tool_secure_cli(command)
         print(result)
+
+
+# ==================================================
+# tool_transformers_example
+# ==================================================
+
+def tool_transformers_example(prompt):
+    try:
+        from transformers import pipeline
+
+        # Define a pipeline for text generation using the GPT-2 model
+        nlp = pipeline("text-generation", model="gpt2")
+
+        # Generate text based on the provided prompt
+        result = nlp(prompt, max_length=50, num_return_sequences=1)
+
+        return str(result[0]['generated_text'])
+    except ImportError as e:
+        return f"ERROR: {e}"
+
+
+# ==================================================
+# tool_secure_transformers
+# ==================================================
+
+def tool_secure_transformers(text, action):
+    try:
+        if action not in ['encrypt', 'decrypt']:
+            return "ERROR: Invalid action. Use 'encrypt' or 'decrypt'."
+        
+        # Load the encryption key
+        key = load_key()
+        cipher_suite = Fernet(key)
+        
+        if action == 'encrypt':
+            # Encrypt the text using Hugging Face transformers pipeline
+            encryptor = pipeline('text2text-generation', model="t5-small")
+            encrypted_text = encryptor(text, max_length=100, num_return_sequences=1)[0]['generated_text']
+            encrypted_bytes = encrypted_text.encode()
+            ciphered_data = cipher_suite.encrypt(encrypted_bytes)
+            return base64.b64encode(ciphered_data).decode('utf-8')
+        elif action == 'decrypt':
+            # Decrypt the text using Hugging Face transformers pipeline
+            decryptor = pipeline('text2text-generation', model="t5-small")
+            decrypted_text = decryptor(text, max_length=100, num_return_sequences=1)[0]['generated_text']
+            base64_decoded = base64.b64decode(decrypted_text)
+            plain_bytes = cipher_suite.decrypt(base64_decoded)
+            return plain_bytes.decode('utf-8')
+    except Exception as e:
+        return f"ERROR: {str(e)}"

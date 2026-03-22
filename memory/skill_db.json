@@ -73,8 +73,8 @@
     "coding": {
       "name": "coding",
       "task_example": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
-      "success_count": 284,
-      "last_used": "2026-03-22T00:04:14.455726+00:00",
+      "success_count": 299,
+      "last_used": "2026-03-22T06:01:13.822841+00:00",
       "tools_used": [
         "create_file",
         "run",
@@ -133,8 +133,8 @@
     "bug_fix": {
       "name": "bug_fix",
       "task_example": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
-      "success_count": 196,
-      "last_used": "2026-03-22T00:06:48.638962+00:00",
+      "success_count": 207,
+      "last_used": "2026-03-22T06:06:24.572277+00:00",
       "tools_used": [
         "run",
         "done",
@@ -169,8 +169,8 @@
     "testing": {
       "name": "testing",
       "task_example": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
-      "success_count": 186,
-      "last_used": "2026-03-22T00:00:18.152803+00:00",
+      "success_count": 197,
+      "last_used": "2026-03-22T06:12:53.875900+00:00",
       "tools_used": [
         "done",
         "run",
@@ -695,6 +695,44 @@
         "tool",
         "secure",
         "cli"
+      ],
+      "summary": "Deep Research により獲得。分野: スキル発展"
+    },
+    "tool_transformers_example": {
+      "name": "tool_transformers_example",
+      "task_example": "[深掘り獲得] 多くのLLMモデルをサポートし、自然言語処理タスクに使用できます。 (from: AI・LLM 最新動向)",
+      "success_count": 1,
+      "last_used": "2026-03-22T06:13:54.191314+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [
+        "transformers"
+      ],
+      "keywords": [
+        "AI・LLM 最新動向",
+        "tool",
+        "transformers",
+        "example"
+      ],
+      "summary": "Deep Research により獲得。分野: AI・LLM 最新動向"
+    },
+    "tool_secure_transformers": {
+      "name": "tool_secure_transformers",
+      "task_example": "[深掘り獲得] Hugging FaceのLLMモデルを使用してデータを暗号化・復号化するCLIアプリケーション (from: スキル発展)",
+      "success_count": 1,
+      "last_used": "2026-03-22T06:16:11.866410+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [
+        "transformers"
+      ],
+      "keywords": [
+        "スキル発展",
+        "tool",
+        "secure",
+        "transformers"
       ],
       "summary": "Deep Research により獲得。分野: スキル発展"
     }

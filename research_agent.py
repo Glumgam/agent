@@ -20,6 +20,10 @@ KNOWLEDGE_DIR = AGENT_ROOT / "knowledge"
 REPORT_PATH   = AGENT_ROOT / "daily_report.md"
 TOPICS_FILE   = AGENT_ROOT / "research_topics.json"
 
+# 動的な年月（毎月クエリが変わりcollection_logの詰まりを防ぐ）
+_YM = datetime.now().strftime("%Y-%m")   # 例: "2026-03"
+_Y  = datetime.now().strftime("%Y")       # 例: "2026"
+
 # =====================================================
 # デフォルトトピック（research_topics.json で上書き可能）
 # =====================================================
@@ -27,14 +31,22 @@ DEFAULT_TOPICS = [
     {
         "id":      "ai_news",
         "label":   "AI・LLM 最新動向",
-        "queries": ["AI LLM agent 2026", "Claude GPT Gemini update"],
+        "queries": [
+            f"AI LLM agent {_Y}",
+            f"Claude GPT Gemini update {_YM}",
+        ],
         "sources": ["news", "hackernews"],
         "evolve":  True,
     },
     {
         "id":      "python_tech",
         "label":   "Python 技術トレンド",
-        "queries": ["Python new library 2026", "Python tool framework"],
+        "queries": [
+            f"Python new library {_YM}",
+            f"Python tool framework {_Y}",
+            f"Python tips {_YM}",
+            f"Python best practices {_Y}",
+        ],
         "sources": ["github", "pypi"],
         "evolve":  True,
     },
@@ -48,7 +60,10 @@ DEFAULT_TOPICS = [
     {
         "id":      "gadget",
         "label":   "ガジェット・テック",
-        "queries": ["latest gadget 2026", "Apple Google tech news"],
+        "queries": [
+            f"latest gadget {_YM}",
+            f"Apple Google tech news {_Y}",
+        ],
         "sources": ["hackernews", "news"],
         "evolve":  False,
     },
@@ -354,11 +369,30 @@ def _register_evolved_skill(name: str, description: str, topic: dict):
 # =====================================================
 # レポート・設定
 # =====================================================
+def _apply_dynamic_dates(topics: list) -> list:
+    """クエリ内の固定年月を動的な年月に置き換える（毎月クエリが変わりログ詰まりを防ぐ）"""
+    result = []
+    for topic in topics:
+        t = dict(topic)
+        new_queries = []
+        for q in t.get("queries", []):
+            # 固定の年月（YYYY-MM）→ 動的年月
+            q = re.sub(r"\b\d{4}-\d{2}\b", _YM, q)
+            # 固定の年（YYYY）→ 動的年（年月置換後に残った単独年のみ）
+            q = re.sub(r"\b\d{4}\b", _Y, q)
+            new_queries.append(q)
+        t["queries"] = new_queries
+        result.append(t)
+    return result
+
+
 def _load_topics() -> list:
     if TOPICS_FILE.exists():
         with open(TOPICS_FILE, encoding="utf-8") as f:
             data = json.load(f)
         print(f"  カスタムトピック読み込み: {TOPICS_FILE.name}")
+        # 固定年月を動的に置き換える
+        data = _apply_dynamic_dates(data)
         return data
     return [t for t in DEFAULT_TOPICS if t.get("queries")]
 

@@ -2,14 +2,19 @@
   {
     "id": "ai_news",
     "label": "AI・LLM 最新動向",
-    "queries": ["AI LLM agent 2026", "Claude GPT Gemini update"],
+    "queries": ["AI LLM agent 2026", "Claude GPT Gemini update 2026-03"],
     "sources": ["news", "hackernews"],
     "evolve": true
   },
   {
     "id": "python_tech",
     "label": "Python 技術トレンド",
-    "queries": ["Python new library 2026", "Python automation tool"],
+    "queries": [
+      "Python new library 2026-03",
+      "Python tool framework 2026",
+      "Python tips 2026-03",
+      "Python best practices 2026"
+    ],
     "sources": ["github", "pypi"],
     "evolve": true
   },
@@ -23,28 +28,28 @@
   {
     "id": "security",
     "label": "セキュリティ",
-    "queries": ["cybersecurity 2026", "vulnerability security tool"],
+    "queries": ["cybersecurity 2026-03", "vulnerability security tool 2026"],
     "sources": ["hackernews", "news"],
     "evolve": true
   },
   {
     "id": "gadget",
     "label": "ガジェット・テック",
-    "queries": ["latest gadget 2026", "Apple Google tech"],
+    "queries": ["latest gadget 2026-03", "Apple Google tech 2026"],
     "sources": ["hackernews", "news"],
     "evolve": false
   },
   {
     "id": "finance",
     "label": "経済・投資",
-    "queries": ["日本株 最新", "economic news 2026"],
+    "queries": ["日本株 最新", "economic news 2026-03"],
     "sources": ["news", "reddit"],
     "evolve": false
   },
   {
     "id": "science",
     "label": "科学・研究",
-    "queries": ["science breakthrough 2026", "physics biology research"],
+    "queries": ["science breakthrough 2026-03", "physics biology research"],
     "sources": ["arxiv", "news"],
     "evolve": false
   },

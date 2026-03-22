@@ -75,3 +75,4 @@ secrets.json
 .idea/
 *.sublime-project
 *.sublime-workspace
+config/hatena_config.json
