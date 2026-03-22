@@ -375,7 +375,7 @@ def _run_content_generation() -> dict:
             _log(result.stdout[-300:])
         return {"path": "生成完了"} if result.returncode == 0 else {}
     except subprocess.TimeoutExpired:
-        _log("  ⚠️ コンテンツ生成タイムアウト（10分）")
+        _log("  ⚠️ コンテンツ生成タイムアウト（30分）")
         return {}
     except Exception as e:
         _log(f"  ⚠️ コンテンツ生成エラー: {e}")
