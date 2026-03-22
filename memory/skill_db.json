@@ -73,8 +73,8 @@
     "coding": {
       "name": "coding",
       "task_example": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
-      "success_count": 305,
-      "last_used": "2026-03-22T10:38:17.029023+00:00",
+      "success_count": 351,
+      "last_used": "2026-03-22T21:15:44.919055+00:00",
       "tools_used": [
         "create_file",
         "run",
@@ -133,8 +133,8 @@
     "bug_fix": {
       "name": "bug_fix",
       "task_example": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
-      "success_count": 218,
-      "last_used": "2026-03-22T10:41:38.639818+00:00",
+      "success_count": 248,
+      "last_used": "2026-03-22T21:17:51.056877+00:00",
       "tools_used": [
         "run",
         "done",
@@ -169,8 +169,8 @@
     "testing": {
       "name": "testing",
       "task_example": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
-      "success_count": 208,
-      "last_used": "2026-03-22T10:48:30.918629+00:00",
+      "success_count": 237,
+      "last_used": "2026-03-22T21:23:12.872348+00:00",
       "tools_used": [
         "done",
         "run",
@@ -230,8 +230,8 @@
     "pdf_operation": {
       "name": "pdf_operation",
       "task_example": "reportlabを使ってタイトル'Agent QA Report'と現在日時・'TEST PASSED'の文字列を含むreport.pdfを生成するmake_pdf.pyを書いて実行せよ",
-      "success_count": 43,
-      "last_used": "2026-03-21T03:48:54.494303+00:00",
+      "success_count": 45,
+      "last_used": "2026-03-22T14:34:49.391691+00:00",
       "tools_used": [
         "run",
         "done",
@@ -261,7 +261,7 @@
         "txtに保存するextract",
         "pdfがなければreportlabで先に作成せよ"
       ],
-      "summary": "以下を実装して実行せよ:\n1. toolkit_manager.pyをimportしてlist_toolkit_functions()を呼ぶ\n2. 現在のtoolkit一覧と各ツール関数を表示\n3. detect_category()で以下を判定して表示:\n   - 'tool_pdf_split' のカテゴリ\n   - 'tool_httpx_request' のカテゴリ\n   - 'tool_"
+      "summary": "pypdfを使って2つのPDFをreportlabで生成しmerged.pdfとして結合するmerge_pdf.pyを書いて実行せよ。結合後のページ数を表示すること"
     },
     "excel_operation": {
       "name": "excel_operation",
@@ -795,6 +795,42 @@
         "data",
         "with",
         "metadata"
+      ],
+      "summary": "Deep Research により獲得。分野: スキル発展"
+    },
+    "tool_combined_cli": {
+      "name": "tool_combined_cli",
+      "task_example": "[深掘り獲得] 複数のCLIアプリを組み合わせて、一元管理できる環境を作成します。 (from: スキル発展)",
+      "success_count": 1,
+      "last_used": "2026-03-22T17:33:58.760418+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [],
+      "keywords": [
+        "スキル発展",
+        "tool",
+        "combined",
+        "cli"
+      ],
+      "summary": "Deep Research により獲得。分野: スキル発展"
+    },
+    "tool_cli_encrypt_decrypt_transformer": {
+      "name": "tool_cli_encrypt_decrypt_transformer",
+      "task_example": "[深掘り獲得] CLIアプリケーションでデータを暗号化、復号化し、Hugging FaceのLLMモデルを使用してテキストを変換できる機能を提供します。 (from: スキル発展)",
+      "success_count": 1,
+      "last_used": "2026-03-22T20:40:06.047910+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [],
+      "keywords": [
+        "スキル発展",
+        "tool",
+        "cli",
+        "encrypt",
+        "decrypt",
+        "transformer"
       ],
       "summary": "Deep Research により獲得。分野: スキル発展"
     }

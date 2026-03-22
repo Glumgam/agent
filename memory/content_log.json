@@ -218,5 +218,18 @@
     "review_feedback": "「メソッド」の誤用を修正し、FAQセクションを実際の質問と回答に置き換えてください。",
     "quality_passed": true,
     "quality_reason": "OK"
+  },
+  {
+    "title": "Pythonで毎日の作業を自動化するスクリプト",
+    "genre": "automation",
+    "path": "/Volumes/ESD-EHA/agent/content/20260323_pythonで毎日の作業を自動化するスクリプト_zenn.md",
+    "rag_hits": 0,
+    "word_count": 2864,
+    "generated_at": "2026-03-23T01:20:29.768055",
+    "review_score": 8,
+    "review_passed": true,
+    "review_feedback": "記事の内容と意図が明確に伝わり、Pythonの強力さを効果的に示しています。ただし、一部の表現が不自然で、中国語混入があるため、改善が必要と感じられます。",
+    "quality_passed": true,
+    "quality_reason": "OK"
   }
 ]

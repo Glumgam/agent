@@ -369,7 +369,7 @@ def _run_content_generation() -> dict:
             cwd=AGENT_ROOT,
             capture_output=True,
             text=True,
-            timeout=600,   # 最大10分
+            timeout=1800,   # 最大30分
         )
         if result.stdout:
             _log(result.stdout[-300:])

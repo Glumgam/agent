@@ -5035,5 +5035,446 @@
       "run",
       "run"
     ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+    "steps": [
+      "edit_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "workspaceにtmp_sort/を作り、test.txt/test.py/test.mdの3ファイルを作成後、拡張子ごとにtexts//scripts//docs/へ振り分けるスクリプトorganize.pyを書いて実行せよ\n\n[RETRY HINT] HF_TOKENを設定してください。",
+    "steps": [
+      "make_dir",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ\n\n[RETRY HINT] ファイル名を `main.py` に変更してから再度実行してください。",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "edit_file",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ\n\n[RETRY HINT] ファイル名を `main.py` に変更してから再度実行してください。",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+    "steps": [
+      "edit_file",
+      "edit_file",
+      "edit_file",
+      "edit_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ\n\n[RETRY HINT] 以下のコマンドを実行してテストを再実行してください。",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "reportlabで3ページのPDF（各ページにページ番号と'Page N of 3'）を生成するmultipage.pyを書いて実行せよ\n\n[RETRY HINT] 以下のコマンドでreportlabライブラリをインストールしてください。その後、このタスクを再実行してください。",
+    "steps": [
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "pypdfを使って2つのPDFをreportlabで生成しmerged.pdfとして結合するmerge_pdf.pyを書いて実行せよ。結合後のページ数を表示すること",
+    "steps": [
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+    "steps": [
+      "create_file",
+      "edit_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ\n\n[RETRY HINT] 以下のコードを追加して、HF_TOKENを設定してください。",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+    "steps": [
+      "create_file",
+      "run",
+      "edit_file",
+      "edit_file",
+      "edit_file",
+      "run"
+    ]
+  },
+  {
+    "task": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
+    "steps": [
+      "edit_file",
+      "edit_file",
+      "run",
+      "edit_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+    "steps": [
+      "create_file",
+      "run",
+      "edit_file",
+      "edit_file",
+      "edit_file",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+    "steps": [
+      "create_file",
+      "run",
+      "edit_file",
+      "edit_file",
+      "edit_file",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+    "steps": [
+      "edit_file",
+      "_self_improve",
+      "edit_file",
+      "run",
+      "edit_file",
+      "run"
+    ]
+  },
+  {
+    "task": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+    "steps": [
+      "edit_file",
+      "edit_file",
+      "edit_file",
+      "run",
+      "edit_file",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+    "steps": [
+      "edit_file",
+      "create_file",
+      "edit_file",
+      "edit_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+    "steps": [
+      "edit_file",
+      "create_file",
+      "edit_file",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run"
+    ]
   }
 ]

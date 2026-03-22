@@ -4,6 +4,8 @@ TEXT Toolkit
 カテゴリ: text
 作成日: 2026-03-18
 収録ツール:
+- tool_cli_encrypt_decrypt_transformer: Deep Research により獲得。分野: スキル発展
+- tool_combined_cli: Deep Research により獲得。分野: スキル発展
 - tool_secure_transformers: Deep Research により獲得。分野: スキル発展
 - tool_transformers_example: Deep Research により獲得。分野: AI・LLM 最新動向
 - tool_secure_cli: Deep Research により獲得。分野: スキル発展
@@ -643,3 +645,70 @@ def tool_secure_transformers(text, action):
             return plain_bytes.decode('utf-8')
     except Exception as e:
         return f"ERROR: {str(e)}"
+
+
+# ==================================================
+# tool_combined_cli
+# ==================================================
+
+def tool_combined_cli(command):
+    """
+    Combine multiple CLI applications into a unified environment.
+
+    Args:
+        command (str): The command to execute within the combined CLI environment.
+
+    Returns:
+        str: The output of the executed command or an error message.
+    """
+    try:
+        # Import necessary libraries if needed
+        import subprocess
+
+        # Execute the provided command using subprocess
+        result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
+        return result.stdout.strip()
+    except subprocess.CalledProcessError as e:
+        return f"ERROR: {e.stderr.strip()}"
+    except Exception as e:
+        return f"ERROR: An unexpected error occurred - {str(e)}"
+
+if __name__ == "__main__":
+    # Example usage
+    print(tool_combined_cli("echo Hello, World!"))
+
+
+# ==================================================
+# tool_cli_encrypt_decrypt_transformer
+# ==================================================
+
+def tool_cli_encrypt_decrypt_transformer(text, key=None, action='encrypt'):
+    try:
+        if not key:
+            # Generate a key and instantiate a Fernet instance for encryption/decryption
+            key = Fernet.generate_key()
+            cipher_suite = Fernet(key)
+        else:
+            cipher_suite = Fernet(key)
+
+        if action == 'encrypt':
+            # Encrypt the text
+            encrypted_text = cipher_suite.encrypt(text.encode())
+            return base64.b64encode(encrypted_text).decode(), key
+        elif action == 'decrypt':
+            # Decrypt the text
+            decrypted_text = cipher_suite.decrypt(base64.b64decode(text))
+            return decrypted_text.decode()
+        else:
+            return "ERROR: Invalid action. Use 'encrypt' or 'decrypt'."
+    except Exception as e:
+        return f"ERROR: {str(e)}"
+
+if __name__ == "__main__":
+    # Example usage
+    original_text = "Hello, Hugging Face!"
+    encrypted_text, encryption_key = tool_cli_encrypt_decrypt_transformer(original_text)
+    print(f"Encrypted Text: {encrypted_text}")
+
+    decrypted_text = tool_cli_encrypt_decrypt_transformer(encrypted_text, key=encryption_key, action='decrypt')
+    print(f"Decrypted Text: {decrypted_text}")
