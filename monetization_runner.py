@@ -88,7 +88,7 @@ def select_topic(genre_id: str) -> str:
 
 
 def run_single(genre_id: str = None, topic: str = None) -> dict:
-    """1記事を生成する"""
+    """1トピックについてZenn版（概要）・はてな版（詳細）の2記事を生成する"""
     from content_generator import generate_article, TECH_GENRES
     if not genre_id:
         genre_id = random.choice([g["id"] for g in TECH_GENRES])
@@ -99,7 +99,20 @@ def run_single(genre_id: str = None, topic: str = None) -> dict:
     print(f"  ジャンル: {genre_id}")
     print(f"  トピック: {topic}")
     print(f"{'='*50}")
-    return generate_article(topic=topic, genre_id=genre_id)
+    results = {}
+    # Zenn版（概要）を生成
+    print(f"\n--- Zenn版（概要）---")
+    zenn_result = generate_article(
+        topic=topic, genre_id=genre_id, variant="zenn"
+    )
+    results["zenn"] = zenn_result
+    # はてな版（詳細）を生成
+    print(f"\n--- はてな版（詳細）---")
+    hatena_result = generate_article(
+        topic=topic, genre_id=genre_id, variant="hatena"
+    )
+    results["hatena"] = hatena_result
+    return results
 
 
 def run_all() -> list:
@@ -129,7 +142,9 @@ if __name__ == "__main__":
         print(f"\n完了: {success}/{len(results)}件生成")
     else:
         result = run_single(genre_id=args.genre, topic=args.topic)
-        if "error" in result:
-            print(f"❌ 失敗: {result['error']}")
-        else:
-            print(f"✅ 完了: {result['path']}")
+        # run_single は {"zenn": ..., "hatena": ...} を返す
+        for variant, r in result.items():
+            if "error" in r:
+                print(f"❌ {variant}版 失敗: {r['error']}")
+            else:
+                print(f"✅ {variant}版 完了: {r.get('path', '?')} ({r.get('word_count', 0)}文字)")

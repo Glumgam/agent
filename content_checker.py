@@ -55,19 +55,33 @@ def _title_similarity(a: str, b: str) -> float:
     return len(intersection) / len(union)
 
 
-def is_duplicate(title: str, content: str) -> tuple:
+def is_duplicate(title: str, content: str, variant: str = "") -> tuple:
     """
     重複チェック。
+    variant: "zenn" / "hatena" / "" — 同じvariantの記事のみを重複とみなす。
     Returns: (is_dup: bool, reason: str)
     """
     db = _load_dedup_db()
 
+    # variantが指定されている場合は同じsuffixのファイルのみチェック
+    suffix = f"_{variant}.md" if variant else ""
+
+    def _same_variant(existing_path: str) -> bool:
+        """既存パスが同じvariantか（variantなし時は全てTrue）"""
+        if not suffix:
+            return True
+        return existing_path.endswith(suffix)
+
     # タイトル完全一致
     if title in db["titles"]:
-        return True, f"タイトル重複: '{title}' (既存: {db['titles'][title]})"
+        existing_path = db["titles"][title]
+        if _same_variant(existing_path):
+            return True, f"タイトル重複: '{title}' (既存: {existing_path})"
 
     # タイトル類似（80%以上一致）
-    for existing_title in db["titles"]:
+    for existing_title, existing_path in db["titles"].items():
+        if not _same_variant(existing_path):
+            continue
         similarity = _title_similarity(title, existing_title)
         if similarity > 0.8:
             return True, (

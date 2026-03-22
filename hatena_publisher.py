@@ -147,20 +147,22 @@ def publish_article(article_path: Path, api_key: str, dry_run: bool = False) -> 
     if not title:
         title = article_path.stem.replace("_", " ")
 
-    # Zennへの誘導リンクをフッターに追加
+    # ZennのURLを取得して導線フッターを追加
     # ※フロントマター除去は _prepare_content() 内で実施
     body = content
-    zenn_footer = f"""
-
----
-## 🔗 関連記事
-この記事の基本的な内容はZennでも解説しています。
-コード例や環境構築の詳細はZennの記事もあわせてご覧ください。
-- [Zennで技術記事を読む](https://zenn.dev/{HATENA_ID})
----
-*この記事はAIエージェントによって自動生成されました。*
-"""
-    body = body + zenn_footer
+    try:
+        from publisher_linker import get_links, make_hatena_footer, build_link_db
+        build_link_db()
+        links    = get_links(article_path.name)
+        zenn_url = links.get("zenn_url", "")
+        if zenn_url:
+            body = body + make_hatena_footer(zenn_url)
+            print(f"  🔗 Zenn導線を追加: {zenn_url}")
+        else:
+            # Zenn未投稿の場合は汎用フッター
+            body = body + f"\n\n---\n*この記事はAIエージェントによって自動生成されました。*\n"
+    except Exception:
+        body = body + f"\n\n---\n*この記事はAIエージェントによって自動生成されました。*\n"
 
     if dry_run:
         print(f"  🔍 DRY RUN: {title[:40]}")
@@ -184,7 +186,11 @@ def publish_all(api_key: str, dry_run: bool = False) -> dict:
     articles = sorted(CONTENT_DIR.glob("*.md"))
     articles = [a for a in articles if not a.name.startswith("._")]
 
-    unpublished = [a for a in articles if a.name not in log]
+    unpublished = [
+        a for a in articles
+        if a.name not in log
+        and not a.name.endswith("_zenn.md")  # Zenn版は除外
+    ]
 
     print(f"\n{'='*50}")
     print(f"  はてなブログ自動投稿")

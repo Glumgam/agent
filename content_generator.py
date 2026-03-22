@@ -61,6 +61,77 @@ _QUALITY_RULES = """
 
 """
 
+# Zenn用テンプレート（概要・軽め・1200〜1800文字）
+ZENN_TEMPLATE = """
+【絶対条件】
+- 必ず最初の行を「# 記事タイトル」で始めること
+- 1200〜1800文字（読みやすい長さ）
+- ## 見出しを3つ以上
+- コード例を1〜2個（シンプルなもの）
+- 最後に「## まとめ」を含める
+
+以下の情報を使って、Zennエンジニア向けの概要記事を日本語で書いてください。
+トピック: {topic}
+参考情報:
+{context}
+
+記事の構成:
+# {topic}
+## はじめに（このライブラリ/技術とは）
+（2〜3文で概要）
+## 基本的な使い方
+（シンプルなコード例1つ）
+## 実践例
+（もう少し実用的なコード例）
+## まとめ
+（3〜5点の箇条書き）
+
+制約:
+- シンプルで読みやすく
+- 初心者でも理解できる
+- 深い応用は「詳細記事（はてなブログ）」に誘導する
+"""
+
+# はてな用テンプレート（詳細・深め・3000文字以上）
+HATENA_TEMPLATE = """
+【絶対条件】
+- 必ず最初の行を「# 記事タイトル」で始めること
+- 3000文字以上（詳細で実践的）
+- ## 見出しを5つ以上
+- コード例を3個以上（応用・実務レベル）
+- トラブルシューティングセクションを含める
+- FAQを3〜5個含める
+
+以下の情報を使って、実務エンジニア向けの詳細解説記事を日本語で書いてください。
+トピック: {topic}
+参考情報:
+{context}
+
+記事の構成:
+# {topic} 完全ガイド
+## この記事でわかること
+（箇条書き5点）
+## 環境準備
+（インストール・セットアップ）
+## 基礎実装
+（ステップバイステップのコード例）
+## 応用パターン
+（実務で使えるコード例）
+## パフォーマンス最適化・ベストプラクティス
+（上級者向けのポイント）
+## トラブルシューティング
+（よくあるエラーと対処法3件以上）
+## FAQ
+（実際に初心者が疑問に思う質問3〜5個）
+## まとめ
+（実践的な判断基準を含む箇条書き）
+
+制約:
+- 実務で使える詳細な内容
+- コードは全て動作するものを
+- 「Zennに概要版あり」と冒頭で触れる
+"""
+
 # 記事テンプレート
 ARTICLE_TEMPLATES = {
     "tips": """
@@ -231,9 +302,16 @@ def _remove_chinese_chars(text: str) -> str:
     return text
 
 
-def _quality_check_v2(content: str) -> tuple:
+def _quality_check_v2(content: str, min_chars: int = 1500) -> tuple:
     """品質チェック + 中国語文字検出 + f-string未展開検出"""
+    # 文字数チェック（variantによって閾値が異なる）
+    if not content or len(content) < min_chars:
+        return False, f"文字数不足: {len(content) if content else 0}文字（最低{min_chars}文字）"
     passed, reason = _quality_check(content)
+    if not passed and reason.startswith("文字数不足"):
+        # min_chars で既にチェック済みなので 1500 固定チェックはスキップ
+        passed = True
+        reason = "OK"
     if not passed:
         return passed, reason
     found = [p for p in _ZH_DETECT_PATTERNS if p in content]
@@ -316,6 +394,7 @@ def generate_article(
     genre_id: str = "python_tips",
     extra_context: str = "",
     max_retries: int = 3,
+    variant: str = "hatena",
 ) -> dict:
     """
     RAGを使って技術記事を生成する。
@@ -324,10 +403,14 @@ def generate_article(
         genre_id:      ジャンルID
         extra_context: 追加コンテキスト
         max_retries:   生成リトライ上限（デフォルト3）
+        variant:       "zenn"（概要版）or "hatena"（詳細版）
     Returns:
         {"title", "content", "path", "rag_hits", "word_count"}
     """
-    print(f"\n  📝 記事生成: {topic}")
+    if variant == "zenn":
+        print(f"\n  📝 記事生成（Zenn概要版）: {topic}")
+    else:
+        print(f"\n  📝 記事生成（はてな詳細版）: {topic}")
 
     # --- DEDUP CHECK START ---
     try:
@@ -377,10 +460,15 @@ def generate_article(
     if not context:
         context = "（関連情報なし：一般的な知識で補完してください）"
 
-    # テンプレート選択
-    genre    = next((g for g in TECH_GENRES if g["id"] == genre_id), TECH_GENRES[0])
-    template = ARTICLE_TEMPLATES.get(genre["template"], ARTICLE_TEMPLATES["tips"])
-    prompt   = _QUALITY_RULES + template.format(topic=topic, context=context[:3000])
+    # テンプレート選択（variant に応じて切り替え）
+    genre = next((g for g in TECH_GENRES if g["id"] == genre_id), TECH_GENRES[0])
+    if variant == "zenn":
+        template   = ZENN_TEMPLATE
+        min_length = 1000
+    else:
+        template   = HATENA_TEMPLATE
+        min_length = 2000
+    prompt = _QUALITY_RULES + template.format(topic=topic, context=context[:3000])
 
     # 記事生成（品質チェック + レビュー付きリトライあり）
     from llm import ask_plain
@@ -394,7 +482,7 @@ def generate_article(
         content = ask_plain(prompt)
         # 中国語文字を除去（置換リストで対応済みの文字を日本語化）
         content = _remove_chinese_chars(content)
-        passed, reason = _quality_check_v2(content)
+        passed, reason = _quality_check_v2(content, min_chars=min_length)
         if not passed:
             if attempt < max_retries - 1:
                 print(f"  ⚠️ 品質不足: {reason} → リトライ {attempt + 1}/{max_retries - 1}")
@@ -402,7 +490,7 @@ def generate_article(
                     prompt
                     + f"\n\n【重要・再試行{attempt + 1}回目】\n"
                     + f"前回の出力が品質基準を満たしませんでした。理由: {reason}\n"
-                    + "必ず1500文字以上・見出し(##)3個以上・コード例(```python)1個以上"
+                    + f"必ず{min_length}文字以上・見出し(##)3個以上・コード例(```python)1個以上"
                     + "・まとめセクションを含めてください。"
                     + "\n必ず日本語で書いてください。中国語（简体字）は絶対に使わないこと。"
                 )
@@ -442,12 +530,12 @@ def generate_article(
     content = _add_footer(content, topic)
 
     # ファイル保存
-    path = _save_article(topic, content)
+    path = _save_article(topic, content, variant=variant)
 
     # --- DEDUP REGISTER START ---
     try:
         from content_checker import is_duplicate, register_article
-        is_dup, dup_reason = is_duplicate(topic, content)
+        is_dup, dup_reason = is_duplicate(topic, content, variant=variant)
         if is_dup:
             print(f"  ⚠️ 重複検出: {dup_reason} → 保存をスキップ")
             path.unlink(missing_ok=True)
@@ -485,17 +573,18 @@ def generate_article(
     return result
 
 
-def _save_article(topic: str, content: str) -> Path:
+def _save_article(topic: str, content: str, variant: str = "hatena") -> Path:
     """記事をMarkdownファイルとして保存する"""
     CONTENT_DIR.mkdir(exist_ok=True)
     date_str = datetime.now().strftime("%Y%m%d")
     slug     = re.sub(r"[^\w\s-]", "", topic.lower())
     slug     = re.sub(r"\s+", "_", slug.strip())[:40] or "article"
-    filename = f"{date_str}_{slug}.md"
+    suffix   = "_zenn" if variant == "zenn" else "_hatena"
+    filename = f"{date_str}_{slug}{suffix}.md"
     path     = CONTENT_DIR / filename
     counter  = 1
     while path.exists():
-        path    = CONTENT_DIR / f"{date_str}_{slug}_{counter}.md"
+        path    = CONTENT_DIR / f"{date_str}_{slug}{suffix}_{counter}.md"
         counter += 1
     path.write_text(content, encoding="utf-8")
     return path

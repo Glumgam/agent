@@ -76,6 +76,17 @@ topics: {topics_str}
 published: false
 ---
 '''
+    # はてなブログへの導線フッターを追加（投稿済みの場合のみ）
+    try:
+        from publisher_linker import get_links, make_zenn_footer
+        links      = get_links(article_path.name)
+        hatena_url = links.get("hatena_url", "")
+        if hatena_url:
+            content = content + make_zenn_footer(hatena_url)
+            print(f"  🔗 はてな導線を追加: {hatena_url}")
+    except Exception:
+        pass
+
     return frontmatter + content
 
 
@@ -260,8 +271,12 @@ def publish_all(dry_run: bool = False) -> dict:
         _save_publish_log(log)
         print(f"  🔄 ログ同期: {cleaned}件削除")
 
-    unpublished = [a for a in articles
-                   if not a.name.startswith("._") and a.name not in log]
+    unpublished = [
+        a for a in articles
+        if not a.name.startswith("._")
+        and a.name not in log
+        and not a.name.endswith("_hatena.md")  # はてな版は除外
+    ]
 
     print(f"\n{'='*50}")
     print(f"  Zenn自動投稿")

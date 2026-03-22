@@ -133,8 +133,8 @@
     "bug_fix": {
       "name": "bug_fix",
       "task_example": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
-      "success_count": 208,
-      "last_used": "2026-03-22T06:39:35.082174+00:00",
+      "success_count": 210,
+      "last_used": "2026-03-22T07:57:01.017623+00:00",
       "tools_used": [
         "run",
         "done",
@@ -169,8 +169,8 @@
     "testing": {
       "name": "testing",
       "task_example": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
-      "success_count": 198,
-      "last_used": "2026-03-22T06:46:26.858106+00:00",
+      "success_count": 199,
+      "last_used": "2026-03-22T07:20:47.519241+00:00",
       "tools_used": [
         "done",
         "run",

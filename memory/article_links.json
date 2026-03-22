@@ -1,0 +1,67 @@
+{
+  "20260321_ollamaでローカルllmを動かす完全ガイド.md": {
+    "zenn_url": "https://zenn.dev/granking/articles/ollama-llm-guide-complete-local",
+    "hatena_url": "https://granking.hatenablog.com/entry/2026/03/22/155014",
+    "title": "OllamaでローカルLLMを動かす完全ガイド"
+  },
+  "20260321_ollamaのモデルをpythonから使う実践ガイド.md": {
+    "zenn_url": "https://zenn.dev/granking/articles/python-ollama-practical-guide-model",
+    "hatena_url": "https://granking.hatenablog.com/entry/2026/03/22/155015",
+    "title": "OllamaのモデルをPythonから使う実践ガイド"
+  },
+  "20260321_pythonでexcelレポートを自動生成する.md": {
+    "zenn_url": "https://zenn.dev/granking/articles/python-excel-autogen-report",
+    "hatena_url": "https://granking.hatenablog.com/entry/2026/03/22/155015_1",
+    "title": "PythonでExcelレポートを自動生成する"
+  },
+  "20260321_pythonでファイルをgit自動管理する方法.md": {
+    "zenn_url": "https://zenn.dev/granking/articles/python-git-how-to-file-management",
+    "hatena_url": "https://granking.hatenablog.com/entry/2026/03/22/155016",
+    "title": "PythonでファイルをGit自動管理するメソッド"
+  },
+  "20260321_pythonで並列処理を実装する3つの方法.md": {
+    "zenn_url": "https://zenn.dev/granking/articles/python-parallel-impl-how-to",
+    "hatena_url": "https://granking.hatenablog.com/entry/2026/03/22/155016_1",
+    "title": "pythonで並列処理を実装する3つの方法"
+  },
+  "20260321_pythonのloggingモジュール実践入門.md": {
+    "zenn_url": "https://zenn.dev/granking/articles/python-practical-intro-logging",
+    "hatena_url": "https://granking.hatenablog.com/entry/2026/03/22/155017",
+    "title": "Pythonのloggingモジュール実践入門"
+  },
+  "20260321_pythonのコンテキストマネージャを自作する方法.md": {
+    "zenn_url": "https://zenn.dev/granking/articles/python-context-manager-how-to",
+    "hatena_url": "https://granking.hatenablog.com/entry/2026/03/22/155017_1",
+    "title": "Pythonのコンテキストマネージャを自作するメソッド"
+  },
+  "20260321_pythonのデータクラスとnamedtupleの使い分け.md": {
+    "zenn_url": "https://zenn.dev/granking/articles/python-dataclass-comparison-namedtuple",
+    "hatena_url": "https://granking.hatenablog.com/entry/2026/03/22/155018",
+    "title": "Pythonのデータクラスとnamedtupleの使い分け"
+  },
+  "20260321_richでpythonのcli出力を美しくする.md": {
+    "zenn_url": "https://zenn.dev/granking/articles/python-cli-rich",
+    "hatena_url": "https://granking.hatenablog.com/entry/2026/03/22/155018_1",
+    "title": "richでPythonのCLI出力を美しくする"
+  },
+  "20260321_typerでpython_cliツールを簡単に作る.md": {
+    "zenn_url": "https://zenn.dev/granking/articles/python-cli-typer",
+    "hatena_url": "https://granking.hatenablog.com/entry/2026/03/22/155018_2",
+    "title": "typerでPython CLIツールを簡単に作る"
+  },
+  "20260322_pythonのデコレータを使いこなす実践テクニック.md": {
+    "zenn_url": "https://zenn.dev/granking/articles/python-practical-decorator",
+    "hatena_url": "https://granking.hatenablog.com/entry/2026/03/22/155019",
+    "title": "Pythonのデコレータを使いこなす実践テクニック"
+  },
+  "20260322_sentence_transformersでテキスト検索を実装する.md": {
+    "zenn_url": "https://zenn.dev/granking/articles/impl-sentence-transformer-search",
+    "hatena_url": "https://granking.hatenablog.com/entry/2026/03/22/155020",
+    "title": "Sentence Transformersでテキスト検索を実装する"
+  },
+  "20260322_pythonの内包表記とジェネレータの使い分け.md": {
+    "zenn_url": "https://zenn.dev/granking/articles/python-comparison-comprehension",
+    "hatena_url": "https://granking.hatenablog.com/entry/2026/03/22/155019_1",
+    "title": "Pythonの内包表記とジェネレータの使い分け"
+  }
+}
