@@ -13,6 +13,7 @@ import json
 import base64
 import requests
 import argparse
+import xml.sax.saxutils as saxutils
 from pathlib import Path
 from datetime import datetime
 
@@ -48,43 +49,32 @@ def _save_log(log: dict):
     )
 
 
-def _make_hatena_entry(title: str, content: str, draft: bool = True) -> str:
-    """AtomPub形式のXMLを生成する"""
-    draft_str = "yes" if draft else "no"
-    # MarkdownをHTMLに簡易変換
-    html = _markdown_to_html(content)
+def _prepare_content(content: str) -> tuple:
+    """
+    記事を投稿用に準備する。
+    Returns: (content, content_type)
+    """
+    # フロントマター除去
+    content = re.sub(r'^---.*?---\n', '', content, flags=re.DOTALL)
+    # Markdownをそのまま返す
+    return content.strip(), "text/plain"
+
+
+def _make_hatena_entry(title: str, body: str, content_type: str, draft: bool = True) -> str:
+    """AtomPub形式のXMLエントリを生成する"""
+    # タイトルとbodyをXMLエスケープ（& < > が含まれるMarkdown対策）
+    title_escaped = saxutils.escape(title)
+    body_escaped  = saxutils.escape(body)
+    draft_str     = "yes" if draft else "no"
     return f"""<?xml version="1.0" encoding="utf-8"?>
 <entry xmlns="http://www.w3.org/2005/Atom"
        xmlns:app="http://www.w3.org/2007/app">
-  <title>{title}</title>
-  <content type="text/html">{html}</content>
+  <title>{title_escaped}</title>
+  <content type="{content_type}">{body_escaped}</content>
   <app:control>
     <app:draft>{draft_str}</app:draft>
   </app:control>
 </entry>"""
-
-
-def _markdown_to_html(md: str) -> str:
-    """MarkdownをHTMLに変換する（簡易版）"""
-    try:
-        import markdown
-        return markdown.markdown(md, extensions=["fenced_code", "tables"])
-    except ImportError:
-        # markdownライブラリがない場合は簡易変換
-        html = md
-        # コードブロック
-        html = re.sub(
-            r"```(\w+)?\n(.*?)```",
-            lambda m: f"<pre><code>{m.group(2)}</code></pre>",
-            html, flags=re.DOTALL
-        )
-        # 見出し
-        html = re.sub(r"^### (.+)$", r"<h3>\1</h3>", html, flags=re.MULTILINE)
-        html = re.sub(r"^## (.+)$",  r"<h2>\1</h2>", html, flags=re.MULTILINE)
-        html = re.sub(r"^# (.+)$",   r"<h1>\1</h1>", html, flags=re.MULTILINE)
-        # 改行
-        html = html.replace("\n", "<br>\n")
-        return html
 
 
 def post_article(
@@ -103,7 +93,8 @@ def post_article(
     Returns:
         {"success": bool, "url": str, "entry_id": str}
     """
-    xml = _make_hatena_entry(title, content, draft=draft)
+    body, content_type = _prepare_content(content)
+    xml = _make_hatena_entry(title, body, content_type, draft=draft)
     credentials = base64.b64encode(
         f"{HATENA_ID}:{api_key}".encode()
     ).decode()
@@ -156,10 +147,9 @@ def publish_article(article_path: Path, api_key: str, dry_run: bool = False) -> 
     if not title:
         title = article_path.stem.replace("_", " ")
 
-    # フロントマター（Zenn用）を除去
-    body = re.sub(r"^---.*?---\n", "", content, flags=re.DOTALL).strip()
-
     # Zennへの誘導リンクをフッターに追加
+    # ※フロントマター除去は _prepare_content() 内で実施
+    body = content
     zenn_footer = f"""
 
 ---
