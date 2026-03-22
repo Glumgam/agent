@@ -192,5 +192,31 @@
     "review_feedback": "ライブラリや関数の詳細な説明を追加して、より深い理解を促進することが望ましい。",
     "quality_passed": true,
     "quality_reason": "OK"
+  },
+  {
+    "title": "PythonでAIエージェントを自作する方法",
+    "genre": "ai_tools",
+    "path": "/Volumes/ESD-EHA/agent/content/20260322_pythonでaiエージェントを自作する方法_zenn.md",
+    "rag_hits": 4,
+    "word_count": 1624,
+    "generated_at": "2026-03-22T17:09:51.332096",
+    "review_score": 8,
+    "review_passed": true,
+    "review_feedback": "誤用を修正し、Qdrantのインストールと動作確認を追加するとより良い記事になります。",
+    "quality_passed": true,
+    "quality_reason": "OK"
+  },
+  {
+    "title": "PythonでAIエージェントを自作する方法",
+    "genre": "ai_tools",
+    "path": "/Volumes/ESD-EHA/agent/content/20260322_pythonでaiエージェントを自作する方法_hatena.md",
+    "rag_hits": 4,
+    "word_count": 3629,
+    "generated_at": "2026-03-22T17:18:22.112187",
+    "review_score": 8,
+    "review_passed": true,
+    "review_feedback": "「メソッド」の誤用を修正し、FAQセクションを実際の質問と回答に置き換えてください。",
+    "quality_passed": true,
+    "quality_reason": "OK"
   }
 ]

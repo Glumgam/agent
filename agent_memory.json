@@ -1,9 +1,5 @@
 [
   {
-    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
-    "summary": "edited: buggy.py | ended_with: edit_file"
-  },
-  {
     "task": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
     "summary": "edited: calculator.py | ended_with: edit_file"
   },
@@ -78,5 +74,9 @@
   {
     "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))\n\n[RETRY HINT] 修正後のコードを保存し、Python 解釈器で実行します。以下のコマンドを使用します。",
     "summary": "created: buggy.py | last_run_output: [exit code 0]\n7 | ended_with: run"
+  },
+  {
+    "task": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
+    "summary": "edited: calculator.py | ended_with: ask_user"
   }
 ]

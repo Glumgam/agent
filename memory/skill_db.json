@@ -169,8 +169,8 @@
     "testing": {
       "name": "testing",
       "task_example": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
-      "success_count": 199,
-      "last_used": "2026-03-22T07:20:47.519241+00:00",
+      "success_count": 200,
+      "last_used": "2026-03-22T08:03:24.551583+00:00",
       "tools_used": [
         "done",
         "run",
