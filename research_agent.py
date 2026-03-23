@@ -422,6 +422,24 @@ def _save_topic_knowledge(result: dict):
     save_path.write_text("\n".join(lines), encoding="utf-8")
     print(f"  💾 保存: knowledge/{result['topic_id']}/{save_path.name}")
 
+    # --- NEWS RSS START ---
+    # RSSニュースを knowledge ファイルに追記する
+    try:
+        from news_collector import TOPIC_TO_GENRE, get_latest_news, format_news_for_article
+        genre      = TOPIC_TO_GENRE.get(result["topic_id"], "general")
+        news_items = get_latest_news(genre, max_items=10)
+        news_text  = format_news_for_article(news_items)
+        if news_text:
+            existing = save_path.read_text(encoding="utf-8")
+            save_path.write_text(
+                existing + f"\n\n## 最新ニュース（RSS: {genre}）\n\n{news_text}\n",
+                encoding="utf-8",
+            )
+            print(f"  📰 RSSニュース追記: {len(news_items)}件 [{genre}]")
+    except Exception as e:
+        pass  # ニュース収集失敗はサイレントスキップ
+    # --- NEWS RSS END ---
+
 
 def _generate_daily_report(all_results: list, evolved_skills: list):
     date_str = datetime.now().strftime("%Y-%m-%d")

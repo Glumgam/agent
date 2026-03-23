@@ -13,6 +13,7 @@ from datetime import datetime
 from pathlib import Path
 
 import requests
+import feedparser
 
 AGENT_ROOT  = Path(__file__).parent
 FINANCE_DIR = AGENT_ROOT / "knowledge" / "finance"
@@ -151,6 +152,164 @@ def fetch_ranking(rank_type: str = "up") -> list:
 
 
 # =====================================================
+# 企業名ルックアップ
+# =====================================================
+def lookup_company_name(code: str) -> str:
+    """
+    銘柄コードから企業名を取得する。
+    kabutan の銘柄ページから取得。失敗時はコードをそのまま返す。
+    """
+    try:
+        # 英字付きコード（533A等）はそのまま使用。数字のみ抽出しない
+        query_code = code.strip()
+        if not query_code:
+            return code
+        url  = f"https://kabutan.jp/stock/?code={query_code}"
+        resp = requests.get(url, headers=HEADERS, timeout=10)
+        resp.raise_for_status()
+        # <h1> タグから企業名を抽出（例: "農中ＳＰ５Ｕ(533A) 基本情報"）
+        h1s = re.findall(r'<h1[^>]*>(.*?)</h1>', resp.text, re.DOTALL)
+        for h1 in h1s:
+            # HTML タグを除去
+            text = re.sub(r'<[^>]+>', '', h1).strip()
+            # "（コード）基本情報" の部分を除去して企業名だけ取り出す
+            text = re.sub(r'\s*\([^)]+\)\s*基本情報.*$', '', text).strip()
+            text = re.sub(r'\s*基本情報.*$', '', text).strip()
+            if text and len(text) >= 2 and not re.match(r'^[\d\s]+$', text):
+                return text
+    except Exception:
+        pass
+    return code
+
+
+def fetch_ranking_with_names(rank_type: str = "up") -> list:
+    """企業名付きランキングを取得する（銘柄コードがある場合は企業名に変換）"""
+    raw = fetch_ranking(rank_type)
+    results = []
+    for item in raw:
+        # "1. 533A (+21.38%)" パターンから銘柄コードを抽出
+        m = re.match(r'(\d+)\.\s*([^\s(]+)\s*\(([^)]+)\)', item)
+        if m:
+            rank   = m.group(1)
+            code   = m.group(2)
+            change = m.group(3)
+            # 銘柄コードっぽい場合（4桁数字+英字）は企業名を取得
+            if re.match(r'^\d{3,4}[A-Z]?$', code):
+                name = lookup_company_name(code)
+                results.append(f"{rank}. {name} ({change})")
+            else:
+                results.append(item)
+        else:
+            results.append(item)
+    return results
+
+
+# =====================================================
+# ニュース収集
+# =====================================================
+RSS_FEEDS = {
+    "NHK経済":  "https://www3.nhk.or.jp/rss/news/cat5.xml",   # 63件・安定
+    "東洋経済": "https://toyokeizai.net/list/feed/rss",        # 20件
+    "Yahoo金融": "https://news.yahoo.co.jp/rss/topics/business.xml",  # 8件
+}
+
+
+def fetch_financial_news() -> list:
+    """
+    複数RSSソースから金融ニュースを収集する。
+    """
+    all_news = []
+
+    for source, url in RSS_FEEDS.items():
+        try:
+            feed = feedparser.parse(url)
+            count = 0
+            for entry in feed.entries[:10]:
+                title   = entry.get("title", "").strip()
+                summary = re.sub(r'<[^>]+>', '', entry.get("summary", ""))[:200].strip()
+                link    = entry.get("link", "")
+                pub     = entry.get("published", "")
+                if title:
+                    all_news.append({
+                        "source":  source,
+                        "title":   title,
+                        "summary": summary,
+                        "link":    link,
+                        "pub":     pub,
+                    })
+                    count += 1
+            print(f"  ✅ {source}: {count}件取得")
+        except Exception as e:
+            print(f"  ⚠️ {source}: {e}")
+
+    # タイトル先頭30文字で重複除去
+    seen, unique = set(), []
+    for news in all_news:
+        key = news["title"][:30]
+        if key not in seen:
+            seen.add(key)
+            unique.append(news)
+
+    return unique[:30]
+
+
+def fetch_market_news_realtime() -> list:
+    """
+    Yahoo Finance Japan のウェブページからリアルタイムニュースを収集する。
+    NHK・東洋経済は RSS で取得済みのため対象外。
+    """
+    news = []
+
+    # Yahoo Finance Japan（ウェブスクレイプ）
+    try:
+        url  = "https://finance.yahoo.co.jp/news/"
+        resp = requests.get(url, headers=HEADERS, timeout=15)
+        # <a> タグの class="title" か data 属性付きリンクテキストを抽出
+        titles = re.findall(
+            r'<a[^>]*class="[^"]*title[^"]*"[^>]*>([^<]{5,80})</a>',
+            resp.text,
+        )
+        # フォールバック: li 内のリンクテキスト
+        if not titles:
+            titles = re.findall(
+                r'<li[^>]*>\s*<a[^>]+>([^<]{8,80})</a>',
+                resp.text,
+            )
+        # ナビ・UI テキストを除外（10文字以上、サイト名除外）
+        _skip = {"Yahoo", "JAPAN", "プライバシー", "利用規約", "ヘルプ",
+                 "カードローン", "ログイン", "新規登録", "サービス", "一覧"}
+        for t in titles[:20]:
+            t = t.strip()
+            if len(t) < 10:
+                continue
+            if any(s in t for s in _skip):
+                continue
+            news.append({"source": "Yahoo Finance", "title": t})
+        print(f"  ✅ Yahoo Finance(web): {len(news)}件取得")
+    except Exception as e:
+        print(f"  ⚠️ Yahoo Finance: {e}")
+
+    return news
+
+
+def _format_news_for_article(news_list: list) -> str:
+    """ニュースリストを記事用のMarkdownテキストに変換する"""
+    if not news_list:
+        return "ニュースデータなし"
+    by_source: dict = {}
+    for n in news_list:
+        src = n.get("source", "その他")
+        by_source.setdefault(src, []).append(n)
+    lines = []
+    for src, items in by_source.items():
+        lines.append(f"\n### {src}")
+        for n in items[:5]:
+            title = n.get("title", "")
+            lines.append(f"- {title}")
+    return "\n".join(lines)
+
+
+# =====================================================
 # データ保存
 # =====================================================
 def collect_finance_data() -> dict:
@@ -160,19 +319,37 @@ def collect_finance_data() -> dict:
     from disclosure_analyzer import analyze_today_disclosures, format_for_article
 
     data = {
-        "date":              datetime.now().strftime("%Y-%m-%d"),
+        "date":              datetime.now().strftime("%Y-%m-%d %H:%M"),
         "market_summary":    fetch_market_summary(),
-        "up_ranking":        fetch_ranking("up"),
-        "down_ranking":      fetch_ranking("down"),
+        "up_ranking":        fetch_ranking_with_names("up"),
+        "down_ranking":      fetch_ranking_with_names("down"),
         "disclosure_results": analyze_today_disclosures(),
     }
-
-    # 記事用テキストを生成
     data["disclosure_text"] = format_for_article(data["disclosure_results"])
 
-    # 保存
+    # ニュース収集（複数ソース）
+    print("  📰 ニュース収集中...")
+    rss_news      = fetch_financial_news()
+    realtime_news = fetch_market_news_realtime()
+    data["news"]      = rss_news + realtime_news
+    data["news_text"] = _format_news_for_article(data["news"])
+    print(f"  📰 合計 {len(data['news'])} 件のニュース取得")
+
+    # マクロ経済データ収集
+    try:
+        from macro_data_collector import collect_macro_data, format_macro_for_article
+        macro_data         = collect_macro_data()
+        data["macro"]      = macro_data
+        data["macro_text"] = format_macro_for_article(macro_data)
+    except Exception as e:
+        print(f"  ⚠️ マクロデータ取得失敗: {e}")
+        data["macro"]      = {}
+        data["macro_text"] = ""
+
+    # 保存（日時付きファイル名で重複しない）
     FINANCE_DIR.mkdir(parents=True, exist_ok=True)
-    out_path = FINANCE_DIR / f"{data['date']}_finance_data.json"
+    stamp    = datetime.now().strftime("%Y-%m-%d_%H%M")
+    out_path = FINANCE_DIR / f"{stamp}_finance_data.json"
     out_path.write_text(
         json.dumps(data, ensure_ascii=False, indent=2),
         encoding="utf-8",

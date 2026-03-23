@@ -86,6 +86,15 @@ def run_autonomous_loop():
         _log(f"  サイクル {cycle_num} | 残り {_fmt_duration(remaining)}")
         _log(f"{'='*60}")
 
+        # --- Phase 0.5: 全ジャンルニュース一括収集（8サイクルに1回）---
+        if cycle_num % 8 == 0:
+            _log(f"\n[Phase 0.5] ニュース一括収集")
+            news_result = _run_news_collection()
+            if news_result.get("success"):
+                _log(f"  📰 ニュース収集完了")
+            else:
+                _log(f"  ℹ️  ニュース収集スキップ")
+
         # --- Phase 0: 公式ドキュメント収集（8サイクルに1回）---
         if cycle_num % 8 == 1:
             _log(f"\n[Phase 0] 公式ドキュメント収集")
@@ -331,6 +340,30 @@ print(json.dumps({{
         _log(f"  ⚠️ ドキュメント収集エラー: {e}")
         return {"registered": 0, "skipped": 0, "failed": 0}
 # --- DOC COLLECTION END ---
+
+
+# --- NEWS COLLECTION START ---
+def _run_news_collection() -> dict:
+    """全ジャンルのニュースを一括収集する（8サイクルに1回）"""
+    try:
+        result = subprocess.run(
+            [PYTHON, "-c",
+             "import sys; sys.path.insert(0, '.'); "
+             "from news_collector import collect_news; "
+             "r = collect_news(); "
+             "total = sum(len(v) for v in r.values()); "
+             "print(f'収集完了: {total}件')"],
+            cwd=AGENT_ROOT, capture_output=True, text=True, timeout=300,
+        )
+        _log(result.stdout[-200:] if result.stdout else "")
+        return {"success": result.returncode == 0}
+    except subprocess.TimeoutExpired:
+        _log("  ⚠️ ニュース収集タイムアウト（5分）")
+        return {}
+    except Exception as e:
+        _log(f"  ⚠️ ニュース収集エラー: {e}")
+        return {}
+# --- NEWS COLLECTION END ---
 
 
 def _run_zenn_publish() -> dict:

@@ -73,8 +73,8 @@
     "coding": {
       "name": "coding",
       "task_example": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
-      "success_count": 362,
-      "last_used": "2026-03-22T23:33:35.882631+00:00",
+      "success_count": 404,
+      "last_used": "2026-03-23T22:42:31.060770+00:00",
       "tools_used": [
         "create_file",
         "run",
@@ -133,8 +133,8 @@
     "bug_fix": {
       "name": "bug_fix",
       "task_example": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
-      "success_count": 256,
-      "last_used": "2026-03-23T00:15:06.097075+00:00",
+      "success_count": 291,
+      "last_used": "2026-03-23T22:44:59.452919+00:00",
       "tools_used": [
         "run",
         "done",
@@ -169,8 +169,8 @@
     "testing": {
       "name": "testing",
       "task_example": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
-      "success_count": 245,
-      "last_used": "2026-03-23T00:22:44.151890+00:00",
+      "success_count": 279,
+      "last_used": "2026-03-23T22:52:16.878034+00:00",
       "tools_used": [
         "done",
         "run",
@@ -892,6 +892,82 @@
         "cli"
       ],
       "summary": "Deep Research により獲得。分野: AI 論文"
+    },
+    "tool_combined_cli_encrypt_decrypt": {
+      "name": "tool_combined_cli_encrypt_decrypt",
+      "task_example": "[深掘り獲得] セキュリティ関連の暗号化と解読機能を提供し、CLIアプリ構築をサポートします。 (from: スキル発展)",
+      "success_count": 1,
+      "last_used": "2026-03-23T03:10:06.321813+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [
+        "cryptography"
+      ],
+      "keywords": [
+        "スキル発展",
+        "tool",
+        "combined",
+        "cli",
+        "encrypt",
+        "decrypt"
+      ],
+      "summary": "Deep Research により獲得。分野: スキル発展"
+    },
+    "tool_advanced_cli_composer": {
+      "name": "tool_advanced_cli_composer",
+      "task_example": "[深掘り獲得] 複数のCLIアプリを組み合わせて、一連のタスクを自動化する機能を提供します。 (from: スキル発展)",
+      "success_count": 1,
+      "last_used": "2026-03-23T03:47:01.062638+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [],
+      "keywords": [
+        "スキル発展",
+        "tool",
+        "advanced",
+        "cli",
+        "composer"
+      ],
+      "summary": "Deep Research により獲得。分野: スキル発展"
+    },
+    "tool_batch_cli_command": {
+      "name": "tool_batch_cli_command",
+      "task_example": "[深掘り獲得] 複数のCLIコマンドを一括して実行する機能提供 (from: スキル発展)",
+      "success_count": 1,
+      "last_used": "2026-03-23T17:08:07.795525+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [],
+      "keywords": [
+        "スキル発展",
+        "tool",
+        "batch",
+        "cli",
+        "command"
+      ],
+      "summary": "Deep Research により獲得。分野: スキル発展"
+    },
+    "tool_batch_transformers": {
+      "name": "tool_batch_transformers",
+      "task_example": "[深掘り獲得] Hugging FaceのLLMモデルを使用して複数のテキストデータを一括で変換する機能を提供します。 (from: スキル発展)",
+      "success_count": 1,
+      "last_used": "2026-03-23T21:24:18.144348+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [
+        "transformers"
+      ],
+      "keywords": [
+        "スキル発展",
+        "tool",
+        "batch",
+        "transformers"
+      ],
+      "summary": "Deep Research により獲得。分野: スキル発展"
     }
   }
 }

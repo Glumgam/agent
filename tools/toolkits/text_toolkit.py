@@ -4,6 +4,10 @@ TEXT Toolkit
 カテゴリ: text
 作成日: 2026-03-18
 収録ツール:
+- tool_batch_transformers: Deep Research により獲得。分野: スキル発展
+- tool_batch_cli_command: Deep Research により獲得。分野: スキル発展
+- tool_advanced_cli_composer: Deep Research により獲得。分野: スキル発展
+- tool_combined_cli_encrypt_decrypt: Deep Research により獲得。分野: スキル発展
 - tool_encrypt_decrypt_with_metadata: Deep Research により獲得。分野: スキル発展
 - tool_cli_encrypt_decrypt_transformer: Deep Research により獲得。分野: スキル発展
 - tool_combined_cli: Deep Research により獲得。分野: スキル発展
@@ -744,3 +748,153 @@ if __name__ == "__main__":
     
     decrypted_text = tool_encrypt_decrypt_with_metadata(encrypted_text, "decrypt")
     print(f"Decrypted Text: {decrypted_text}")
+
+
+# ==================================================
+# tool_combined_cli_encrypt_decrypt
+# ==================================================
+
+def tool_combined_cli_encrypt_decrypt(text, mode="encrypt", key=None, output_filename=None):
+    try:
+        if mode not in ["encrypt", "decrypt"]:
+            raise ValueError("Invalid mode. Use 'encrypt' or 'decrypt'.")
+
+        if key is None and mode == "decrypt":
+            return "ERROR: Key must be provided for decryption."
+
+        if output_filename is None:
+            output_filename = "encrypted_data.txt" if mode == "encrypt" else "decrypted_data.txt"
+
+        fernet = Fernet(key)
+
+        if mode == "encrypt":
+            encrypted_text = fernet.encrypt(text.encode())
+            with open(output_filename, "wb") as file:
+                file.write(encrypted_text)
+            return f"Data encrypted and saved to {output_filename}"
+        else:  # mode == "decrypt"
+            decrypted_text = fernet.decrypt(text.encode()).decode()
+            with open(output_filename, "w") as file:  # Change "wb" to "w"
+                file.write(decrypted_text)
+            return f"Data decrypted and saved to {output_filename}"
+
+    except Exception as e:
+        return f"ERROR: {str(e)}"
+
+if __name__ == "__main__":
+    # Encryption example
+    key = generate_key()
+    save_key(key, "secret.key")
+    encrypted_data = tool_combined_cli_encrypt_decrypt("Hello, World!", mode="encrypt", key=key)
+    print(encrypted_data)
+
+    # Decryption example
+    decrypted_data = tool_combined_cli_encrypt_decrypt(encrypted_data, mode="decrypt", key=key)
+    print(decrypted_data)
+
+
+# ==================================================
+# tool_advanced_cli_composer
+# ==================================================
+
+def tool_advanced_cli_composer(command_str):
+    """
+    Executes a string containing multiple CLI commands separated by semicolons.
+    
+    Args:
+        command_str (str): A string containing multiple CLI commands.
+
+    Returns:
+        str: Output of the executed commands.
+
+    Raises:
+        Exception: If an error occurs during execution.
+    """
+    try:
+        import subprocess
+    except ImportError:
+        return "ERROR: subprocess module not found. Please install Python's standard library."
+
+    # Split the command string into individual commands based on semicolons
+    commands = command_str.split(';')
+    
+    output = ""
+    for command in commands:
+        if command.strip():
+            result = subprocess.run(command, shell=True, capture_output=True, text=True)
+            output += result.stdout + "\n" + result.stderr
+
+    return output
+
+
+if __name__ == "__main__":
+    # Example usage
+    input_commands = "echo Hello; echo World"
+    print(tool_advanced_cli_composer(input_commands))
+
+
+# ==================================================
+# tool_batch_cli_command
+# ==================================================
+
+def tool_batch_cli_command(commands):
+    """
+    Executes multiple CLI commands in batch.
+
+    Args:
+        commands (str): A string containing the CLI commands separated by newlines.
+
+    Returns:
+        str: Output of all commands or an error message.
+    """
+    try:
+        output = ""
+        for command in commands.split("\n"):
+            result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
+            output += result.stdout
+        return output.strip()
+    except subprocess.CalledProcessError as e:
+        return f"ERROR: Command failed with exit code {e.returncode}: {e.stderr}"
+    except Exception as e:
+        return f"ERROR: An unexpected error occurred: {str(e)}"
+
+if __name__ == "__main__":
+    commands = """
+    echo Hello, World!
+    date
+    ls -la
+    """
+    print(tool_batch_cli_command(commands))
+
+
+# ==================================================
+# tool_batch_transformers
+# ==================================================
+
+def tool_batch_transformers(text_list):
+    try:
+        # Create a text classification pipeline using Hugging Face's transformers library
+        classifier = pipeline('sentiment-analysis')
+        
+        # Process the list of texts in batch
+        results = classifier(text_list)
+        
+        # Convert results to a readable string format
+        output_str = '\n'.join([f"{text}: {result['label']} ({result['score']:.4f})" for text, result in zip(text_list, results)])
+        
+        return output_str
+    
+    except ImportError as e:
+        return f"ERROR: {e}"
+    
+    except Exception as e:
+        return f"ERROR: {str(e)}"
+
+if __name__ == "__main__":
+    # Example usage
+    texts = [
+        "I love programming!",
+        "This is a great day.",
+        "I am feeling sad today."
+    ]
+    print(tool_batch_transformers(texts))
