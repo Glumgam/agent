@@ -335,6 +335,27 @@ def collect_finance_data() -> dict:
     data["news_text"] = _format_news_for_article(data["news"])
     print(f"  📰 合計 {len(data['news'])} 件のニュース取得")
 
+    # SNSデータ収集（ランキング上位銘柄＋高信頼ニュースでクロスチェック）
+    try:
+        from social_collector import collect_social_data, format_social_for_article
+        # ランキングから銘柄コードを抽出
+        top_codes = []
+        for item in data.get("up_ranking", [])[:3]:
+            m = re.search(r'\((\d{4})\)', item)
+            if m:
+                top_codes.append(m.group(1))
+        high_cred = [
+            n for n in data.get("news", [])
+            if n.get("credibility_score", 0) >= 0.7
+        ]
+        social_data         = collect_social_data(top_codes, high_cred)
+        data["social"]      = social_data
+        data["social_text"] = format_social_for_article(social_data)
+    except Exception as e:
+        print(f"  ⚠️ SNSデータ取得失敗: {e}")
+        data["social"]      = {}
+        data["social_text"] = ""
+
     # マクロ経済データ収集
     try:
         from macro_data_collector import collect_macro_data, format_macro_for_article
