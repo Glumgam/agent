@@ -4,6 +4,7 @@ WEB Toolkit
 カテゴリ: web
 作成日: 2026-03-18
 収録ツール:
+- tool_fetch_arxiv_papers: Deep Research により獲得。分野: Python 技術トレンド
 - tool_httpx_request: 非同期HTTPクライアント (同期ラッパー)
 - tool_httpx: 非同期HTTPクライアント (同期ラッパー)
 """
@@ -124,3 +125,22 @@ def tool_httpx_request(url: str, method: str = "GET") -> str:
 if __name__ == "__main__":
     result = tool_httpx_request("https://httpbin.org/get")
     print(result)
+
+
+# ==================================================
+# tool_fetch_arxiv_papers
+# ==================================================
+
+def tool_fetch_arxiv_papers(query):
+    url = f"https://arxiv.org/api/query?search_query={query}&start=0&max_results=3"
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            return response.text
+        else:
+            return "ERROR: Failed to fetch papers from arXiv API"
+    except Exception as e:
+        return f"ERROR: {str(e)}"
+
+if __name__ == "__main__":
+    print(tool_fetch_arxiv_papers("AI agent research"))

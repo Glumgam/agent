@@ -40,6 +40,12 @@ TECH_GENRES = [
         "queries":  ["Python automation script 2026", "Python workflow automation"],
         "template": "tutorial",
     },
+    {
+        "id":      "finance_news",
+        "label":   "投資・市場情報",
+        "queries": ["日本株 市況", "株主優待 最新"],
+        "template": "finance",
+    },
 ]
 
 # 全テンプレートに適用する品質ルール
@@ -135,6 +141,83 @@ HATENA_TEMPLATE = """
 - 実務で使える詳細な内容
 - コードは全て動作するものを
 - 「Zennに概要版あり」と冒頭で触れる
+"""
+
+# Zenn用投資記事（概要）
+ZENN_FINANCE_TEMPLATE = """
+【絶対条件】
+- 必ず最初の行を「# 記事タイトル」で始めること
+- 1200〜2000文字
+- ## 見出しを3つ以上
+- 免責事項を末尾に含める
+
+以下の市場データを使って、投資家向けの市況解説記事を日本語で書いてください。
+トピック: {topic}
+市場データ:
+{context}
+
+記事の構成:
+# {topic}
+## 本日の市場概況
+（日経平均・主要指数の動き）
+## 注目ニュース
+（株主優待・株式分割・適時開示の主要トピック）
+## 値動きのポイント
+（値上がり・値下がりランキングの解説）
+## まとめ
+
+---
+⚠️ 免責事項: この記事は情報提供を目的としており、投資助言ではありません。
+投資判断はご自身の責任で行ってください。
+
+制約:
+- 特定銘柄の売買を推奨しない
+- 「買い」「売り」などの投資判断を示さない
+- データを客観的に紹介する
+- 日本語で書く
+"""
+
+# はてな用投資記事（詳細）
+HATENA_FINANCE_TEMPLATE = """
+【絶対条件】
+- 必ず最初の行を「# 記事タイトル」で始めること
+- 3000文字以上
+- ## 見出しを5つ以上
+- 免責事項を末尾に含める
+
+以下の市場データを使って、投資家向けの詳細な市況解説記事を日本語で書いてください。
+トピック: {topic}
+市場データ:
+{context}
+
+記事の構成:
+# {topic} - 詳細解説
+## はじめに
+（本日の市場の概要・対象読者）
+## 本日の市場概況
+（日経平均・TOPIX・マザーズ等の詳細。market_summaryのnikkei_priceを使うこと）
+## 本日の適時開示まとめ
+（context内の disclosure_text をそのまま活用してポジティブ/ネガティブ/中立に分類して紹介）
+## 注目の提携・共同開発
+（notable開示がある場合、関連企業のpartner_analysisを使って深掘り解説。なければ省略）
+## 値上がり・値下がりランキング解説
+（up_ranking / down_rankingのデータを使って上位銘柄の背景を解説）
+## 今週の注目ポイント
+（来週以降に向けた市場の見どころ）
+## FAQ
+（投資初心者がよく疑問に思うこと3〜5個。「よくある質問1」等プレースホルダー禁止）
+## まとめ
+
+---
+⚠️ 免責事項: この記事は情報提供を目的としており、
+投資勧誘・投資助言ではありません。
+投資判断はご自身の責任で行ってください。
+
+制約:
+- 特定銘柄の売買を推奨しない
+- データを客観的に紹介する
+- 「上昇した」「下落した」等の事実のみ記述
+- 日本語で書く
 """
 
 # 記事テンプレート
@@ -307,7 +390,7 @@ def _remove_chinese_chars(text: str) -> str:
     return text
 
 
-def _quality_check_v2(content: str, min_chars: int = 1500) -> tuple:
+def _quality_check_v2(content: str, min_chars: int = 1500, require_code: bool = True) -> tuple:
     """品質チェック + 中国語文字検出 + f-string未展開検出"""
     # 文字数チェック（variantによって閾値が異なる）
     if not content or len(content) < min_chars:
@@ -315,6 +398,10 @@ def _quality_check_v2(content: str, min_chars: int = 1500) -> tuple:
     passed, reason = _quality_check(content)
     if not passed and reason.startswith("文字数不足"):
         # min_chars で既にチェック済みなので 1500 固定チェックはスキップ
+        passed = True
+        reason = "OK"
+    if not passed and not require_code and "コードブロックなし" in reason:
+        # 投資記事等コード不要なジャンルはコードブロックチェックをスキップ
         passed = True
         reason = "OK"
     if not passed:
@@ -451,6 +538,15 @@ def generate_article(
     except Exception as e:
         print(f"  ⚠️ RAGスキップ: {e}")
 
+    # 投資ジャンルの場合: リアルタイムデータをコンテキストに注入
+    if genre_id == "finance_news" and not extra_context:
+        try:
+            from finance_data_collector import collect_finance_data
+            finance_data  = collect_finance_data()
+            extra_context = json.dumps(finance_data, ensure_ascii=False, indent=2)
+        except Exception as e:
+            print(f"  ⚠️ 投資データ取得失敗: {e}")
+
     # コンテキストを合成
     context = ""
     # トピック固有知識を注入（RAGより優先して先頭に配置）
@@ -465,15 +561,25 @@ def generate_article(
     if not context:
         context = "（関連情報なし：一般的な知識で補完してください）"
 
-    # テンプレート選択（variant に応じて切り替え）
-    genre = next((g for g in TECH_GENRES if g["id"] == genre_id), TECH_GENRES[0])
-    if variant == "zenn":
+    # テンプレート選択（variant・ジャンルに応じて切り替え）
+    genre      = next((g for g in TECH_GENRES if g["id"] == genre_id), TECH_GENRES[0])
+    is_finance = genre_id == "finance_news"
+    if is_finance:
+        if variant == "zenn":
+            template   = ZENN_FINANCE_TEMPLATE
+            min_length = 700   # コードなし・データ薄のため低め
+        else:
+            template   = HATENA_FINANCE_TEMPLATE
+            min_length = 1200  # コードなし・データ薄のため低め
+        prompt = template.format(topic=topic, context=context[:3000])
+    elif variant == "zenn":
         template   = ZENN_TEMPLATE
         min_length = 1000
+        prompt = _QUALITY_RULES + template.format(topic=topic, context=context[:3000])
     else:
         template   = HATENA_TEMPLATE
         min_length = 2000
-    prompt = _QUALITY_RULES + template.format(topic=topic, context=context[:3000])
+        prompt = _QUALITY_RULES + template.format(topic=topic, context=context[:3000])
 
     # 記事生成（品質チェック + レビュー付きリトライあり）
     from llm import ask_plain
@@ -487,7 +593,7 @@ def generate_article(
         content = ask_plain(prompt)
         # 中国語文字を除去（置換リストで対応済みの文字を日本語化）
         content = _remove_chinese_chars(content)
-        passed, reason = _quality_check_v2(content, min_chars=min_length)
+        passed, reason = _quality_check_v2(content, min_chars=min_length, require_code=not is_finance)
         if not passed:
             if attempt < max_retries - 1:
                 print(f"  ⚠️ 品質不足: {reason} → リトライ {attempt + 1}/{max_retries - 1}")
@@ -506,7 +612,7 @@ def generate_article(
 
         # --- QUALITY REVIEW START ---
         from article_reviewer import review_article
-        review = review_article(content, topic)
+        review = review_article(content, topic, genre_id=genre_id)
         print(f"  📊 品質スコア: {review['score']}/10 "
               f"({'✅ pass' if review['passed'] else '❌ fail'})")
         if review["issues"]:
@@ -531,8 +637,9 @@ def generate_article(
         # --- QUALITY REVIEW END ---
         break
 
-    # フッターを追加
-    content = _add_footer(content, topic)
+    # フッターを追加（投資記事は技術ツール紹介フッターをスキップ）
+    if not is_finance:
+        content = _add_footer(content, topic)
 
     # ファイル保存
     path = _save_article(topic, content, variant=variant)

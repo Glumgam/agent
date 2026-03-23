@@ -154,6 +154,15 @@ def run_autonomous_loop():
                 _log(f"  🐦 X投稿完了")
             else:
                 _log(f"  ℹ️  X投稿スキップ（APIキー未設定または上限）")
+
+        # 投資系記事（平日のみ・8サイクルに1回）
+        if cycle_num % 8 == 0 and datetime.now().weekday() < 5:
+            _log(f"\n[Phase 1.7c] 投資系記事生成（平日）")
+            finance_result = _run_finance_content_generation()
+            if finance_result.get("path"):
+                _log(f"  📈 投資記事生成完了")
+            else:
+                _log(f"  ℹ️  投資記事生成スキップ")
         # --- CONTENT GENERATION END ---
 
         # --- Phase 2: テスト ---
@@ -358,6 +367,27 @@ def _run_x_post() -> dict:
         _log(f"  ⚠️ X投稿エラー: {e}")
         return {}
 # --- X POST END ---
+
+
+def _run_finance_content_generation() -> dict:
+    """投資系記事を生成する（平日のみ）"""
+    try:
+        result = subprocess.run(
+            [PYTHON, "monetization_runner.py", "--genre", "finance_news"],
+            cwd=AGENT_ROOT,
+            capture_output=True,
+            text=True,
+            timeout=3600,
+        )
+        if result.stdout:
+            _log(result.stdout[-300:])
+        return {"path": "生成完了"} if result.returncode == 0 else {}
+    except subprocess.TimeoutExpired:
+        _log("  ⚠️ 投資記事生成タイムアウト（1時間）")
+        return {}
+    except Exception as e:
+        _log(f"  ⚠️ 投資記事生成エラー: {e}")
+        return {}
 
 
 # --- CONTENT GENERATION START ---

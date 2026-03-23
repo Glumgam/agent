@@ -16,3 +16,17 @@
 {"timestamp": "2026-03-23T07:31:00.558681", "topic_id": "science", "source": "news", "query": "physics biology research", "item_count": 1, "urls": [], "acquired": []}
 {"timestamp": "2026-03-23T07:43:47.365065", "topic_id": "food", "source": "news", "query": "ラーメン 新店 2026", "item_count": 1, "urls": [], "acquired": []}
 {"timestamp": "2026-03-23T07:43:48.009351", "topic_id": "food", "source": "news", "query": "グルメ おすすめ", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-23T08:29:45.869013", "topic_id": "python_tech", "source": "github", "query": "Python new library 2026-03", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-23T08:29:46.294420", "topic_id": "python_tech", "source": "github", "query": "Python tool framework 2026", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-23T08:29:46.677485", "topic_id": "python_tech", "source": "github", "query": "Python tips 2026-03", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-23T08:29:47.093617", "topic_id": "python_tech", "source": "github", "query": "Python best practices 2026", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-23T08:29:47.480095", "topic_id": "python_tech", "source": "pypi", "query": "Python new library 2026-03", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-23T08:29:47.761733", "topic_id": "python_tech", "source": "pypi", "query": "Python tool framework 2026", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-23T08:29:48.024670", "topic_id": "python_tech", "source": "pypi", "query": "Python tips 2026-03", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-23T08:29:48.369217", "topic_id": "python_tech", "source": "pypi", "query": "Python best practices 2026", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-23T08:42:52.196788", "topic_id": "ai_news", "source": "news", "query": "AI LLM agent 2026", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-23T08:42:53.063252", "topic_id": "ai_news", "source": "news", "query": "Claude GPT Gemini update 2026-03", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-23T08:42:59.074002", "topic_id": "ai_news", "source": "hackernews", "query": "AI LLM agent 2026", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-23T08:43:05.390777", "topic_id": "ai_news", "source": "hackernews", "query": "Claude GPT Gemini update 2026-03", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-23T09:22:44.902529", "topic_id": "arxiv_ai", "source": "arxiv", "query": "LLM tool use agent", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-03-23T09:22:45.821658", "topic_id": "arxiv_ai", "source": "arxiv", "query": "autonomous AI learning", "item_count": 1, "urls": [], "acquired": []}

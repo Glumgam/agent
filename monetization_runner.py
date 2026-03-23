@@ -13,7 +13,7 @@ import json
 import argparse
 import random
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, date
 
 AGENT_ROOT   = Path(__file__).parent
 TOPICS_CACHE = AGENT_ROOT / "memory" / "content_topics_cache.json"
@@ -55,6 +55,17 @@ SEED_TOPICS = {
     ],
 }
 
+# 投資系トピックは実行時に日付を埋め込む（遅延評価）
+def _finance_topics() -> list:
+    _d = datetime.now()
+    return [
+        f"本日の日本株市況まとめ（{_d.strftime('%Y年%m月%d日')}）",
+        f"今週の株主優待・株式分割情報（{_d.strftime('%Y年%m月第%W週')}）",
+        f"値上がり率ランキング解説（{_d.strftime('%Y年%m月%d日')}）",
+        f"値下がり率ランキング解説（{_d.strftime('%Y年%m月%d日')}）",
+        f"今週の配当・優待情報まとめ（{_d.strftime('%Y年%m月')}）",
+    ]
+
 
 def select_topic(genre_id: str) -> str:
     """未生成・未飽和のトピックをランダムに選ぶ"""
@@ -67,7 +78,10 @@ def select_topic(genre_id: str) -> str:
         except Exception:
             pass
 
-    candidates = SEED_TOPICS.get(genre_id, SEED_TOPICS["python_tips"])
+    if genre_id == "finance_news":
+        candidates = _finance_topics()
+    else:
+        candidates = SEED_TOPICS.get(genre_id, SEED_TOPICS["python_tips"])
 
     # 未生成かつ未飽和のトピックを選ぶ
     try:

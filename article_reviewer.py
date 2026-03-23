@@ -13,9 +13,10 @@ from pathlib import Path
 AGENT_ROOT = Path(__file__).parent
 
 
-def review_article(content: str, topic: str) -> dict:
+def review_article(content: str, topic: str, genre_id: str = "") -> dict:
     """
-    qwen3.5:9b で記事品質をレビューする。
+    記事品質をレビューする。
+    genre_id="finance_news" の場合は投資記事用プロンプトを使用。
     Returns:
         {
             "score": int (0-10),
@@ -28,7 +29,45 @@ def review_article(content: str, topic: str) -> dict:
 
     review_target = content[:3000]
 
-    prompt = f"""あなたはPython技術記事の品質レビュアーです。
+    if genre_id == "finance_news":
+        prompt = f"""あなたは投資・金融記事の品質レビュアーです。
+以下の記事を評価してください。
+
+【トピック】
+{topic}
+
+【記事（抜粋）】
+{review_target}
+
+---
+## 評価基準（各10点満点）
+
+### 1. 内容の正確性
+- データ・数値・企業名に明らかな誤りはないか
+- 事実として断言している内容が妥当か
+
+### 2. 日本語品質
+- 自然な日本語か、不自然な表現はないか
+- 中国語混入がないか（文本・网络・环境等）
+
+### 3. 構成の適切さ
+- 見出し・まとめが含まれるか
+- FAQがプレースホルダーでないか（「よくある質問1」等はNG）
+- 免責事項（投資助言でない旨）が含まれるか
+
+### 4. 有用性
+- 投資家にとって参考になる情報が含まれるか
+- 特定銘柄の売買を断定的に推奨していないか
+
+---
+必ず以下のフォーマットのみで回答してください:
+SCORE: [4項目の平均を0-10の整数で]
+ISSUES: [問題点をカンマ区切りで。なければ「なし」]
+VERDICT: [scoreが7以上なら「pass」、6以下なら「fail」]
+FEEDBACK: [最も重要な改善点を1文で。なければ「良好」]
+"""
+    else:
+        prompt = f"""あなたはPython技術記事の品質レビュアーです。
 以下の記事を厳密に評価してください。
 
 【トピック】
