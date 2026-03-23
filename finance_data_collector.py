@@ -367,6 +367,25 @@ def collect_finance_data() -> dict:
         data["macro"]      = {}
         data["macro_text"] = ""
 
+    # 求人データ収集（ランキング上位企業の採用動向）
+    try:
+        from job_analyzer import collect_job_data, format_jobs_for_article
+        from stock_linker import COMPANY_CODE_MAP
+        # ランキング上位銘柄コード → 企業名に変換
+        code_to_company = {v: k for k, v in COMPANY_CODE_MAP.items()}
+        top_companies = []
+        for item in data.get("up_ranking", [])[:3]:
+            m = re.search(r'\((\d{4})\)', item)
+            if m and m.group(1) in code_to_company:
+                top_companies.append(code_to_company[m.group(1)])
+        job_data         = collect_job_data(target_companies=top_companies or None)
+        data["jobs"]     = job_data
+        data["job_text"] = format_jobs_for_article(job_data)
+    except Exception as e:
+        print(f"  ⚠️ 求人データ取得失敗: {e}")
+        data["jobs"]     = {}
+        data["job_text"] = ""
+
     # 保存（日時付きファイル名で重複しない）
     FINANCE_DIR.mkdir(parents=True, exist_ok=True)
     stamp    = datetime.now().strftime("%Y-%m-%d_%H%M")
