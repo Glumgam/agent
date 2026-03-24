@@ -606,7 +606,8 @@ def generate_article(
     review_passed   = True
     review_feedback = "レビューなし"
     for attempt in range(max_retries):
-        print(f"  🧠 生成中 (qwen2.5-coder:7b)"
+        from llm import PLANNER_MODEL as _PM
+        print(f"  🧠 生成中 ({_PM})"
               f"{' 再試行 ' + str(attempt) if attempt > 0 else ''}...")
         content = ask_plain(prompt)
         # 中国語文字を除去（置換リストで対応済みの文字を日本語化）
