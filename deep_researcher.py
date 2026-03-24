@@ -312,49 +312,94 @@ END_CODE
         if result.returncode != 0:
             return {"success": False, "reason": f"インストール失敗: {pkg}"}
 
-    # 動作テスト（__main__ ブロックを実行）
+    # 動作テスト＋失敗時の原因究明・再試行ループ
+    MAX_FIX_ATTEMPTS = 2
     WORKSPACE.mkdir(exist_ok=True)
-    test_file = WORKSPACE / f"_test_{tool_name}.py"
-    test_file.write_text(code, encoding="utf-8")
     print(f"  🧪 動作テスト: {tool_name}")
 
-    try:
-        test_result = subprocess.run(
-            [sys.executable, str(test_file)],
-            capture_output=True, text=True,
-            cwd=str(WORKSPACE), timeout=30,
-        )
-    except subprocess.TimeoutExpired:
+    for fix_attempt in range(MAX_FIX_ATTEMPTS + 1):
+        test_file = WORKSPACE / f"_test_{tool_name}.py"
+        test_file.write_text(code, encoding="utf-8")
+
+        try:
+            test_result = subprocess.run(
+                [sys.executable, str(test_file)],
+                capture_output=True, text=True,
+                cwd=str(WORKSPACE), timeout=30,
+            )
+        except subprocess.TimeoutExpired:
+            test_file.unlink(missing_ok=True)
+            return {"success": False, "reason": "テストタイムアウト(30s)"}
+
         test_file.unlink(missing_ok=True)
-        return {"success": False, "reason": "テストタイムアウト(30s)"}
 
-    test_file.unlink(missing_ok=True)
+        # 成功判定
+        output    = test_result.stdout + test_result.stderr
+        has_error = (
+            test_result.returncode != 0
+            or "ImportError" in output
+            or "ModuleNotFoundError" in output
+            or test_result.stdout.strip().startswith("ERROR:")
+        )
 
-    if test_result.returncode != 0:
-        error = (test_result.stderr or test_result.stdout)[:200]
-        return {"success": False, "reason": f"テスト失敗: {error}", "code": code}
+        if not has_error:
+            print(f"  ✅ テスト通過: {tool_name}")
+            return {
+                "success":   True,
+                "tool_name": tool_name,
+                "code":      code,
+                "output":    test_result.stdout[:200],
+                "requires":  requires,
+            }
 
-    # テスト通過後の追加確認
-    output = test_result.stdout + test_result.stderr
-    if "ImportError" in output or "ModuleNotFoundError" in output:
-        return {
-            "success": False,
-            "reason":  f"インポートエラーが出力に含まれる: {output[:100]}"
-        }
-    if test_result.stdout.strip().startswith("ERROR:"):
-        return {
-            "success": False,
-            "reason":  f"ツールがエラーを返した: {test_result.stdout[:100]}"
-        }
+        # エラー内容を収集
+        error_msg = (test_result.stderr or test_result.stdout)[:500]
+        if fix_attempt >= MAX_FIX_ATTEMPTS:
+            print(f"    ❌ 修正上限到達: {error_msg[:80]}")
+            return {"success": False, "reason": f"テスト失敗: {error_msg[:200]}", "code": code}
 
-    print(f"  ✅ テスト通過: {tool_name}")
-    return {
-        "success":   True,
-        "tool_name": tool_name,
-        "code":      code,
-        "output":    test_result.stdout[:200],
-        "requires":  requires,
-    }
+        # 原因究明・修正コード生成
+        print(f"    🔍 エラー分析中 (試行 {fix_attempt + 1}/{MAX_FIX_ATTEMPTS})...")
+        fix_prompt = f"""以下のPythonコードがエラーになりました。
+
+【エラー内容】
+{error_msg[:500]}
+
+【元のコード】
+{code[:2000]}
+
+【修正方針】
+- エラーの原因を特定して修正する
+- {tool_name}の最新APIに合わせる
+- ImportErrorの場合は正しいimport文に修正する
+- 修正済みのコード全体を出力する（説明不要）
+
+修正済みコード:
+"""
+        fixed_response = ask_plain(fix_prompt)
+
+        if not fixed_response or len(fixed_response) < 50:
+            print(f"    ❌ 修正コード生成失敗")
+            return {"success": False, "reason": f"テスト失敗: {error_msg[:200]}", "code": code}
+
+        # 修正コードを抽出（既存の _extract_code_from_response を再利用）
+        _, extracted, _ = _extract_code_from_response(fixed_response)
+        if extracted and len(extracted) > 50:
+            code = _normalize_code(extracted)
+        else:
+            # フォールバック: 応答全体をコードとして扱う
+            code = _normalize_code(fixed_response)
+
+        # 構文チェック
+        try:
+            compile(code, "<string>", "exec")
+        except SyntaxError as e:
+            print(f"    ❌ 修正コード構文エラー: {e}")
+            return {"success": False, "reason": f"修正コード構文エラー: {e}"}
+
+        print(f"    🔧 修正コードを生成・再試行 ({fix_attempt + 1}/{MAX_FIX_ATTEMPTS})...")
+
+    return {"success": False, "reason": "テスト失敗（修正上限到達）"}
     # --- DEEP RESEARCH END ---
 
 
