@@ -386,6 +386,17 @@ def collect_finance_data() -> dict:
         data["jobs"]     = {}
         data["job_text"] = ""
 
+    # 法務・行政処分データ収集
+    try:
+        from legal_collector import collect_legal_data, format_legal_for_article
+        legal_data         = collect_legal_data(top_companies or None)
+        data["legal"]      = legal_data
+        data["legal_text"] = format_legal_for_article(legal_data)
+    except Exception as e:
+        print(f"  ⚠️ 法務データ取得失敗: {e}")
+        data["legal"]      = {}
+        data["legal_text"] = ""
+
     # 保存（日時付きファイル名で重複しない）
     FINANCE_DIR.mkdir(parents=True, exist_ok=True)
     stamp    = datetime.now().strftime("%Y-%m-%d_%H%M")
