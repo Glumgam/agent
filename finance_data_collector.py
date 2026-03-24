@@ -397,6 +397,19 @@ def collect_finance_data() -> dict:
         data["legal"]      = {}
         data["legal_text"] = ""
 
+    # 相関分析（ランキング上位銘柄）
+    try:
+        from correlation_analyzer import analyze_stock_correlations, format_correlations_for_article
+        if top_codes:
+            corr_results         = analyze_stock_correlations(top_codes[:3], days=60)
+            data["correlations"] = corr_results
+            data["corr_text"]    = format_correlations_for_article(corr_results)
+        else:
+            data["corr_text"] = ""
+    except Exception as e:
+        print(f"  ⚠️ 相関分析失敗: {e}")
+        data["corr_text"] = ""
+
     # 保存（日時付きファイル名で重複しない）
     FINANCE_DIR.mkdir(parents=True, exist_ok=True)
     stamp    = datetime.now().strftime("%Y-%m-%d_%H%M")
