@@ -6,6 +6,7 @@
 テスト: ✅ 通過済み
 """
 from cryptography.fernet import Fernet
+import os
 
 def tool_batch_cli_encrypt_decrypt(input_folder, output_folder, key=None):
     try:

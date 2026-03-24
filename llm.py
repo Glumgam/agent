@@ -8,8 +8,8 @@ import re
 # -------------------------
 
 OLLAMA_URL = "http://localhost:11434/api/generate"
-PLANNER_MODEL = "qwen2.5-coder:7b"
-CODER_MODEL = "qwen2.5-coder:7b"
+PLANNER_MODEL = "qwen2.5-coder:14b"
+CODER_MODEL   = "qwen2.5-coder:14b"
 
 
 # -------------------------

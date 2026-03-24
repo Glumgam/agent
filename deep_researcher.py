@@ -432,6 +432,36 @@ def register_tool(impl_result: dict, candidate: dict, topic_label: str) -> bool:
     tool_path.write_text(header + code, encoding="utf-8")
     print(f"  💾 登録: tools/evolved/{tool_name}.py")
 
+    # 品質チェック（登録前に自動修正）
+    try:
+        from code_checker import check_and_fix
+        raw = tool_path.read_text(encoding="utf-8")
+        final_code, passed, issues = check_and_fix(
+            code=raw,
+            tool_name=tool_name,
+            use_llm=True,
+            max_fix_attempts=2,
+        )
+        if final_code.strip() != raw.strip():
+            tool_path.write_text(final_code, encoding="utf-8")
+            print(f"  🔧 品質チェック修正済み: {tool_name}")
+        if not passed:
+            errors = [i for i in issues if i.get("severity") == "error"]
+            if errors:
+                print(f"  ❌ 品質チェック失敗（error {len(errors)}件）: 登録スキップ")
+                for e in errors[:3]:
+                    print(f"     [{e['rule']}] {e['desc'][:70]}")
+                tool_path.unlink(missing_ok=True)
+                return False
+        else:
+            warn_count = len([i for i in issues if i.get("severity") == "warning"])
+            if warn_count:
+                print(f"  ✅ 品質チェック通過（警告 {warn_count}件）")
+            else:
+                print(f"  ✅ 品質チェック通過")
+    except Exception as e:
+        print(f"  ⚠️ 品質チェックスキップ: {e}")
+
     # skill_db に登録
     try:
         from skill_extractor import save_skill, Skill
