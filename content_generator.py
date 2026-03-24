@@ -147,8 +147,8 @@ HATENA_TEMPLATE = """
 ZENN_FINANCE_TEMPLATE = """
 【絶対条件】
 - 必ず最初の行を「# 記事タイトル」で始めること
-- 1200〜2000文字
-- ## 見出しを3つ以上
+- 1500文字以上
+- ## 見出しを4つ以上
 - 免責事項を末尾に含める
 
 以下の市場データを使って、投資家向けの市況解説記事を日本語で書いてください。
@@ -184,8 +184,8 @@ ZENN_FINANCE_TEMPLATE = """
 HATENA_FINANCE_TEMPLATE = """
 【絶対条件】
 - 必ず最初の行を「# 記事タイトル」で始めること
-- 3000文字以上
-- ## 見出しを5つ以上
+- 4000文字以上（マクロ・相関・法務・SNSデータを全て活用する）
+- ## 見出しを7つ以上
 - 免責事項を末尾に含める
 
 以下の市場データを使って、投資家向けの詳細な市況解説記事を日本語で書いてください。
@@ -583,19 +583,19 @@ def generate_article(
     if is_finance:
         if variant == "zenn":
             template   = ZENN_FINANCE_TEMPLATE
-            min_length = 700   # コードなし・データ薄のため低め
+            min_length = 1500
         else:
             template   = HATENA_FINANCE_TEMPLATE
-            min_length = 1200  # コードなし・データ薄のため低め
-        prompt = template.format(topic=topic, context=context[:3000])
+            min_length = 4000  # マクロ+相関+法務+SNSデータを含む
+        prompt = template.format(topic=topic, context=context[:12000])
     elif variant == "zenn":
         template   = ZENN_TEMPLATE
         min_length = 1000
-        prompt = _QUALITY_RULES + template.format(topic=topic, context=context[:3000])
+        prompt = _QUALITY_RULES + template.format(topic=topic, context=context[:6000])
     else:
         template   = HATENA_TEMPLATE
         min_length = 2000
-        prompt = _QUALITY_RULES + template.format(topic=topic, context=context[:3000])
+        prompt = _QUALITY_RULES + template.format(topic=topic, context=context[:6000])
 
     # 記事生成（品質チェック + レビュー付きリトライあり）
     from llm import ask_plain
@@ -613,12 +613,22 @@ def generate_article(
         if not passed:
             if attempt < max_retries - 1:
                 print(f"  ⚠️ 品質不足: {reason} → リトライ {attempt + 1}/{max_retries - 1}")
+                if is_finance:
+                    retry_req = (
+                        f"必ず{min_length}文字以上・見出し(##)7個以上（はてな）または4個以上（Zenn）"
+                        "・免責事項・まとめセクションを含めてください。"
+                        "コードブロックは不要です。提供データを最大限活用してください。"
+                    )
+                else:
+                    retry_req = (
+                        f"必ず{min_length}文字以上・見出し(##)3個以上"
+                        "・コード例(```python)1個以上・まとめセクションを含めてください。"
+                    )
                 prompt = (
                     prompt
                     + f"\n\n【重要・再試行{attempt + 1}回目】\n"
                     + f"前回の出力が品質基準を満たしませんでした。理由: {reason}\n"
-                    + f"必ず{min_length}文字以上・見出し(##)3個以上・コード例(```python)1個以上"
-                    + "・まとめセクションを含めてください。"
+                    + retry_req
                     + "\n必ず日本語で書いてください。中国語（简体字）は絶対に使わないこと。"
                 )
                 continue
