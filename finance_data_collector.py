@@ -404,11 +404,17 @@ def collect_finance_data() -> dict:
             corr_results         = analyze_stock_correlations(top_codes[:3], days=60)
             data["correlations"] = corr_results
             data["corr_text"]    = format_correlations_for_article(corr_results)
+            # トラッキングテキスト
+            from correlation_tracker import format_tracking_for_article
+            tracking_list        = corr_results.get("_tracking_summary", [])
+            data["tracking_text"] = format_tracking_for_article(tracking_list)
         else:
-            data["corr_text"] = ""
+            data["corr_text"]     = ""
+            data["tracking_text"] = ""
     except Exception as e:
         print(f"  ⚠️ 相関分析失敗: {e}")
-        data["corr_text"] = ""
+        data["corr_text"]     = ""
+        data["tracking_text"] = ""
 
     # 保存（日時付きファイル名で重複しない）
     FINANCE_DIR.mkdir(parents=True, exist_ok=True)

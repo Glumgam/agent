@@ -426,6 +426,23 @@ def analyze_stock_correlations(
             "analyzed_at":      datetime.now().isoformat(),
         }
 
+    # トラッキング分析（スナップショット保存＋変化検知）
+    try:
+        from correlation_tracker import track_and_analyze
+        tracking_results = []
+        for code, data in results.items():
+            tracking = track_and_analyze(
+                code,
+                data["correlations"],
+                data.get("name", code),
+            )
+            data["tracking"] = tracking
+            tracking_results.append(tracking)
+        results["_tracking_summary"] = tracking_results
+    except Exception as e:
+        print(f"  ⚠️ トラッキング失敗: {e}")
+        results["_tracking_summary"] = []
+
     # 保存
     CORR_DIR.mkdir(parents=True, exist_ok=True)
     out_path = CORR_DIR / f"{datetime.now().strftime('%Y-%m-%d_%H%M')}_correlations.json"
