@@ -73,8 +73,8 @@
     "coding": {
       "name": "coding",
       "task_example": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
-      "success_count": 429,
-      "last_used": "2026-03-25T10:33:15.649027+00:00",
+      "success_count": 435,
+      "last_used": "2026-03-25T12:33:40.694445+00:00",
       "tools_used": [
         "create_file",
         "run",
@@ -133,8 +133,8 @@
     "bug_fix": {
       "name": "bug_fix",
       "task_example": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
-      "success_count": 313,
-      "last_used": "2026-03-25T10:43:15.758141+00:00",
+      "success_count": 316,
+      "last_used": "2026-03-25T12:21:26.458979+00:00",
       "tools_used": [
         "run",
         "done",
@@ -170,8 +170,8 @@
     "testing": {
       "name": "testing",
       "task_example": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
-      "success_count": 293,
-      "last_used": "2026-03-25T10:27:15.385114+00:00",
+      "success_count": 297,
+      "last_used": "2026-03-25T12:28:35.997166+00:00",
       "tools_used": [
         "done",
         "run",

@@ -6399,5 +6399,47 @@
       "_self_improve",
       "run"
     ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "run",
+      "run",
+      "run",
+      "_self_improve",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "run",
+      "run",
+      "run",
+      "_self_improve",
+      "run"
+    ]
   }
 ]
