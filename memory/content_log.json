@@ -934,5 +934,35 @@
     "paid_label": "💎 プレミアム記事（200円）",
     "quality_passed": false,
     "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "本日の日本株市況まとめ（2026年03月25日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/20260325_本日の日本株市況まとめ2026年03月25日_zenn_1.md",
+    "rag_hits": 0,
+    "word_count": 2943,
+    "generated_at": "2026-03-25T22:46:31.040685",
+    "review_score": 8,
+    "review_passed": true,
+    "review_feedback": "韓国語・中国語の混入や表現の自然さを確認し、専門性を高めるべきである",
+    "paid_suitable": false,
+    "paid_label": "📝 無料記事",
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "本日の日本株市況まとめ（2026年03月25日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/20260325_本日の日本株市況まとめ2026年03月25日_hatena_1.md",
+    "rag_hits": 0,
+    "word_count": 2975,
+    "generated_at": "2026-03-25T22:54:46.270409",
+    "review_score": 9,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "paid_suitable": true,
+    "paid_label": "💎 プレミアム記事（200円）",
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
   }
 ]
