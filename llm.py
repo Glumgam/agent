@@ -446,15 +446,35 @@ def ask(prompt: str) -> str:
     return ask_coder(prompt)
 
 
+def get_loaded_models() -> list:
+    """現在Ollamaにロードされているモデルを取得する"""
+    try:
+        resp = requests.get(
+            "http://localhost:11434/api/ps",
+            timeout=5,
+        )
+        if resp.status_code == 200:
+            models = resp.json().get("models", [])
+            return [m.get("name", "") for m in models]
+    except Exception:
+        pass
+    return []
+
+
 def unload_model(model: str = None):
-    """モデルをアンロードしてメモリを解放する"""
+    """モデルをアンロードする（ロード済みの場合のみ）"""
     target = model or CODER_MODEL
+    loaded = get_loaded_models()
+    # ロードされていなければスキップ
+    if not any(target.split(":")[0] in m for m in loaded):
+        return
     try:
         requests.post(
             "http://localhost:11434/api/generate",
             json={"model": target, "keep_alive": 0},
             timeout=10,
         )
+        print(f"  🗑️ アンロード: {target}")
     except Exception:
         pass
 
@@ -467,6 +487,9 @@ def ask_plain(prompt: str, retries: int = 3) -> str:
     タイムアウト時はモデルアンロード後にリトライする。
     """
     import time
+
+    # THINKING_MODELがロード済みの場合のみアンロード
+    unload_model(THINKING_MODEL)
 
     for attempt in range(retries):
         if attempt > 0:
@@ -524,9 +547,9 @@ def ask_thinking(prompt: str, label: str = "THINKING") -> str:
     """
     import time as _time
 
-    # thinking前にCODER_MODELをアンロード（メモリ解放）
+    # CODER_MODELがロード済みの場合のみアンロード
     unload_model(CODER_MODEL)
-    _time.sleep(3)
+    _time.sleep(2)
 
     payload = {
         "model": THINKING_MODEL,
