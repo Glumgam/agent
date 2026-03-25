@@ -450,29 +450,46 @@ def ask_plain(prompt: str) -> str:
     """
     Plain-text generation for articles / planning.
     _call_ollama を経由しないことで _clean_llm_output（コードブロック除去・
-    JSON切り取り）を回避する。num_predict=4096 で生成トークン上限を拡張。
+    JSON切り取り）を回避する。num_predict=8192 で生成トークン上限を拡張。
     """
+    import time
+    # モデル切り替え競合を避けるため短時間待機
+    time.sleep(2)
+
     payload = {
         "model":  PLANNER_MODEL,
         "prompt": prompt,
         "stream": False,
         "options": {
             "temperature": 0.7,
-            "num_ctx":     8192,   # コンテキストウィンドウ
-            "num_predict": 4096,   # 生成トークン上限を拡張
+            "num_ctx":     16384,  # 8192 → 16384
+            "num_predict": 8192,   # 4096 → 8192
         },
     }
-    try:
-        resp = requests.post(OLLAMA_URL, json=payload, timeout=300)
-        resp.raise_for_status()
-        return resp.json().get("response", "").strip()
-    except Exception:
-        return ask_planner(prompt)  # フォールバック
+    import time as _time
+    _waits = [5, 10]  # 接続失敗時のリトライ待機（秒）
+    last_exc = None
+    for attempt, wait in enumerate([0] + _waits):
+        if wait:
+            print(f"[llm] ask_plain 接続失敗 → {wait}秒後にリトライ ({attempt}/{len(_waits)})")
+            _time.sleep(wait)
+        try:
+            resp = requests.post(OLLAMA_URL, json=payload, timeout=300)
+            resp.raise_for_status()
+            return resp.json().get("response", "").strip()
+        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as e:
+            last_exc = e
+            continue
+        except Exception as e:
+            last_exc = e
+            break
+    print(f"[llm] ask_plain 全リトライ失敗: {last_exc} → ask_planner にフォールバック")
+    return ask_planner(prompt)
 
 
 # --- DUAL MODEL START ---
 # 思考型モデル（深い推論が必要な場面のみ使用）
-THINKING_MODEL = "qwen3.5:9b"
+THINKING_MODEL = "qwen3:14b"
 
 
 def ask_thinking(prompt: str, label: str = "THINKING") -> str:

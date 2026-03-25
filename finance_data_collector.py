@@ -92,61 +92,89 @@ def fetch_tdnet_news(category: str = "株主優待") -> list:
 def fetch_ranking(rank_type: str = "up") -> list:
     """
     値上がり・値下がりランキングを取得する。
-    ソース1: minkabu → ソース2: kabutan の順にフォールバック。
+    ソース1: Yahoo Finance Japan → ソース2: kabutan の順にフォールバック。
     """
-    # ソース1: minkabu
+    # ソース1: Yahoo Finance Japan
     try:
-        url = "https://minkabu.jp/ranking/increase_rate" if rank_type == "up" else "https://minkabu.jp/ranking/decrease_rate"
-        resp = requests.get(url, headers=HEADERS, timeout=15)
-        resp.raise_for_status()
-        names   = re.findall(
-            r'class="[^"]*name[^"]*"[^>]*>\s*<[^>]+>([^<]{3,20})</[^>]+>',
-            resp.text
+        url = (
+            "https://finance.yahoo.co.jp/stocks/ranking/up"
+            if rank_type == "up"
+            else "https://finance.yahoo.co.jp/stocks/ranking/down"
         )
-        changes = re.findall(r'[+\-]?\d+\.\d+%', resp.text)
-        if names and changes:
-            results = [
-                f"{i+1}. {n.strip()} ({changes[i] if i < len(changes) else 'N/A'})"
-                for i, n in enumerate(names[:10])
-            ]
-            if results:
-                return results
-    except Exception as e:
-        print(f"  ⚠️ minkabu取得失敗: {e}")
-
-    # ソース2: kabutan
-    try:
-        url = "https://kabutan.jp/warning/?mode=2_1" if rank_type == "up" else "https://kabutan.jp/warning/?mode=2_2"
         resp = requests.get(url, headers=HEADERS, timeout=15)
         resp.raise_for_status()
         rows    = re.findall(r'<tr[^>]*>(.*?)</tr>', resp.text, re.DOTALL)
         results = []
-        for row in rows[1:30]:  # 多めに走査してフィルター後に10件確保
+        for row in rows[:30]:
             cells = re.findall(r'<td[^>]*>(.*?)</td>', row, re.DOTALL)
             cells = [re.sub(r'<[^>]+>', '', c).strip() for c in cells]
-            cells = [c for c in cells if c and len(c) > 1]
-            if len(cells) >= 2:
-                name = cells[0]
-                # 数値・パーセント・記号のみの行をスキップ（日経平均サマリー等）
-                if re.match(r'^[+\-]?[\d,，\.%]+$', name):
-                    continue
-                if len(name) < 2 or len(name) > 20:
-                    continue
-                # 変動率は後続セルから探す（cells[1]が市場区分の場合はcells[2]以降）
-                change = "N/A"
-                for c in cells[1:]:
-                    if re.search(r'[+\-]?\d+\.\d+%', c):
-                        change = c
-                        break
-                if change == "N/A" and len(cells) > 1:
-                    change = cells[1]
-                results.append(f"{len(results)+1}. {name} ({change})")
+            cells = [c for c in cells if c]
+            if not cells:
+                continue
+            raw_name = cells[0]
+            # セル1: "企業名コード東証XXX掲示板" から企業名だけ抽出
+            # 例: "(株)アスタリスク6522東証GRT掲示板" → "(株)アスタリスク"
+            # 例: "インフォメティス(株)281A東証GRT掲示板" → "インフォメティス(株)"
+            m = re.match(r'^(.+?)\d{3,4}[A-Z]?(?:東証|名証|札証|福証)', raw_name)
+            name = m.group(1).strip() if m else raw_name
+            # HTMLエンティティを復元
+            name = name.replace("&amp;", "&").replace("&lt;", "<").replace("&gt;", ">")
+            # 短すぎ・長すぎ・数字のみはスキップ
+            if len(name) < 2 or len(name) > 30:
+                continue
+            if re.match(r'^[\d,\.%+\-\s]+$', name):
+                continue
+            # 変動率: セル3に "+金額+XX.XX%" 形式 → XX.XX% を取り出す
+            change = "N/A"
+            for cell in cells:
+                pcts = re.findall(r'([+\-]\d+\.\d+)%', cell)
+                if pcts:
+                    change = pcts[-1] + "%"  # 末尾（パーセント変化率）
+                    break
+            results.append(f"{len(results)+1}. {name} ({change})")
             if len(results) >= 10:
                 break
         if results:
+            print(f"  ✅ Yahoo Finance ランキング({rank_type}): {len(results)}件")
             return results
     except Exception as e:
-        print(f"  ⚠️ kabutan取得失敗: {e}")
+        print(f"  ⚠️ Yahoo Finance ランキング取得失敗: {e}")
+
+    # ソース2: kabutan
+    try:
+        url = (
+            "https://kabutan.jp/warning/?mode=2_1"
+            if rank_type == "up"
+            else "https://kabutan.jp/warning/?mode=2_2"
+        )
+        resp = requests.get(url, headers=HEADERS, timeout=15)
+        resp.raise_for_status()
+        rows    = re.findall(r'<tr[^>]*>(.*?)</tr>', resp.text, re.DOTALL)
+        results = []
+        for row in rows[1:30]:
+            cells = re.findall(r'<td[^>]*>(.*?)</td>', row, re.DOTALL)
+            cells = [re.sub(r'<[^>]+>', '', c).strip() for c in cells]
+            cells = [c for c in cells if c and len(c) > 1]
+            if len(cells) < 2:
+                continue
+            name = cells[0]
+            if re.match(r'^[+\-]?[\d,，\.%]+$', name):
+                continue
+            if len(name) < 2 or len(name) > 25:
+                continue
+            change = "N/A"
+            for c in cells[1:]:
+                if re.search(r'[+\-]?\d+\.\d+%', c):
+                    change = re.search(r'[+\-]?\d+\.\d+%', c).group()
+                    break
+            results.append(f"{len(results)+1}. {name} ({change})")
+            if len(results) >= 10:
+                break
+        if results:
+            print(f"  ✅ kabutan ランキング({rank_type}): {len(results)}件")
+            return results
+    except Exception as e:
+        print(f"  ⚠️ kabutan ランキング取得失敗: {e}")
 
     return ["ランキングデータを取得できませんでした（市場休場または接続エラー）"]
 
@@ -426,3 +454,185 @@ def collect_finance_data() -> dict:
     )
     print(f"  💾 保存: {out_path.name}")
     return data
+
+
+# =====================================================
+# コンテキスト圧縮（LLM向け・情報密度最適化）
+# =====================================================
+def compress_finance_context(data: dict) -> str:
+    """
+    投資データを意味単位で圧縮してLLM向けコンテキストを生成する。
+    目標: 4000〜5000文字（情報密度優先）
+    セクション順（LLMは前半を重視するため重要度降順）:
+    [重要:最優先]   市況データ
+    [重要:企業影響] マクロ環境
+    [重要:最優先]   適時開示サマリー
+    [中:参考]       相関分析の解釈
+    [重要:企業影響] 法務リスク
+    [中:参考]       ニューストピック要約
+    [補助:傾向]     求人トレンド
+    [補助:傾向]     SNS感情傾向
+    """
+    from llm import ask_plain
+    sections = []
+    date_str = data.get("date", "")
+
+    # =====================================================
+    # 1. [重要:最優先] 市況データ
+    # =====================================================
+    market    = data.get("market_summary", {})
+    nikkei    = market.get("nikkei_price", "N/A")
+    up_top3   = data.get("up_ranking", [])[:3]
+    down_top3 = data.get("down_ranking", [])[:3]
+    sections.append(
+        f"[重要:最優先] 本日の市況（{date_str}）\n"
+        f"日経平均: {nikkei}\n"
+        f"値上がり上位: {' / '.join(up_top3)}\n"
+        f"値下がり上位: {' / '.join(down_top3)}"
+    )
+
+    # =====================================================
+    # 2. [重要:企業影響] マクロ環境（数値のみ）
+    # =====================================================
+    macro   = data.get("macro", {})
+    forex   = macro.get("forex", {})
+    us      = macro.get("us_stocks", {})
+    comm    = macro.get("commodities", {})
+    usd_jpy = forex.get("USD/JPY", {}).get("price", "N/A")
+    sp500   = us.get("S&P500", {}).get("price", "N/A")
+    sp_chg  = us.get("S&P500", {}).get("change_pct", "N/A")
+    vix     = us.get("VIX", {}).get("price", "N/A")
+    wti     = comm.get("WTI原油", {}).get("price", "N/A")
+    wti_chg = comm.get("WTI原油", {}).get("change_pct", "N/A")
+    gold    = comm.get("金", {}).get("price", "N/A")
+    sp_chg_str  = f"{sp_chg:+.1f}%" if isinstance(sp_chg, float) else str(sp_chg)
+    wti_chg_str = f"{wti_chg:+.1f}%" if isinstance(wti_chg, float) else str(wti_chg)
+    sections.append(
+        f"[重要:企業影響] マクロ({date_str[:10]})\n"
+        f"日経: {nikkei} / USD/JPY: {usd_jpy}円\n"
+        f"S&P500: {sp500}({sp_chg_str}) / VIX: {vix}\n"
+        f"WTI: ${wti}({wti_chg_str}) / 金: {gold}"
+    )
+
+    # =====================================================
+    # 3. [重要:最優先] 適時開示サマリー（分類済み）
+    # =====================================================
+    disclosure = data.get("disclosure_results", {})
+    pos     = disclosure.get("positive", [])[:3]
+    neg     = disclosure.get("negative", [])[:3]
+    notable = disclosure.get("notable", [])[:2]
+    # 数値データが混入しているエントリを除外（company名が数字のみ等）
+    def _valid_disclosure(d: dict) -> bool:
+        company = d.get("company", "")
+        title   = d.get("title", "")
+        return bool(company) and not company.replace(",", "").replace(".", "").replace(" ", "").isdigit() and len(title) > 5
+
+    pos     = [d for d in pos     if _valid_disclosure(d)]
+    neg     = [d for d in neg     if _valid_disclosure(d)]
+    notable = [d for d in notable if _valid_disclosure(d)]
+    disc_lines = ["[重要:最優先] 本日の適時開示"]
+    if pos:
+        disc_lines.append("ポジティブ: " + " / ".join(
+            d.get("company", "") + "「" + d.get("title", "")[:20] + "」"
+            for d in pos
+        ))
+    if neg:
+        disc_lines.append("ネガティブ: " + " / ".join(
+            d.get("company", "") + "「" + d.get("title", "")[:20] + "」"
+            for d in neg
+        ))
+    if notable:
+        disc_lines.append("注目提携: " + " / ".join(
+            d.get("company", "") + "×" + str(d.get("partners", ["?"])[:1])
+            for d in notable
+        ))
+    sections.append("\n".join(disc_lines))
+
+    # =====================================================
+    # 4. [中:参考] 相関分析（解釈のみ・数値なし）
+    # =====================================================
+    corr_text = data.get("corr_text", "")
+    if corr_text:
+        interp_lines = []
+        for line in corr_text.split("\n"):
+            if "—" in line:
+                parts = line.split("—")
+                if len(parts) > 1:
+                    interp = parts[-1].strip()
+                    if "相関" in interp or "連動" in interp or "傾向" in interp:
+                        interp_lines.append(f"・{interp}")
+        if interp_lines:
+            sections.append("[中:参考] 相関分析（解釈）\n" + "\n".join(interp_lines[:5]))
+
+    # =====================================================
+    # 5. [重要:企業影響] 法務リスク（高+中リスク）
+    # =====================================================
+    legal      = data.get("legal", {})
+    high_legal = legal.get("high", [])[:5]
+    med_legal  = legal.get("medium", [])[:2]
+    if high_legal or med_legal:
+        legal_lines = ["[重要:企業影響] 法務リスク情報"]
+        for item in high_legal:
+            legal_lines.append(f"🔴 {item.get('title', '')[:60]}")
+        for item in med_legal:
+            legal_lines.append(f"🟡 {item.get('title', '')[:60]}")
+        sections.append("\n".join(legal_lines))
+
+    # =====================================================
+    # 6. [中:参考] ニュース → トピック要約
+    # =====================================================
+    news = data.get("news", [])[:20]
+    if news:
+        news_titles = "\n".join(
+            f"- [{n.get('source', '')}] {n.get('title', '')}"
+            for n in news[:15]
+        )
+        summary_prompt = (
+            "以下のニュース一覧を3〜5つのトピックに要約してください。\n"
+            "各トピックは「・カテゴリ: 1行の要点」の形式で。合計200文字以内。\n"
+            f"{news_titles}\n要約:"
+        )
+        try:
+            news_summary = ask_plain(summary_prompt)
+            # JSONエラー応答（フォールバック失敗時）を検出して除外
+            if news_summary and not news_summary.strip().startswith("{"):
+                sections.append("[中:参考] 本日のニューストピック\n" + news_summary[:300])
+            else:
+                raise ValueError("LLM error response")
+        except Exception:
+            fallback = "\n".join(
+                f"・{n.get('title', '')[:40]}" for n in news[:5]
+            )
+            sections.append("[中:参考] 本日のニュース\n" + fallback)
+
+    # =====================================================
+    # 7. [補助:傾向] 求人トレンド
+    # =====================================================
+    jobs     = data.get("jobs", {})
+    industry = jobs.get("industry_trends", {})
+    if industry:
+        job_lines = ["[補助:傾向] 求人トレンド（業界別）"]
+        for ind, info in list(industry.items())[:6]:
+            count = info.get("job_count", 0)
+            trend = "増加傾向" if count > 10 else "横ばい"
+            job_lines.append(f"・{ind}: {trend}（{count}件）")
+        sections.append("\n".join(job_lines))
+
+    # =====================================================
+    # 8. [補助:傾向] SNS感情
+    # =====================================================
+    social     = data.get("social", {})
+    sentiments = social.get("stock_sentiment", {})
+    if sentiments:
+        sent_lines = ["[補助:傾向] 掲示板感情傾向"]
+        for code, s in list(sentiments.items())[:3]:
+            sent = s.get("sentiment", "中立")
+            sent_lines.append(f"・{code}: {sent}")
+        sections.append("\n".join(sent_lines))
+
+    # =====================================================
+    # 結合して返す
+    # =====================================================
+    context = "\n\n".join(sections)
+    print(f"  📐 コンテキスト圧縮: {len(context)}文字")
+    return context

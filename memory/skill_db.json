@@ -3,8 +3,8 @@
     "data_analysis": {
       "name": "data_analysis",
       "task_example": "pandasを使ってデータを分析してください",
-      "success_count": 31,
-      "last_used": "2026-03-21T02:55:46.652976+00:00",
+      "success_count": 36,
+      "last_used": "2026-03-24T13:28:04.683307+00:00",
       "tools_used": [
         "create_file",
         "run",
@@ -40,8 +40,8 @@
     "web_scraping": {
       "name": "web_scraping",
       "task_example": "Scrape product data from website and save to CSV",
-      "success_count": 11,
-      "last_used": "2026-03-21T01:31:30.871534+00:00",
+      "success_count": 13,
+      "last_used": "2026-03-24T11:41:09.211707+00:00",
       "tools_used": [
         "create_file",
         "run",
@@ -73,8 +73,8 @@
     "coding": {
       "name": "coding",
       "task_example": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
-      "success_count": 404,
-      "last_used": "2026-03-23T22:42:31.060770+00:00",
+      "success_count": 421,
+      "last_used": "2026-03-24T14:17:57.440254+00:00",
       "tools_used": [
         "create_file",
         "run",
@@ -98,7 +98,7 @@
         "hello",
         "agent"
       ],
-      "summary": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ"
+      "summary": "Pillowを使って以下を実装して実行せよ:\n1. 800x600の白い画像を作成\n2. 中央に「Hello, Agent!」と黒字で描画\n3. 右下に現在日時を小さく描画\n4. workspace/output_image.png として保存\n5. ファイルが存在することを確認\nexit code 0にすること"
     },
     "data_analysis_plus_web_scraping": {
       "name": "data_analysis_plus_web_scraping",
@@ -133,8 +133,8 @@
     "bug_fix": {
       "name": "bug_fix",
       "task_example": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
-      "success_count": 291,
-      "last_used": "2026-03-23T22:44:59.452919+00:00",
+      "success_count": 306,
+      "last_used": "2026-03-24T12:45:41.905138+00:00",
       "tools_used": [
         "run",
         "done",
@@ -144,7 +144,8 @@
         "read_directory",
         "delete_file",
         "edit_file",
-        "_self_improve"
+        "_self_improve",
+        "read_file"
       ],
       "key_imports": [],
       "keywords": [
@@ -164,13 +165,13 @@
         "datastore",
         "init"
       ],
-      "summary": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))"
+      "summary": "以下の3つのバグを含むコードを修正してから実行せよ:\nbug1.py の内容:\n```\nimport json\nfrom pathlib import Path\n\ndata = {'items': [1, 2, 3, 4, 5]}\nPath('data.json').write_text(json.dump(data))  # bug1: dump→dumps\n\nloaded = json.loa"
     },
     "testing": {
       "name": "testing",
       "task_example": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
-      "success_count": 279,
-      "last_used": "2026-03-23T22:52:16.878034+00:00",
+      "success_count": 289,
+      "last_used": "2026-03-24T05:31:34.995946+00:00",
       "tools_used": [
         "done",
         "run",
@@ -200,13 +201,13 @@
         "docs",
         "へ振り分けるスクリプトorganize"
       ],
-      "summary": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ"
+      "summary": "workspaceにtmp_sort/を作り、test.txt/test.py/test.mdの3ファイルを作成後、拡張子ごとにtexts//scripts//docs/へ振り分けるスクリプトorganize.pyを書いて実行せよ"
     },
     "file_operation": {
       "name": "file_operation",
       "task_example": "同じ内容'hello'のファイルをdup1.txt/dup2.txt/dup3.txtとして作成し、ハッシュで重複を検出して1つだけ残すfind_dups.pyを書いて実行せよ",
-      "success_count": 7,
-      "last_used": "2026-03-20T22:35:51.772591+00:00",
+      "success_count": 8,
+      "last_used": "2026-03-24T05:46:44.463995+00:00",
       "tools_used": [
         "run",
         "done",
@@ -230,8 +231,8 @@
     "pdf_operation": {
       "name": "pdf_operation",
       "task_example": "reportlabを使ってタイトル'Agent QA Report'と現在日時・'TEST PASSED'の文字列を含むreport.pdfを生成するmake_pdf.pyを書いて実行せよ",
-      "success_count": 45,
-      "last_used": "2026-03-22T14:34:49.391691+00:00",
+      "success_count": 50,
+      "last_used": "2026-03-24T15:02:37.041893+00:00",
       "tools_used": [
         "run",
         "done",
@@ -261,13 +262,13 @@
         "txtに保存するextract",
         "pdfがなければreportlabで先に作成せよ"
       ],
-      "summary": "pypdfを使って2つのPDFをreportlabで生成しmerged.pdfとして結合するmerge_pdf.pyを書いて実行せよ。結合後のページ数を表示すること"
+      "summary": "以下を実装して実行せよ:\n1. toolkit_manager.pyをimportしてlist_toolkit_functions()を呼ぶ\n2. 現在のtoolkit一覧と各ツール関数を表示\n3. detect_category()で以下を判定して表示:\n   - 'tool_pdf_split' のカテゴリ\n   - 'tool_httpx_request' のカテゴリ\n   - 'tool_"
     },
     "excel_operation": {
       "name": "excel_operation",
       "task_example": "openpyxlで月/売上/前月比の3列・6行のデータを含むsales.xlsxを生成するmake_excel.pyを書いて実行せよ。売上は10000〜50000のランダム値",
-      "success_count": 24,
-      "last_used": "2026-03-21T03:41:08.684456+00:00",
+      "success_count": 28,
+      "last_used": "2026-03-24T14:47:23.079763+00:00",
       "tools_used": [
         "run",
         "done",
@@ -300,13 +301,16 @@
     "api_client": {
       "name": "api_client",
       "task_example": "requestsでhttps://httpbin.org/jsonにGETリクエストを送り、レスポンスJSONを整形して表示するfetch.pyを書いて実行せよ",
-      "success_count": 21,
-      "last_used": "2026-03-21T03:06:08.383555+00:00",
+      "success_count": 26,
+      "last_used": "2026-03-24T13:33:19.290280+00:00",
       "tools_used": [
         "run",
-        "done"
+        "done",
+        "create_file"
       ],
-      "key_imports": [],
+      "key_imports": [
+        "requests"
+      ],
       "keywords": [
         "requestsでhttps",
         "httpbin",
@@ -329,8 +333,8 @@
     "web_app": {
       "name": "web_app",
       "task_example": "Flaskを使って以下のTODO APIを実装して起動テストせよ:\n- app.py: GET /todos, POST /todos, PUT /todos/<id>, DELETE /todos/<id>\n- todos.jsonで永続化\n- test_app.py: requestsでAPIをテスト(追加→一覧→更新→削除の順)\npython test_app.py を実行して全APIが動作すること\n(Flaskがない場合はpip installすること)",
-      "success_count": 4,
-      "last_used": "2026-03-21T01:58:57.493426+00:00",
+      "success_count": 5,
+      "last_used": "2026-03-24T11:51:20.324172+00:00",
       "tools_used": [
         "done"
       ],
@@ -966,6 +970,23 @@
         "tool",
         "batch",
         "transformers"
+      ],
+      "summary": "Deep Research により獲得。分野: スキル発展"
+    },
+    "tool_multi_toolkit": {
+      "name": "tool_multi_toolkit",
+      "task_example": "[深掘り獲得] 複数のCLIツールを統合し、一連のタスクを自動化する。 (from: スキル発展)",
+      "success_count": 1,
+      "last_used": "2026-03-24T03:01:35.397756+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [],
+      "keywords": [
+        "スキル発展",
+        "tool",
+        "multi",
+        "toolkit"
       ],
       "summary": "Deep Research により獲得。分野: スキル発展"
     }

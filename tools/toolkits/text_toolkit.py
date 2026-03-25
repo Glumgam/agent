@@ -4,6 +4,7 @@ TEXT Toolkit
 カテゴリ: text
 作成日: 2026-03-18
 収録ツール:
+- tool_multi_toolkit: Deep Research により獲得。分野: スキル発展
 - tool_batch_transformers: Deep Research により獲得。分野: スキル発展
 - tool_batch_cli_command: Deep Research により獲得。分野: スキル発展
 - tool_advanced_cli_composer: Deep Research により獲得。分野: スキル発展
@@ -898,3 +899,16 @@ if __name__ == "__main__":
         "I am feeling sad today."
     ]
     print(tool_batch_transformers(texts))
+
+
+# ==================================================
+# tool_multi_toolkit
+# ==================================================
+
+def tool_multi_toolkit(command):
+    try:
+        import subprocess
+        result = subprocess.run(command, shell=True, check=True, text=True)
+        return result.stdout.strip()
+    except subprocess.CalledProcessError as e:
+        return f"ERROR: {e.stderr}"

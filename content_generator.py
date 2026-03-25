@@ -556,12 +556,12 @@ def generate_article(
     except Exception as e:
         print(f"  ⚠️ RAGスキップ: {e}")
 
-    # 投資ジャンルの場合: リアルタイムデータをコンテキストに注入
+    # 投資ジャンルの場合: リアルタイムデータをコンテキストに注入（圧縮版）
     if genre_id == "finance_news" and not extra_context:
         try:
-            from finance_data_collector import collect_finance_data
+            from finance_data_collector import collect_finance_data, compress_finance_context
             finance_data  = collect_finance_data()
-            extra_context = json.dumps(finance_data, ensure_ascii=False, indent=2)
+            extra_context = compress_finance_context(finance_data)
         except Exception as e:
             print(f"  ⚠️ 投資データ取得失敗: {e}")
 
@@ -588,7 +588,7 @@ def generate_article(
             min_length = 1500
         else:
             template   = HATENA_FINANCE_TEMPLATE
-            min_length = 4000  # マクロ+相関+法務+SNSデータを含む
+            min_length = 2000  # Ollama出力量に合わせて調整（4000 → 2000）
         prompt = template.format(topic=topic, context=context[:12000])
     elif variant == "zenn":
         template   = ZENN_TEMPLATE
