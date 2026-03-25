@@ -545,22 +545,36 @@ def compress_finance_context(data: dict) -> str:
     forex   = macro.get("forex", {})
     us      = macro.get("us_stocks", {})
     comm    = macro.get("commodities", {})
-    usd_jpy = forex.get("USD/JPY", {}).get("price", "N/A")
-    sp500   = us.get("S&P500", {}).get("price", "N/A")
-    sp_chg  = us.get("S&P500", {}).get("change_pct", "N/A")
-    vix     = us.get("VIX", {}).get("price", "N/A")
-    wti     = comm.get("WTI原油", {}).get("price", "N/A")
-    wti_chg = comm.get("WTI原油", {}).get("change_pct", "N/A")
-    gold    = comm.get("金", {}).get("price", "N/A")
+    usd_jpy  = forex.get("USD/JPY", {}).get("price", "N/A")
+    sp500    = us.get("S&P500", {}).get("price", "N/A")
+    sp_chg   = us.get("S&P500", {}).get("change_pct", "N/A")
+    vix_val  = us.get("VIX", {}).get("price", "N/A")
+    vix_chg  = us.get("VIX", {}).get("change_pct")
+    wti      = comm.get("WTI原油", {}).get("price", "N/A")
+    wti_chg  = comm.get("WTI原油", {}).get("change_pct", "N/A")
+    gold_p   = comm.get("金", {}).get("price", "N/A")
+    gold_chg = comm.get("金", {}).get("change_pct")
     sp_chg_str  = f"{sp_chg:+.1f}%" if isinstance(sp_chg, float) else str(sp_chg)
     wti_chg_str = f"{wti_chg:+.1f}%" if isinstance(wti_chg, float) else str(wti_chg)
+    # VIX: 変動率と解釈付き
+    if isinstance(vix_val, float) and isinstance(vix_chg, float):
+        if vix_chg < -3:
+            vix_note = f"{vix_val}({vix_chg:+.1f}%→恐怖感低下・リスクオン)"
+        elif vix_chg > 3:
+            vix_note = f"{vix_val}({vix_chg:+.1f}%→恐怖感上昇・リスクオフ)"
+        else:
+            vix_note = f"{vix_val}({vix_chg:+.1f}%→高水準維持・警戒感残存)" if isinstance(vix_val, float) and vix_val > 20 else f"{vix_val}({vix_chg:+.1f}%)"
+    else:
+        vix_note = str(vix_val)
+    # 金: 変動率付き
+    gold_str = f"${gold_p}" + (f"({gold_chg:+.1f}%)" if isinstance(gold_chg, float) else "")
     sections.append(
         f"[重要:企業影響] マクロ({date_str[:10]})\n"
-        f"【単位: 為替は円建て、株価指数はドル/ポイント、原油・金はドル建て】\n"
+        f"【単位: 為替=円建て、株価指数=ドル/ポイント、原油・金=ドル建て1オンス】\n"
         f"日経: {nikkei}円 前日比: {nikkei_change if nikkei_change else '取得中'}\n"
         f"USD/JPY: {usd_jpy}円（円安＝輸出企業に有利）\n"
-        f"S&P500: {sp500}ドル({sp_chg_str}) / VIX: {vix}（高いほど市場不安）\n"
-        f"WTI原油: ${wti}({wti_chg_str}) / 金: ${gold}ドル"
+        f"S&P500: {sp500}ドル({sp_chg_str}) / VIX: {vix_note}\n"
+        f"WTI原油: ${wti}({wti_chg_str}) / 金: {gold_str}"
     )
 
     # =====================================================
