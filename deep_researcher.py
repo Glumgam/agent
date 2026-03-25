@@ -563,7 +563,7 @@ def evolve_existing_skills() -> list:
 
     # 既存ツールの内容を読み込む
     tools_summary = []
-    for tool_path in existing_tools[:5]:  # 最大5個
+    for tool_path in existing_tools[:3]:  # 最大3個
         content = tool_path.read_text(encoding="utf-8")
         func_match = re.search(r"def (tool_\w+)\(", content)
         doc_match  = re.search(r'"""(.+?)"""', content, re.DOTALL)

@@ -551,7 +551,7 @@ print(json.dumps(acquired))
             cwd=AGENT_ROOT,
             capture_output=True,
             text=True,
-            timeout=600,
+            timeout=1200,
         )
         for line in result.stdout.split("\n"):
             if line.strip().startswith("["):
