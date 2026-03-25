@@ -4,6 +4,9 @@ CLI Toolkit
 カテゴリ: cli
 作成日: 2026-03-19
 収録ツール:
+- tool_cli_builder: Deep Research により獲得。分野: セキュリティ
+- tool_typer_create_cli: Deep Research により獲得。分野: AI 論文
+- tool_typer_create_app: Deep Research により獲得。分野: Python 技術トレンド
 - tool_create_typer_cli: Deep Research により獲得。分野: AI 論文
 - tool_create_cli: Deep Research により獲得。分野: セキュリティ
 - tool_create_cli_with_typer: Deep Research により獲得。分野: AI・LLM 最新動向
@@ -190,3 +193,64 @@ if __name__ == "__main__":
         description = sys.argv[3]
         result = tool_create_typer_cli(app_name, command_name, description)
         print(result)
+
+
+# ==================================================
+# tool_typer_create_app
+# ==================================================
+
+def tool_typer_create_app(name: str, description: str) -> str:
+    try:
+        @app.command()
+        def main():
+            typer.echo(f"Hello {name}! This is your CLI app: {description}")
+
+        return "CLI application created successfully!"
+    except ImportError:
+        return "ERROR: Typer library not found. Please install it using 'pip install typer'."
+
+if __name__ == "__main__":
+    tool_typer_create_app("MyApp", "A simple command-line interface application.")
+
+
+# ==================================================
+# tool_typer_create_cli
+# ==================================================
+
+def tool_typer_create_cli(command_name: str, description: str) -> str:
+    try:
+        @app.command(name=command_name, help=description)
+        def cli_function():
+            typer.echo(f"Running {command_name} command.")
+        
+        app()
+        return f"CLI '{command_name}' created successfully."
+    except ImportError:
+        return "ERROR: Typer is not installed. Please install it using pip."
+
+if __name__ == "__main__":
+    result = tool_typer_create_cli("greet", "A simple CLI to greet someone.")
+    print(result)
+
+
+# ==================================================
+# tool_cli_builder
+# ==================================================
+
+def tool_cli_builder(command_name: str, description: str) -> str:
+    try:
+        # Create a simple CLI application using Typer
+        @app.command(help=description)
+        def command():
+            typer.echo(f"Executing {command_name} command.")
+
+        # This is a placeholder to simulate running the CLI command.
+        # In a real-world scenario, you would call app() here to run the CLI.
+        return f"CLI '{command_name}' created with description: '{description}'."
+    except Exception as e:
+        return f"ERROR: {str(e)}"
+
+if __name__ == "__main__":
+    # Example usage of the tool
+    result = tool_cli_builder("greet", "A simple command to greet users.")
+    print(result)
