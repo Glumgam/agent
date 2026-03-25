@@ -678,6 +678,7 @@ def generate_article(
             print(f"  ⚠️ RAGスキップ: {e}")
 
     # 投資ジャンルの場合: リアルタイムデータをコンテキストに注入（圧縮版）
+    _finance_data_for_check = None  # ファクトチェック用に保持
     if genre_id == "finance_news" and not extra_context:
         try:
             from finance_data_collector import collect_finance_data, compress_finance_context
@@ -687,6 +688,7 @@ def generate_article(
             else:
                 _data = collect_finance_data()
             extra_context = compress_finance_context(_data)
+            _finance_data_for_check = _data
         except Exception as e:
             print(f"  ⚠️ 投資データ取得失敗: {e}")
 
@@ -835,6 +837,17 @@ def generate_article(
             review_score  = 6
             review_passed = False
             print(f"  ⬇️ スコア強制降格: {review_score}/10（異常文字残存）")
+
+    # ファクトチェック（投資記事のみ）
+    if genre_id == "finance_news" and _finance_data_for_check:
+        try:
+            from fact_checker import fact_check
+            fc_result = fact_check(content, _finance_data_for_check)
+            if fc_result["score_penalty"] > 0:
+                review_score = max(1, review_score - fc_result["score_penalty"])
+                print(f"  📉 ファクトチェックペナルティ: -{fc_result['score_penalty']}点 → {review_score}/10")
+        except Exception as e:
+            print(f"  ⚠️ ファクトチェックスキップ: {e}")
 
     # ファイル保存
     path = _save_article(topic, content, variant=variant)
