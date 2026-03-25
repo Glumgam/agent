@@ -1,14 +1,14 @@
 {
   "status": "completed",
-  "cycle": 8,
-  "total_skills": 1,
-  "started_at": "2026-03-24T10:04:45.208629",
-  "ends_at": "2126-02-28T10:04:45.208629",
-  "updated_at": "2026-03-24T13:12:22.049442",
+  "cycle": 1,
+  "total_skills": 0,
+  "started_at": "2026-03-25T11:06:22.224580",
+  "ends_at": "2126-03-01T11:06:22.224580",
+  "updated_at": "2026-03-25T11:07:21.516719",
   "last_test": {
     "passed": 0,
     "total": 3,
     "pass_rate": 0.0,
-    "timestamp": "2026-03-24T13:12:22.043266"
+    "timestamp": "2026-03-25T11:07:21.510773"
   }
 }
