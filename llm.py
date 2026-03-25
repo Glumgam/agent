@@ -582,3 +582,49 @@ def ask_thinking(prompt: str, label: str = "THINKING") -> str:
         print(f"  ⚠️ thinking model失敗 ({e}) → 通常モデルにフォールバック")
         return ask_plain(prompt)
 # --- DUAL MODEL END ---
+
+
+def ask_finance(prompt: str, retries: int = 3) -> str:
+    """
+    投資記事生成専用。qwen3:14bを使用。
+    qwen2.5-coder:14bは中国語混入・架空補完が多いため
+    汎用モデルのqwen3:14bを使用する。
+    """
+    import time
+    unload_model(CODER_MODEL)
+    time.sleep(2)
+    for attempt in range(retries):
+        try:
+            if attempt > 0:
+                wait = 10 * attempt
+                print(f"  ⏳ Ollama待機中 ({wait}秒)...")
+                time.sleep(wait)
+            response = requests.post(
+                f"{OLLAMA_URL}/api/generate",
+                json={
+                    "model":  THINKING_MODEL,  # qwen3:14b
+                    "prompt": prompt,
+                    "stream": False,
+                    "options": {
+                        "temperature": 0.5,
+                        "num_ctx":     16384,
+                        "num_predict": 8192,
+                    },
+                    "keep_alive": 60,
+                },
+                timeout=600,
+            )
+            response.raise_for_status()
+            raw = response.json().get("response", "")
+            # <think>...</think> タグを除去
+            clean = re.sub(r"<think>.*?</think>", "", raw, flags=re.DOTALL)
+            return clean.strip() or raw.strip()
+        except requests.exceptions.Timeout:
+            print(f"  ⚠️ タイムアウト (試行 {attempt+1}/{retries})")
+            unload_model(THINKING_MODEL)
+            time.sleep(5)
+        except Exception as e:
+            print(f"  ⚠️ エラー: {e} (試行 {attempt+1}/{retries})")
+            time.sleep(5)
+    print("[llm] ask_finance 全リトライ失敗 → ask_plain にフォールバック")
+    return ask_plain(prompt)

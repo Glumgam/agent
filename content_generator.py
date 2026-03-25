@@ -422,11 +422,24 @@ def _remove_chinese_chars(text: str) -> str:
     # 韓国語（ハングル）は日本語と別 Unicode ブロックなので安全に除去可能
     text = re.sub(r'[\uac00-\ud7af\u1100-\u11ff\u3130-\u318f]', '', text)
     # 中国語の疑問詞パターンを除去（什么様・什么样 等）
-    text = re.sub(r'什[^\s]{0,3}[様样]', '', text)   # 什么様・什么样
+    text = re.sub(r'什[^\s]{0,3}[様样]', '', text)      # 什么様・什么样
     text = re.sub(r'[为為][^\s]{0,3}[么麼]', '', text)  # 为什么
     text = re.sub(r'[样]的', '', text)                   # 样的
     text = re.sub(r'这[个個]', '', text)                 # 这个
     text = re.sub(r'那[个個]', '', text)                 # 那个
+    # 地政学・情勢系の中国語表現
+    text = re.sub(r'地[缘緣]政治的?', '地政学的', text)  # 地缘政治→地政学的
+    text = re.sub(r'地[缘緣]', '', text)                 # 地缘
+    text = re.sub(r'牵[涉摂]', '', text)                 # 牵涉
+    text = re.sub(r'紧[張张]', '緊張', text)             # 紧张→緊張
+    # 簡体字動詞・形容詞
+    text = re.sub(r'发[展展]', '発展', text)             # 发展→発展
+    text = re.sub(r'进[行行]', '進行', text)             # 进行→進行
+    text = re.sub(r'经[济濟]', '経済', text)             # 经济→経済
+    text = re.sub(r'[认認]为', 'と考える', text)         # 认为→と考える
+    text = re.sub(r'[从從][而]', 'そのため', text)       # 从而→そのため
+    text = re.sub(r'[对對][于於]', 'に対して', text)     # 对于→に対して
+    text = re.sub(r'[关關][于於]', 'について', text)     # 关于→について
     # 全角英数字を半角に変換
     text = text.translate(str.maketrans(
         'ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ'
@@ -461,9 +474,10 @@ def _quality_check_v2(content: str, min_chars: int = 1500, require_code: bool = 
     found = [p for p in _ZH_DETECT_PATTERNS if p in content]
     if found:
         return False, f"中国語文字が混入: {found}"
-    # 中国語特有パターン検出（什么様・什么样・为什么 等）
+    # 中国語特有パターン検出（什么様・什么样・为什么・地缘政治 等）
     chinese_patterns = re.findall(
-        r'什[^\s]{0,3}[様样]|[为為][^\s]{0,3}[么麼]|[样]的|这[个個]|那[个個]',
+        r'什[^\s]{0,3}[様样]|[为為][^\s]{0,3}[么麼]|[样]的|这[个個]|那[个個]'
+        r'|地[缘緣]政治|地[缘緣]|牵[涉摂]|紧[張张]|经[济濟]|[认認]为',
         content
     )
     if chinese_patterns:
@@ -713,10 +727,16 @@ def generate_article(
     review_passed   = True
     review_feedback = "レビューなし"
     for attempt in range(max_retries):
-        from llm import PLANNER_MODEL as _PM
-        print(f"  🧠 生成中 ({_PM})"
+        if is_finance:
+            from llm import ask_finance as _gen
+            _model_label = "qwen3:14b・投資記事専用"
+        else:
+            from llm import ask_plain as _gen
+            from llm import PLANNER_MODEL as _PM
+            _model_label = _PM
+        print(f"  🧠 生成中 ({_model_label})"
               f"{' 再試行 ' + str(attempt) if attempt > 0 else ''}...")
-        content = ask_plain(prompt)
+        content = _gen(prompt)
         # 中国語文字を除去（置換リストで対応済みの文字を日本語化）
         content = _remove_chinese_chars(content)
         passed, reason = _quality_check_v2(content, min_chars=min_length, require_code=not is_finance)
