@@ -476,6 +476,50 @@ def _quality_check_v2(content: str, min_chars: int = 1500, require_code: bool = 
 # --- CJK FILTER END ---
 
 
+def _final_clean(content: str, topic: str, genre_id: str) -> str:
+    """
+    スコアに関わらず必ず適用する最終クリーニング。
+    中国語・韓国語・誤字を修正してから返す。
+    """
+    from llm import ask_plain as _ask_plain
+
+    # Step1: 機械的な除去
+    content = _remove_chinese_chars(content)
+
+    # Step2: 残存する問題をチェック
+    issues = []
+    chinese_typos = re.findall(r'[們]|什么|為什|这个|那个', content)
+    if chinese_typos:
+        issues.append(f"中国語誤字: {chinese_typos[:3]}")
+    korean = re.findall(r'[\uac00-\ud7af]{2,}', content)
+    if korean:
+        issues.append(f"韓国語残存: {''.join(korean[:3])}")
+
+    if not issues:
+        return content
+
+    # Step3: LLMで修正
+    print(f"  🔧 最終修正中（{', '.join(issues)}）...")
+    fix_prompt = (
+        "以下の記事に問題があります。修正してください。\n"
+        f"【問題】\n" + "\n".join(issues) + "\n"
+        "【修正ルール】\n"
+        "- 中国語・韓国語の文字を削除する\n"
+        "- 「們」→「たち」または削除\n"
+        "- 「什么」→削除\n"
+        "- 日本語として不自然な表現を自然な日本語に修正\n"
+        "- 記事の内容・構成は変えない\n"
+        "- 修正した記事全体をそのまま出力する\n"
+        f"【記事】\n{content}"
+    )
+    fixed = _ask_plain(fix_prompt)
+    if fixed and len(fixed) > len(content) * 0.5:
+        fixed = _remove_chinese_chars(fixed)
+        print("  ✅ 最終修正完了")
+        return fixed
+    return content
+
+
 # --- MONETIZATION FOOTER START ---
 _FOOTER_TEMPLATE = """
 ---
@@ -737,6 +781,19 @@ def generate_article(
         )
     except Exception as e:
         print(f"  ⚠️ 導線文注入スキップ: {e}")
+
+    # 保存前の最終クリーニング（スコアに関わらず必ず実行）
+    content = _final_clean(content, topic, genre_id)
+
+    # 最終品質確認（中国語・韓国語が残っていないか）
+    remaining_chinese = re.findall(r'[們]|什么|為什|这个|那个', content)
+    remaining_korean  = re.findall(r'[\uac00-\ud7af]{2,}', content)
+    if remaining_chinese or remaining_korean:
+        print(f"  ⚠️ 修正後も問題残存: chinese={remaining_chinese[:2]} korean={remaining_korean[:2]}")
+        if review_score >= 7:
+            review_score  = 6
+            review_passed = False
+            print(f"  ⬇️ スコア強制降格: {review_score}/10（異常文字残存）")
 
     # ファイル保存
     path = _save_article(topic, content, variant=variant)
