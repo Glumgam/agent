@@ -614,27 +614,33 @@ def compress_finance_context(data: dict) -> str:
         news_titles = "\n".join(
             f"- [{n.get('source', '')}] {n.get('title', '')}"
             for n in news[:15]
+            if n.get('title')
         )
         summary_prompt = (
-            "以下のニュース一覧を3〜5つのトピックに要約してください。\n"
+            "以下のニュースタイトル一覧を読んで、3〜5つのグループにまとめてください。\n"
             "【絶対ルール】\n"
-            "- 提供されたニュースタイトルのみを元に要約する\n"
-            "- タイトルに含まれない情報（企業名・業界・数値）を補完しない\n"
-            "- 「文具業界」「半導体業界」等、タイトルに記載のない業界を推測しない\n"
-            "- 各トピックは「・[ニュースソース] 要点（30〜50文字）」の形式で\n"
+            "- 各タイトルをそのまま使う（言い換えや補完は禁止）\n"
+            "- タイトルにない情報を追加しない\n"
+            "- カテゴリ名はタイトルの内容から自然に決める\n"
+            "- 形式: 「・[カテゴリ]: タイトルの要点をそのまま引用」\n"
             "- 日本語のみ（英語・中国語・韓国語禁止）\n"
-            f"ニュース一覧:\n{news_titles}\n要約（タイトルに基づく事実のみ）:"
+            "- 全体200文字以内\n"
+            f"ニュースタイトル:\n{news_titles}\n"
+            "まとめ（タイトルの言葉をそのまま使うこと）:"
         )
         try:
             news_summary = ask_plain(summary_prompt)
-            # JSONエラー応答（フォールバック失敗時）を検出して除外
-            if news_summary and not news_summary.strip().startswith("{"):
-                sections.append("[中:参考] 本日のニューストピック\n" + news_summary[:300])
+            # 要約が有効な場合のみ使用
+            if news_summary and len(news_summary) > 30 and not news_summary.strip().startswith("{"):
+                sections.append("[中:参考] 本日のニューストピック\n" + news_summary[:400])
             else:
-                raise ValueError("LLM error response")
+                raise ValueError("invalid summary")
         except Exception:
+            # フォールバック: タイトルをそのまま列挙
             fallback = "\n".join(
-                f"・{n.get('title', '')[:40]}" for n in news[:5]
+                f"・{n.get('title', '')[:50]}"
+                for n in news[:5]
+                if n.get('title')
             )
             sections.append("[中:参考] 本日のニュース\n" + fallback)
 

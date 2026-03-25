@@ -419,6 +419,9 @@ def _remove_chinese_chars(text: str) -> str:
         text = text.replace(zh, ja)
     # 韓国語（ハングル）は日本語と別 Unicode ブロックなので安全に除去可能
     text = re.sub(r'[\uac00-\ud7af\u1100-\u11ff\u3130-\u318f]', '', text)
+    # 中国語の疑問詞パターンを除去（什么様 等）
+    text = re.sub(r'什[^\s]{0,3}様の', '', text)
+    text = re.sub(r'[为為][^\s]{0,3}[么麼]', '', text)
     # 全角英数字を半角に変換
     text = text.translate(str.maketrans(
         'ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ'
@@ -453,6 +456,13 @@ def _quality_check_v2(content: str, min_chars: int = 1500, require_code: bool = 
     found = [p for p in _ZH_DETECT_PATTERNS if p in content]
     if found:
         return False, f"中国語文字が混入: {found}"
+    # 中国語特有パターン検出（什么様・为什么 等）
+    chinese_patterns = re.findall(
+        r'什[^\s]{0,3}様|[为為][^\s]{0,3}[么麼]',
+        content
+    )
+    if chinese_patterns:
+        return False, f"中国語パターン検出: {''.join(chinese_patterns[:3])}"
     # 韓国語（ハングル）チェック
     korean = re.findall(r'[\uac00-\ud7af\u1100-\u11ff\u3130-\u318f]{2,}', content)
     if korean:
