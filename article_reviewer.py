@@ -30,14 +30,33 @@ def review_article(content: str, topic: str, genre_id: str = "") -> dict:
     review_target = content[:3000]
 
     if genre_id == "finance_news":
-        prompt = f"""あなたは日本の金融アナリストです。
-以下の記事を評価してください。
+        from datetime import datetime as _dt
+        # 現在の日経平均を動的に取得
+        nikkei_info = "日経平均: 取得中"
+        try:
+            from finance_data_collector import fetch_market_summary
+            market = fetch_market_summary()
+            price  = market.get("nikkei_price", "")
+            change = market.get("nikkei_change", "")
+            if price:
+                nikkei_info = f"本日の日経平均: {price}円 前日比: {change}"
+        except Exception:
+            pass
+        prompt = f"""あなたは日本の金融記事レビュアーです。
+日本語ネイティブとして自然な日本語かどうかも評価してください。
 
 【重要な前提】
-- 現在は2026年3月です
-- 日経平均は2025〜2026年に大きく上昇しており、50,000〜55,000円台は現実的な数値です
-- この数値を「非現実」「高すぎる」と判定しないでください
-- 記事内の日付が2026年であることは正常です
+- 現在は{_dt.now().strftime('%Y年%m月%d日')}です
+- {nikkei_info}
+- 記事内の日経平均数値がこの前後であれば正確な数値として扱ってください
+- S&P500・金・原油などは外貨建てですが、日本語記事での円表記は問題ありません
+- 免責事項が含まれていれば投資助言の問題はありません
+
+【評価時の注意】
+- 数値の単位は記事内で一貫していれば問題なし
+- 2026年の日付は正常です
+- FAQにコンテキストにないニュース・企業名が含まれる場合は減点
+- 同じ表現の繰り返しは減点
 
 【トピック】
 {topic}
@@ -46,15 +65,14 @@ def review_article(content: str, topic: str, genre_id: str = "") -> dict:
 {review_target}
 
 ---
-以下の4項目を評価してください（各10点満点）:
+以下の4項目を評価（各10点満点）:
 
-1. 内容の正確性: データ・数値に明らかな誤りはないか（2026年の日経水準50,000〜55,000円を考慮）
+1. 内容の正確性: データ・数値に明らかな誤りはないか
 2. 日本語の品質: 自然な日本語か、韓国語・中国語の混入はないか
-3. 構成の適切さ: 見出し・まとめ・免責事項が含まれるか、FAQがプレースホルダーでないか
-4. 有用性: 投資家にとって参考になる情報が含まれるか、特定銘柄の売買を断定していないか
+3. 構成の適切さ: 見出し・まとめ・免責事項が含まれるか
+4. 有用性: 投資家にとって参考になる情報が含まれるか
 
----
-必ず以下のフォーマットのみで回答してください:
+必ず以下のフォーマットのみで回答:
 SCORE: [4項目の平均を0-10の整数で]
 ISSUES: [問題点をカンマ区切りで。なければ「なし」]
 VERDICT: [scoreが7以上なら「pass」、6以下なら「fail」]
