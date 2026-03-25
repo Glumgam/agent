@@ -32,7 +32,7 @@ def fetch_market_summary() -> dict:
         # Yahoo Finance US API (^N225) - JSON形式で安定して取得可能
         api_url = (
             "https://query1.finance.yahoo.com/v8/finance/chart/%5EN225"
-            "?interval=1d&range=1d"
+            "?interval=1d&range=2d"
         )
         api_headers = {
             "User-Agent": "Mozilla/5.0 (compatible; research-bot/1.0)",
@@ -43,17 +43,18 @@ def fetch_market_summary() -> dict:
         data = resp.json()
         meta  = data.get("chart", {}).get("result", [{}])[0].get("meta", {})
         price = meta.get("regularMarketPrice", "取得中")
-        prev  = meta.get("previousClose", "N/A")
+        prev  = meta.get("chartPreviousClose") or meta.get("previousClose", "N/A")
         change = ""
         if isinstance(price, (int, float)) and isinstance(prev, (int, float)) and prev:
             diff   = price - prev
             pct    = diff / prev * 100
             change = f"{'+' if diff >= 0 else ''}{diff:,.2f} ({pct:+.2f}%)"
         return {
-            "date":         datetime.now().strftime("%Y-%m-%d"),
-            "nikkei_price": f"{price:,.2f}" if isinstance(price, float) else str(price),
+            "date":          datetime.now().strftime("%Y-%m-%d"),
+            "nikkei_price":  f"{price:,.2f}" if isinstance(price, float) else str(price),
             "nikkei_change": change,
-            "source":       "Yahoo Finance (^N225)",
+            "nikkei_prev":   f"{prev:,.2f}" if isinstance(prev, float) else str(prev),
+            "source":        "Yahoo Finance (^N225)",
         }
     except Exception as e:
         return {"error": str(e), "date": datetime.now().strftime("%Y-%m-%d")}
@@ -480,13 +481,14 @@ def compress_finance_context(data: dict) -> str:
     # =====================================================
     # 1. [重要:最優先] 市況データ
     # =====================================================
-    market    = data.get("market_summary", {})
-    nikkei    = market.get("nikkei_price", "N/A")
-    up_top3   = data.get("up_ranking", [])[:3]
-    down_top3 = data.get("down_ranking", [])[:3]
+    market        = data.get("market_summary", {})
+    nikkei        = market.get("nikkei_price", "N/A")
+    nikkei_change = market.get("nikkei_change", "")
+    up_top3       = data.get("up_ranking", [])[:3]
+    down_top3     = data.get("down_ranking", [])[:3]
     sections.append(
         f"[重要:最優先] 本日の市況（{date_str}）\n"
-        f"日経平均: {nikkei}\n"
+        f"日経平均: {nikkei}円 前日比: {nikkei_change if nikkei_change else '取得中'}\n"
         f"値上がり上位: {' / '.join(up_top3)}\n"
         f"値下がり上位: {' / '.join(down_top3)}"
     )
