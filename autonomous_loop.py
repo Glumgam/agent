@@ -164,14 +164,23 @@ def run_autonomous_loop():
             else:
                 _log(f"  ℹ️  X投稿スキップ（APIキー未設定または上限）")
 
-        # 投資系記事（平日のみ・8サイクルに1回）
-        if cycle_num % 8 == 0 and datetime.now().weekday() < 5:
-            _log(f"\n[Phase 1.7c] 投資系記事生成（平日）")
-            finance_result = _run_finance_content_generation()
-            if finance_result.get("path"):
-                _log(f"  📈 投資記事生成完了")
+        # 投資系記事（時間帯ベース制御）
+        if cycle_num % 8 == 0:
+            should_gen, reason = _should_generate_finance_article()
+            if should_gen:
+                now_hour = datetime.now().hour
+                slot = "after_close" if now_hour >= 16 else "before_open"
+                if not _finance_already_generated_today(slot):
+                    _log(f"\n[Phase 1.7c] 投資記事生成（{reason}）")
+                    finance_result = _run_finance_content_generation()
+                    if finance_result.get("path"):
+                        _log(f"  📈 投資記事生成完了")
+                    else:
+                        _log(f"  ℹ️  投資記事生成スキップ")
+                else:
+                    _log(f"\n[Phase 1.7c] 本日の{slot}スロットは生成済み → スキップ")
             else:
-                _log(f"  ℹ️  投資記事生成スキップ")
+                _log(f"\n[Phase 1.7c] スキップ: {reason}")
         # --- CONTENT GENERATION END ---
 
         # --- Phase 2: テスト ---
@@ -400,6 +409,57 @@ def _run_x_post() -> dict:
         _log(f"  ⚠️ X投稿エラー: {e}")
         return {}
 # --- X POST END ---
+
+
+def _should_generate_finance_article() -> tuple:
+    """
+    投資記事を生成すべき時間帯かを判定する。
+    Returns: (should_generate: bool, reason: str)
+    生成時間帯:
+    - 16:00〜23:59: 大引け後（当日終値データ使用）
+    - 06:00〜08:30: 寄り付き前（米国市場データ使用）
+    平日のみ生成。
+    """
+    now     = datetime.now()
+    weekday = now.weekday()  # 0=月曜〜4=金曜
+    hour    = now.hour
+    minute  = now.minute
+    # 土日はスキップ
+    if weekday >= 5:
+        return False, "週末"
+    # 時間帯チェック
+    after_close = (16 <= hour <= 23)
+    before_open = (6 <= hour < 8) or (hour == 8 and minute <= 30)
+    if after_close:
+        return True, "大引け後（終値データ）"
+    elif before_open:
+        return True, "寄り付き前（米国市場データ）"
+    else:
+        return False, f"生成対象外の時間帯（{hour:02d}:{minute:02d}）"
+
+
+def _finance_already_generated_today(slot: str) -> bool:
+    """
+    今日の指定スロットで既に投資記事が生成済みか確認する。
+    slot: "after_close" or "before_open"
+    """
+    today   = datetime.now().strftime("%Y%m%d")
+    content = AGENT_ROOT / "content"
+    if not content.exists():
+        return False
+    pattern  = f"{today}_*"
+    existing = list(content.glob(pattern))
+    now_hour = datetime.now().hour
+    for f in existing:
+        try:
+            mtime_hour = datetime.fromtimestamp(f.stat().st_mtime).hour
+        except Exception:
+            continue
+        if slot == "after_close" and 16 <= mtime_hour <= 23:
+            return True
+        elif slot == "before_open" and 0 <= mtime_hour <= 9:
+            return True
+    return False
 
 
 def _run_finance_content_generation() -> dict:

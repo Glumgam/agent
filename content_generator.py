@@ -145,6 +145,9 @@ HATENA_TEMPLATE = """
 
 # Zenn用投資記事（概要）
 ZENN_FINANCE_TEMPLATE = """
+あなたは日本の金融アナリストです。
+日本語ネイティブとして自然で専門的な文章を書いてください。
+
 【絶対条件】
 - 必ず最初の行を「# 記事タイトル」で始めること
 - 1500文字以上
@@ -159,32 +162,35 @@ ZENN_FINANCE_TEMPLATE = """
 記事の構成:
 # {topic}
 ## 本日の市場概況
-（market_summaryのnikkei_priceを使って日経平均の動きを紹介）
+（日経平均の動きを数値で紹介。なぜその動きになったか因果関係を必ず説明する）
 ## 本日の注目ニュース
-（news_textのニュースをソース別に3〜5件紹介。各ニュースに1行コメントを添える）
+（ニュースを3〜5件紹介。各ニュースに「なぜ重要か」の1行コメントを添える）
 ## 値動きのポイント
-（up_ranking/down_rankingの上位銘柄を解説。「〜と見られる」等の表現を使う）
+（値上がり・値下がり銘柄の背景を「〜と見られる」「〜の可能性がある」で説明）
+## 本日の市場のポイント（3つ）
+（本日の市場を象徴する重要ポイントを3つ箇条書きで）
 ## まとめ
 
 ---
 ⚠️ 免責事項: この記事は情報提供を目的としており、投資助言ではありません。
 投資判断はご自身の責任で行ってください。
 
-制約（必ず守ること）:
+【厳守ルール】
 - 特定銘柄の売買を推奨しない
-- 「買い」「売り」などの投資判断を示さない
-- データを客観的に紹介する
-- 日本語で書く（中国語・英語の混入禁止）
-- 提供されたデータのみを使う（架空の企業名・数値を補完しない）
-- 銘柄コードのみの場合は「銘柄コード: XXX」と記載する
-- ファナック・トヨタ等の企業名は提供データに含まれる場合のみ記載
+- 因果関係を必ず説明する（「〜のため」「〜を受けて」）
+- 日本語のみ（中国語・英語の混入絶対禁止）
+- 提供データ外の企業名・数値を補完しない
+- 「よくある質問1」等のプレースホルダー禁止
 """
 
 # はてな用投資記事（詳細）
 HATENA_FINANCE_TEMPLATE = """
+あなたは日本の金融アナリストです。
+日本語ネイティブとして自然で専門的な文章を書いてください。
+
 【絶対条件】
 - 必ず最初の行を「# 記事タイトル」で始めること
-- 4000文字以上（マクロ・相関・法務・SNSデータを全て活用する）
+- 2500文字以上
 - ## 見出しを7つ以上
 - 免責事項を末尾に含める
 
@@ -196,31 +202,27 @@ HATENA_FINANCE_TEMPLATE = """
 記事の構成:
 # {topic} - 詳細解説
 ## はじめに
-（本日の市場の概要・対象読者。Zenn概要版への案内を自然に含める）
+（本日の市場の概要。1〜2段落で簡潔に）
 ## 本日の市場概況
-（market_summaryのnikkei_price/nikkei_changeを必ず使って日経平均を解説）
+（日経平均の数値と前日比を紹介。なぜその動きになったか因果関係を説明する）
 ## 🌏 マクロ経済環境
-（macro_textをそのまま活用して為替・米国株・原油・VIXの動きを紹介。断定的表現は避ける）
+（為替・米国株・原油・VIXの動きと、日本市場への影響を因果関係で説明）
 ## 本日の注目ニュース
-（news_textのニュースをソース別に整理して紹介。各ニュースに1〜2行のコメントを添える。断定的表現は避ける）
-## 本日の適時開示まとめ
-（disclosure_textをそのまま活用してポジティブ/ネガティブ/中立に分類して紹介）
-## 注目の提携・共同開発
-（notable開示がある場合のみ記載。partnet_analysisを使って深掘り解説。なければ省略）
+（ニュースを3〜5件紹介。各ニュースに「なぜ重要か」「どんな影響があるか」を説明）
 ## 値上がり・値下がりランキング解説
-（up_ranking / down_rankingの上位銘柄の背景を「〜の可能性がある」等の表現で解説）
-## 💼 企業採用動向から読む経営戦略
-（job_textをそのまま活用。求人データから見える企業の注力分野・採用シグナルを紹介。データがない場合は省略）
+（上位銘柄の動きとその背景を「〜の可能性がある」「〜と見られる」で解説）
 ## ⚖️ 法務・規制動向
-（legal_textをそのまま挿入。行政処分・訴訟・EDINET訂正など。データがない場合は「本日は特筆すべき法務・規制動向はありませんでした」と記載）
-## 📊 相関分析（過去データ）
-（corr_textをそのまま挿入。値上がりランキング上位銘柄と為替・コモディティ・米国株との相関係数を紹介。「過去データの統計的関係であり将来を予測するものではない」と必ず明記）
-## 🔔 相関変化トラッキング（前回比）
-（tracking_textをそのまま挿入。相関の逆転・大幅強化・弱化などを紹介。データ蓄積中の場合は「蓄積中」と記載）
-## 今週の注目ポイント
+（行政処分・訴訟情報があれば紹介。なければ「本日は特筆すべき情報はありませんでした」）
+## 📊 本日の市場のポイント（3つ）
+（本日の市場を象徴する重要ポイントを3つ。必ず因果関係を含める）
+## 今後の注目点
 （来週以降に向けた市場の見どころを客観的に記述）
 ## FAQ
-（投資初心者がよく疑問に思うこと3〜5個。「よくある質問1」等プレースホルダー禁止）
+（以下の条件で3〜5個のQ&Aを作成する:
+- 質問は提供データに基づいた具体的な内容にする
+- 回答は必ず日本語のみ（韓国語・中国語・英語の混入禁止）
+- 「よくある質問1」等のプレースホルダー禁止
+- 例: 「Q. 本日なぜ原油が下落したのですか？」「Q. VIXが上昇すると何が起きますか？」）
 ## まとめ
 
 ---
@@ -228,14 +230,13 @@ HATENA_FINANCE_TEMPLATE = """
 投資勧誘・投資助言ではありません。
 投資判断はご自身の責任で行ってください。
 
-制約（必ず守ること）:
+【厳守ルール】
 - 特定銘柄の売買を推奨しない
-- データを客観的に紹介する（「〜の可能性がある」「〜と見られる」等の表現を使う）
-- 「上昇した」「下落した」等の事実のみ記述
-- 日本語で書く（中国語・英語の混入禁止）
-- 提供されたデータのみを使う（架空の企業名・数値・コードを補完しない）
-- 銘柄コードのみの場合は「銘柄コード: XXX」と記載する
-- ファナック・トヨタ等の有名企業はデータに含まれる場合のみ記載
+- 因果関係を必ず説明する（「〜のため」「〜を受けて」「〜が影響して」）
+- 日本語のみ（中国語・英語の混入絶対禁止）
+- 提供データ外の企業名・数値を補完しない
+- 「よくある質問1」等のプレースホルダー禁止
+- 「〜の可能性がある」「〜と見られる」等の推定表現を使う
 """
 
 # 記事テンプレート
@@ -400,12 +401,29 @@ _ZH_DETECT_PATTERNS = [
 
 def _remove_chinese_chars(text: str) -> str:
     """
-    中国語固有の文字を除去または日本語に置換する。
-    qwen2.5-coder:7b が中国語文字を混入するバグへの対策。
+    中国語・韓国語・異常文字を除去または日本語に置換する。
+    qwen系モデルが中国語・韓国語を混入するバグへの対策。
+    注意: 中国語と日本語漢字は同一 Unicode ブロック (U+4E00-9FFF) を共有するため
+          中国語固有の既知単語を辞書置換する方式を採用（一括除去は NG）。
     """
+    # 既知の中国語単語を日本語に置換（辞書ベース）
     for zh, ja in _ZH_REPLACEMENTS.items():
         text = text.replace(zh, ja)
-    return text
+    # 韓国語（ハングル）は日本語と別 Unicode ブロックなので安全に除去可能
+    text = re.sub(r'[\uac00-\ud7af\u1100-\u11ff\u3130-\u318f]', '', text)
+    # 全角英数字を半角に変換
+    text = text.translate(str.maketrans(
+        'ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ'
+        'ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ'
+        '０１２３４５６７８９',
+        'abcdefghijklmnopqrstuvwxyz'
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        '0123456789'
+    ))
+    # 連続する空白・改行を整理
+    text = re.sub(r'\n{3,}', '\n\n', text)
+    text = re.sub(r' {2,}', ' ', text)
+    return text.strip()
 
 
 def _quality_check_v2(content: str, min_chars: int = 1500, require_code: bool = True) -> tuple:
@@ -427,6 +445,10 @@ def _quality_check_v2(content: str, min_chars: int = 1500, require_code: bool = 
     found = [p for p in _ZH_DETECT_PATTERNS if p in content]
     if found:
         return False, f"中国語文字が混入: {found}"
+    # 韓国語（ハングル）チェック
+    korean = re.findall(r'[\uac00-\ud7af\u1100-\u11ff\u3130-\u318f]{2,}', content)
+    if korean:
+        return False, f"韓国語が混入: {''.join(korean[:3])}"
     # コードブロックを除いた本文でf-string未展開チェック
     no_code = re.sub(r"```.*?```", "", content, flags=re.DOTALL)
     fstring_hits = re.findall(r"\{[a-z_]+[\.\[][^}\n]{1,40}\}", no_code)
@@ -505,15 +527,17 @@ def generate_article(
     extra_context: str = "",
     max_retries: int = 3,
     variant: str = "hatena",
+    finance_cache: dict = None,
 ) -> dict:
     """
     RAGを使って技術記事を生成する。
     Args:
-        topic:         記事のトピック
-        genre_id:      ジャンルID
-        extra_context: 追加コンテキスト
-        max_retries:   生成リトライ上限（デフォルト3）
-        variant:       "zenn"（概要版）or "hatena"（詳細版）
+        topic:          記事のトピック
+        genre_id:       ジャンルID
+        extra_context:  追加コンテキスト
+        max_retries:    生成リトライ上限（デフォルト3）
+        variant:        "zenn"（概要版）or "hatena"（詳細版）
+        finance_cache:  投資データキャッシュ（collect_finance_data()の結果）
     Returns:
         {"title", "content", "path", "rag_hits", "word_count"}
     """
@@ -533,35 +557,42 @@ def generate_article(
         print(f"  ⚠️ 重複チェックスキップ: {e}")
     # --- DEDUP CHECK END ---
 
-    # RAGで関連情報を取得
+    # RAGで関連情報を取得（投資記事はリアルタイムデータ優先のためスキップ）
     rag_context = ""
     rag_hits    = 0
-    try:
-        from rag_retriever import search, format_context
-        results     = search(topic, top_k=4)
-        rag_context = format_context(results, max_chars=2000)
-        rag_hits    = len(results)
-        if rag_context:
-            # 無関係コードの混入チェック
-            noise_patterns = [
-                "return jsonify", "app.route", "@app.",
-                "JWT", "client.generate(text=", "{'error':",
-            ]
-            if any(p in rag_context for p in noise_patterns):
-                print(f"  ⚠️ RAGコンテキストに無関係コード混入 → スキップ")
-                rag_context = ""
-                rag_hits    = 0
-            else:
-                print(f"  📚 RAG: {rag_hits}件の関連知識を注入")
-    except Exception as e:
-        print(f"  ⚠️ RAGスキップ: {e}")
+    if genre_id == "finance_news":
+        print(f"  ℹ️ 投資記事はRAGスキップ（リアルタイムデータ優先）")
+    else:
+        try:
+            from rag_retriever import search, format_context
+            results     = search(topic, top_k=4)
+            rag_context = format_context(results, max_chars=2000)
+            rag_hits    = len(results)
+            if rag_context:
+                # 無関係コードの混入チェック
+                noise_patterns = [
+                    "return jsonify", "app.route", "@app.",
+                    "JWT", "client.generate(text=", "{'error':",
+                ]
+                if any(p in rag_context for p in noise_patterns):
+                    print(f"  ⚠️ RAGコンテキストに無関係コード混入 → スキップ")
+                    rag_context = ""
+                    rag_hits    = 0
+                else:
+                    print(f"  📚 RAG: {rag_hits}件の関連知識を注入")
+        except Exception as e:
+            print(f"  ⚠️ RAGスキップ: {e}")
 
     # 投資ジャンルの場合: リアルタイムデータをコンテキストに注入（圧縮版）
     if genre_id == "finance_news" and not extra_context:
         try:
             from finance_data_collector import collect_finance_data, compress_finance_context
-            finance_data  = collect_finance_data()
-            extra_context = compress_finance_context(finance_data)
+            if finance_cache is not None:
+                print(f"  📊 キャッシュデータを使用（データ収集をスキップ）")
+                _data = finance_cache
+            else:
+                _data = collect_finance_data()
+            extra_context = compress_finance_context(_data)
         except Exception as e:
             print(f"  ⚠️ 投資データ取得失敗: {e}")
 
@@ -589,6 +620,11 @@ def generate_article(
         else:
             template   = HATENA_FINANCE_TEMPLATE
             min_length = 2000  # Ollama出力量に合わせて調整（4000 → 2000）
+        today_str = datetime.now().strftime('%Y年%m月%d日')
+        template  = template.replace(
+            "以下の市場データを使って",
+            f"本日（{today_str}）の市場データを使って"
+        )
         prompt = template.format(topic=topic, context=context[:12000])
     elif variant == "zenn":
         template   = ZENN_TEMPLATE
@@ -670,6 +706,20 @@ def generate_article(
     if not is_finance:
         content = _add_footer(content, topic)
 
+    # 導線文を注入（Zenn→はてな誘導 / はてな→Zenn逆リンク）
+    try:
+        from upsell_generator import inject_upsell_into_article
+        content = inject_upsell_into_article(
+            content=content,
+            topic=topic,
+            genre_id=genre_id,
+            variant=variant,
+            hatena_url="",   # publisher_linker.py が後で更新
+            zenn_url="",
+        )
+    except Exception as e:
+        print(f"  ⚠️ 導線文注入スキップ: {e}")
+
     # ファイル保存
     path = _save_article(topic, content, variant=variant)
 
@@ -686,6 +736,28 @@ def generate_article(
         print(f"  ⚠️ 重複登録スキップ: {e}")
     # --- DEDUP REGISTER END ---
 
+    # 有料記事適性チェック・フッター注入（はてな版のみ）
+    paid_suitable = False
+    paid_label    = "📝 無料記事"
+    try:
+        from paid_content_generator import (
+            is_suitable_for_paid,
+            generate_paid_label,
+            generate_paid_footer,
+        )
+        if variant == "hatena":
+            paid_suitable = is_suitable_for_paid(content, review_score, genre_id)
+            paid_label    = generate_paid_label(genre_id, review_score)
+            if paid_suitable:
+                print(f"  💎 有料記事適性: {paid_label}")
+                paid_footer = generate_paid_footer(genre_id)
+                if paid_footer:
+                    content = content.rstrip() + "\n" + paid_footer
+                    # フッター追加後にファイルを上書き保存
+                    path.write_text(content, encoding="utf-8")
+    except Exception as e:
+        print(f"  ⚠️ 有料判定スキップ: {e}")
+
     # メタデータ記録
     result = {
         "title":           topic,
@@ -698,6 +770,8 @@ def generate_article(
         "review_score":    review_score,
         "review_passed":   review_passed,
         "review_feedback": review_feedback,
+        "paid_suitable":   paid_suitable,
+        "paid_label":      paid_label,
     }
     _log_performance(result)
     print(f"  ✅ 生成完了: {path.name} ({len(content)}文字)")
@@ -777,12 +851,17 @@ def show_content_stats() -> str:
             fail_count = sum(1 for l in logs if not l.get("review_passed", True))
             lines.append(f"平均品質スコア: {avg_score:.1f}/10")
             lines.append(f"fail率: {fail_count}/{len(logs)} ({fail_count / len(logs) * 100:.0f}%)")
+        # 有料適性統計
+        paid_count = sum(1 for l in logs if l.get("paid_suitable", False))
+        if paid_count > 0:
+            lines.append(f"有料適性記事: {paid_count}件 / {len(logs)}件 ({paid_count / len(logs) * 100:.0f}%)")
         lines.append("")
         lines.append("### 最新5件")
         for log in reversed(logs[-5:]):
+            paid_mark = " 💎" if log.get("paid_suitable") else ""
             lines.append(
                 f"- {log.get('generated_at','')[:10]} "
                 f"{log.get('title','')[:40]} "
-                f"({log.get('word_count',0)}文字)"
+                f"({log.get('word_count',0)}文字){paid_mark}"
             )
     return "\n".join(lines)

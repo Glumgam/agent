@@ -520,7 +520,8 @@ def compress_finance_context(data: dict) -> str:
     disclosure = data.get("disclosure_results", {})
     pos     = disclosure.get("positive", [])[:3]
     neg     = disclosure.get("negative", [])[:3]
-    notable = disclosure.get("notable", [])[:2]
+    neutral = disclosure.get("neutral",  [])[:5]
+    notable = disclosure.get("notable",  [])[:2]
     # 数値データが混入しているエントリを除外（company名が数字のみ等）
     def _valid_disclosure(d: dict) -> bool:
         company = d.get("company", "")
@@ -529,29 +530,54 @@ def compress_finance_context(data: dict) -> str:
 
     pos     = [d for d in pos     if _valid_disclosure(d)]
     neg     = [d for d in neg     if _valid_disclosure(d)]
+    neutral = [d for d in neutral if _valid_disclosure(d)]
     notable = [d for d in notable if _valid_disclosure(d)]
     disc_lines = ["[重要:最優先] 本日の適時開示"]
     if pos:
-        disc_lines.append("ポジティブ: " + " / ".join(
-            d.get("company", "") + "「" + d.get("title", "")[:20] + "」"
+        disc_lines.append("【ポジティブ】 " + " / ".join(
+            d.get("company", "") + "「" + d.get("title", "")[:25] + "」"
             for d in pos
         ))
     if neg:
-        disc_lines.append("ネガティブ: " + " / ".join(
-            d.get("company", "") + "「" + d.get("title", "")[:20] + "」"
+        disc_lines.append("【ネガティブ】 " + " / ".join(
+            d.get("company", "") + "「" + d.get("title", "")[:25] + "」"
             for d in neg
         ))
+    if neutral:
+        disc_lines.append("【中立】 " + " / ".join(
+            d.get("company", "") + "「" + d.get("title", "")[:20] + "」"
+            for d in neutral[:3]
+        ))
     if notable:
-        disc_lines.append("注目提携: " + " / ".join(
+        disc_lines.append("【注目提携】 " + " / ".join(
             d.get("company", "") + "×" + str(d.get("partners", ["?"])[:1])
             for d in notable
         ))
+    if len(disc_lines) == 1:
+        disc_lines.append("本日は特筆すべき適時開示はありませんでした。")
     sections.append("\n".join(disc_lines))
 
     # =====================================================
     # 4. [中:参考] 相関分析（解釈のみ・数値なし）
     # =====================================================
     corr_text = data.get("corr_text", "")
+    # キャッシュが空の場合、最新の相関分析ファイルから読み込む
+    if not corr_text:
+        try:
+            import json as _json
+            corr_dir = AGENT_ROOT / "knowledge" / "correlation"
+            corr_dir.mkdir(parents=True, exist_ok=True)
+            corr_files = sorted(
+                corr_dir.glob("*_correlations.json"),
+                reverse=True
+            )
+            if corr_files:
+                corr_data = _json.loads(corr_files[0].read_text(encoding="utf-8"))
+                from correlation_analyzer import format_correlations_for_article
+                corr_text = format_correlations_for_article(corr_data)
+                print(f"  📊 相関データをキャッシュから読み込み: {len(corr_text)}文字")
+        except Exception as e:
+            print(f"  ⚠️ 相関キャッシュ読み込み失敗: {e}")
     if corr_text:
         interp_lines = []
         for line in corr_text.split("\n"):
@@ -589,8 +615,13 @@ def compress_finance_context(data: dict) -> str:
         )
         summary_prompt = (
             "以下のニュース一覧を3〜5つのトピックに要約してください。\n"
-            "各トピックは「・カテゴリ: 1行の要点」の形式で。合計200文字以内。\n"
-            f"{news_titles}\n要約:"
+            "【絶対ルール】\n"
+            "- 提供されたニュースタイトルのみを元に要約する\n"
+            "- タイトルに含まれない情報（企業名・業界・数値）を補完しない\n"
+            "- 「文具業界」「半導体業界」等、タイトルに記載のない業界を推測しない\n"
+            "- 各トピックは「・[ニュースソース] 要点（30〜50文字）」の形式で\n"
+            "- 日本語のみ（英語・中国語・韓国語禁止）\n"
+            f"ニュース一覧:\n{news_titles}\n要約（タイトルに基づく事実のみ）:"
         )
         try:
             news_summary = ask_plain(summary_prompt)
@@ -612,10 +643,26 @@ def compress_finance_context(data: dict) -> str:
     industry = jobs.get("industry_trends", {})
     if industry:
         job_lines = ["[補助:傾向] 求人トレンド（業界別）"]
-        for ind, info in list(industry.items())[:6]:
-            count = info.get("job_count", 0)
-            trend = "増加傾向" if count > 10 else "横ばい"
-            job_lines.append(f"・{ind}: {trend}（{count}件）")
+        for ind, info in list(industry.items())[:5]:
+            raw_kw    = info.get("top_keywords", info.get("keywords", {}))
+            job_count = info.get("job_count", 0)
+            # top_keywords は dict or list どちらも対応
+            if isinstance(raw_kw, dict):
+                kw_list = list(raw_kw.keys())
+            elif isinstance(raw_kw, list):
+                kw_list = raw_kw
+            else:
+                kw_list = []
+            # キーワード数で活発度を判定
+            if len(kw_list) >= 3:
+                trend = f"活発（注目KW: {', '.join(kw_list[:2])}）"
+            elif len(kw_list) >= 1:
+                trend = f"普通（{kw_list[0]}）"
+            elif job_count >= 10:
+                trend = "普通（件数十分）"
+            else:
+                trend = "低調"
+            job_lines.append(f"・{ind}: {trend}")
         sections.append("\n".join(job_lines))
 
     # =====================================================
@@ -629,6 +676,20 @@ def compress_finance_context(data: dict) -> str:
             sent = s.get("sentiment", "中立")
             sent_lines.append(f"・{code}: {sent}")
         sections.append("\n".join(sent_lines))
+
+    # =====================================================
+    # [制約] 利用可能なデータ一覧（架空補完防止）
+    # =====================================================
+    sections.append(
+        "[制約] 利用可能なデータ\n"
+        "以下のデータのみを使用すること。データにない企業名・数値は記載しない:\n"
+        f"- 市況: 日経平均・値上がり/値下がりランキング（上記のみ）\n"
+        f"- マクロ: USD/JPY・S&P500・VIX・WTI原油・金（上記のみ）\n"
+        "- ニュース: 上記のトピック要約のみ\n"
+        "- 法務: 上記の行政処分・訴訟情報のみ\n"
+        "- 適時開示: 上記の分類結果のみ\n"
+        "データに含まれない: ファナック・トヨタ等の個別銘柄の業績・株価予測"
+    )
 
     # =====================================================
     # 結合して返す

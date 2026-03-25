@@ -59,9 +59,16 @@ def is_duplicate(title: str, content: str, variant: str = "") -> tuple:
     """
     重複チェック。
     variant: "zenn" / "hatena" / "" — 同じvariantの記事のみを重複とみなす。
+    日付入りタイトル（日次トピック）は類似チェックをスキップし、
+    同variant・同タイトルの完全一致のみを重複とみなす。
     Returns: (is_dup: bool, reason: str)
     """
     db = _load_dedup_db()
+
+    # 日次トピック判定（日付入りタイトル）
+    has_date = bool(re.search(
+        r'\d{4}年\d{1,2}月\d{1,2}日|\d{4}/\d{2}/\d{2}', title
+    ))
 
     # variantが指定されている場合は同じsuffixのファイルのみチェック
     suffix = f"_{variant}.md" if variant else ""
@@ -78,16 +85,17 @@ def is_duplicate(title: str, content: str, variant: str = "") -> tuple:
         if _same_variant(existing_path):
             return True, f"タイトル重複: '{title}' (既存: {existing_path})"
 
-    # タイトル類似（80%以上一致）
-    for existing_title, existing_path in db["titles"].items():
-        if not _same_variant(existing_path):
-            continue
-        similarity = _title_similarity(title, existing_title)
-        if similarity > 0.8:
-            return True, (
-                f"タイトル類似: '{title}' ≈ '{existing_title}'"
-                f" ({similarity:.0%})"
-            )
+    # タイトル類似（日次トピックはスキップ — 日付が違えば別記事）
+    if not has_date:
+        for existing_title, existing_path in db["titles"].items():
+            if not _same_variant(existing_path):
+                continue
+            similarity = _title_similarity(title, existing_title)
+            if similarity > 0.8:
+                return True, (
+                    f"タイトル類似: '{title}' ≈ '{existing_title}'"
+                    f" ({similarity:.0%})"
+                )
 
     # 内容フィンガープリント
     fp = _fingerprint(content)

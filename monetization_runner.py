@@ -113,19 +113,32 @@ def run_single(genre_id: str = None, topic: str = None) -> dict:
     print(f"  ジャンル: {genre_id}")
     print(f"  トピック: {topic}")
     print(f"{'='*50}")
+
+    # 投資記事はデータ収集を1回だけ実行してZenn・はてなで共有
+    finance_cache = None
+    if genre_id == "finance_news":
+        try:
+            from finance_data_collector import collect_finance_data, compress_finance_context
+            print("\n  📊 投資データを事前収集中（Zenn・はてな共有）...")
+            finance_cache = collect_finance_data()
+            ctx = compress_finance_context(finance_cache)
+            print(f"  📐 コンテキスト: {len(ctx)}文字")
+        except Exception as e:
+            print(f"  ⚠️ 事前収集失敗（各variant内で個別収集にフォールバック）: {e}")
+
     results = {}
     # Zenn版（概要）を生成
     print(f"\n--- Zenn版（概要）---")
-    zenn_result = generate_article(
-        topic=topic, genre_id=genre_id, variant="zenn"
+    results["zenn"] = generate_article(
+        topic=topic, genre_id=genre_id,
+        variant="zenn", finance_cache=finance_cache,
     )
-    results["zenn"] = zenn_result
     # はてな版（詳細）を生成
     print(f"\n--- はてな版（詳細）---")
-    hatena_result = generate_article(
-        topic=topic, genre_id=genre_id, variant="hatena"
+    results["hatena"] = generate_article(
+        topic=topic, genre_id=genre_id,
+        variant="hatena", finance_cache=finance_cache,
     )
-    results["hatena"] = hatena_result
     return results
 
 

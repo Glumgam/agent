@@ -446,44 +446,65 @@ def ask(prompt: str) -> str:
     return ask_coder(prompt)
 
 
-def ask_plain(prompt: str) -> str:
+def unload_model(model: str = None):
+    """モデルをアンロードしてメモリを解放する"""
+    target = model or CODER_MODEL
+    try:
+        requests.post(
+            "http://localhost:11434/api/generate",
+            json={"model": target, "keep_alive": 0},
+            timeout=10,
+        )
+    except Exception:
+        pass
+
+
+def ask_plain(prompt: str, retries: int = 3) -> str:
     """
     Plain-text generation for articles / planning.
     _call_ollama を経由しないことで _clean_llm_output（コードブロック除去・
     JSON切り取り）を回避する。num_predict=8192 で生成トークン上限を拡張。
+    タイムアウト時はモデルアンロード後にリトライする。
     """
     import time
-    # モデル切り替え競合を避けるため短時間待機
-    time.sleep(2)
 
-    payload = {
-        "model":  PLANNER_MODEL,
-        "prompt": prompt,
-        "stream": False,
-        "options": {
-            "temperature": 0.7,
-            "num_ctx":     16384,  # 8192 → 16384
-            "num_predict": 8192,   # 4096 → 8192
-        },
-    }
-    import time as _time
-    _waits = [5, 10]  # 接続失敗時のリトライ待機（秒）
-    last_exc = None
-    for attempt, wait in enumerate([0] + _waits):
-        if wait:
-            print(f"[llm] ask_plain 接続失敗 → {wait}秒後にリトライ ({attempt}/{len(_waits)})")
-            _time.sleep(wait)
+    for attempt in range(retries):
+        if attempt > 0:
+            wait = 10 * attempt  # 10秒・20秒・30秒
+            print(f"  ⏳ Ollama待機中 ({wait}秒)...")
+            time.sleep(wait)
         try:
-            resp = requests.post(OLLAMA_URL, json=payload, timeout=300)
+            resp = requests.post(
+                "http://localhost:11434/api/generate",
+                json={
+                    "model":  PLANNER_MODEL,
+                    "prompt": prompt,
+                    "stream": False,
+                    "options": {
+                        "temperature": 0.7,
+                        "num_ctx":     16384,
+                        "num_predict": 8192,
+                    },
+                    "keep_alive": 120,
+                },
+                timeout=600,
+            )
             resp.raise_for_status()
             return resp.json().get("response", "").strip()
+        except requests.exceptions.Timeout:
+            print(f"  ⚠️ Ollamaタイムアウト (試行 {attempt+1}/{retries})")
+            try:
+                unload_model(PLANNER_MODEL)
+                time.sleep(5)
+            except Exception:
+                pass
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as e:
-            last_exc = e
-            continue
+            print(f"[llm] ask_plain 接続失敗 → リトライ ({attempt+1}/{retries}): {e}")
         except Exception as e:
-            last_exc = e
-            break
-    print(f"[llm] ask_plain 全リトライ失敗: {last_exc} → ask_planner にフォールバック")
+            print(f"  ⚠️ Ollama接続エラー: {e} (試行 {attempt+1}/{retries})")
+            time.sleep(5)
+
+    print(f"[llm] ask_plain 全リトライ失敗 → ask_planner にフォールバック")
     return ask_planner(prompt)
 
 
@@ -502,13 +523,21 @@ def ask_thinking(prompt: str, label: str = "THINKING") -> str:
     - アーキテクチャ設計の相談
     """
     import time as _time
+
+    # thinking前にCODER_MODELをアンロード（メモリ解放）
+    unload_model(CODER_MODEL)
+    _time.sleep(3)
+
     payload = {
         "model": THINKING_MODEL,
         "prompt": prompt,
-        "stream": False,   # stream:True だと qwen3.5:9b は response フィールドが空になる
+        "stream": False,
         "options": {
             "temperature": 0.6,
-        }
+            "num_ctx":     8192,
+            "num_predict": 4096,
+        },
+        "keep_alive": 0,  # 使用後即アンロード
     }
     try:
         import requests as _req
@@ -523,6 +552,9 @@ def ask_thinking(prompt: str, label: str = "THINKING") -> str:
         result = data.get("response", "").strip() or data.get("thinking", "").strip()
         clean = re.sub(r"<think>.*?</think>", "", result, flags=re.DOTALL)
         return clean.strip() or result.strip()
+    except requests.exceptions.Timeout:
+        print(f"タイムアウト → ask_plainにフォールバック")
+        return ask_plain(prompt)
     except Exception as e:
         print(f"  ⚠️ thinking model失敗 ({e}) → 通常モデルにフォールバック")
         return ask_plain(prompt)
