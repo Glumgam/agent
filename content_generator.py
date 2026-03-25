@@ -419,9 +419,12 @@ def _remove_chinese_chars(text: str) -> str:
         text = text.replace(zh, ja)
     # 韓国語（ハングル）は日本語と別 Unicode ブロックなので安全に除去可能
     text = re.sub(r'[\uac00-\ud7af\u1100-\u11ff\u3130-\u318f]', '', text)
-    # 中国語の疑問詞パターンを除去（什么様 等）
-    text = re.sub(r'什[^\s]{0,3}様の', '', text)
-    text = re.sub(r'[为為][^\s]{0,3}[么麼]', '', text)
+    # 中国語の疑問詞パターンを除去（什么様・什么样 等）
+    text = re.sub(r'什[^\s]{0,3}[様样]', '', text)   # 什么様・什么样
+    text = re.sub(r'[为為][^\s]{0,3}[么麼]', '', text)  # 为什么
+    text = re.sub(r'[样]的', '', text)                   # 样的
+    text = re.sub(r'这[个個]', '', text)                 # 这个
+    text = re.sub(r'那[个個]', '', text)                 # 那个
     # 全角英数字を半角に変換
     text = text.translate(str.maketrans(
         'ａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚ'
@@ -456,9 +459,9 @@ def _quality_check_v2(content: str, min_chars: int = 1500, require_code: bool = 
     found = [p for p in _ZH_DETECT_PATTERNS if p in content]
     if found:
         return False, f"中国語文字が混入: {found}"
-    # 中国語特有パターン検出（什么様・为什么 等）
+    # 中国語特有パターン検出（什么様・什么样・为什么 等）
     chinese_patterns = re.findall(
-        r'什[^\s]{0,3}様|[为為][^\s]{0,3}[么麼]',
+        r'什[^\s]{0,3}[様样]|[为為][^\s]{0,3}[么麼]|[样]的|这[个個]|那[个個]',
         content
     )
     if chinese_patterns:
@@ -488,7 +491,10 @@ def _final_clean(content: str, topic: str, genre_id: str) -> str:
 
     # Step2: 残存する問題をチェック
     issues = []
-    chinese_typos = re.findall(r'[們]|什么|為什|这个|那个', content)
+    chinese_typos = re.findall(
+        r'[們样]|什么|什麼|為什|为什|这个|那个|[样]的',
+        content
+    )
     if chinese_typos:
         issues.append(f"中国語誤字: {chinese_typos[:3]}")
     korean = re.findall(r'[\uac00-\ud7af]{2,}', content)
@@ -506,7 +512,8 @@ def _final_clean(content: str, topic: str, genre_id: str) -> str:
         "【修正ルール】\n"
         "- 中国語・韓国語の文字を削除する\n"
         "- 「們」→「たち」または削除\n"
-        "- 「什么」→削除\n"
+        "- 「什么」「什麼」「样的」→削除\n"
+        "- 「这个」「那个」→削除\n"
         "- 日本語として不自然な表現を自然な日本語に修正\n"
         "- 記事の内容・構成は変えない\n"
         "- 修正した記事全体をそのまま出力する\n"
@@ -786,7 +793,10 @@ def generate_article(
     content = _final_clean(content, topic, genre_id)
 
     # 最終品質確認（中国語・韓国語が残っていないか）
-    remaining_chinese = re.findall(r'[們]|什么|為什|这个|那个', content)
+    remaining_chinese = re.findall(
+        r'[們样]|什么|什麼|為什|为什|这个|那个|[样]的',
+        content
+    )
     remaining_korean  = re.findall(r'[\uac00-\ud7af]{2,}', content)
     if remaining_chinese or remaining_korean:
         print(f"  ⚠️ 修正後も問題残存: chinese={remaining_chinese[:2]} korean={remaining_korean[:2]}")
