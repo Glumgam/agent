@@ -600,7 +600,7 @@ def ask_finance(prompt: str, retries: int = 3) -> str:
                 print(f"  ⏳ Ollama待機中 ({wait}秒)...")
                 time.sleep(wait)
             response = requests.post(
-                f"{OLLAMA_URL}/api/generate",
+                OLLAMA_URL,
                 json={
                     "model":  THINKING_MODEL,  # qwen3:14b
                     "prompt": prompt,
