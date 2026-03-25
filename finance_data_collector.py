@@ -460,6 +460,51 @@ def collect_finance_data() -> dict:
 # =====================================================
 # コンテキスト圧縮（LLM向け・情報密度最適化）
 # =====================================================
+def _estimate_market_drivers(data: dict) -> str:
+    """
+    コンテキストから市場の上昇・下落の主因候補を推定する。
+    架空補完を防ぐため、データにある情報のみを使う。
+    """
+    drivers = []
+    macro = data.get("macro", {})
+    us    = macro.get("us_stocks", {})
+    comm  = macro.get("commodities", {})
+    forex = macro.get("forex", {})
+
+    sp_chg = us.get("S&P500", {}).get("change_pct")
+    if isinstance(sp_chg, float):
+        if sp_chg > 0.5:
+            drivers.append(f"米国株上昇（S&P500 {sp_chg:+.1f}%）→ リスクオン傾向")
+        elif sp_chg < -0.5:
+            drivers.append(f"米国株下落（S&P500 {sp_chg:+.1f}%）→ リスクオフ懸念")
+
+    vix = us.get("VIX", {}).get("price")
+    if isinstance(vix, float):
+        if vix < 20:
+            drivers.append(f"VIX低水準（{vix}）→ 市場の不安感が低い")
+        elif vix > 25:
+            drivers.append(f"VIX高水準（{vix}）→ 市場の不安感が継続")
+
+    wti_chg = comm.get("WTI原油", {}).get("change_pct")
+    if isinstance(wti_chg, float):
+        if wti_chg < -3:
+            drivers.append(f"原油急落（{wti_chg:+.1f}%）→ エネルギーコスト低下")
+        elif wti_chg > 3:
+            drivers.append(f"原油急騰（{wti_chg:+.1f}%）→ エネルギーコスト上昇")
+
+    usd_change = forex.get("USD/JPY", {}).get("change_pct")
+    if isinstance(usd_change, float):
+        if usd_change > 0.5:
+            drivers.append(f"円安進行（USD/JPY {usd_change:+.1f}%）→ 輸出株に有利")
+        elif usd_change < -0.5:
+            drivers.append(f"円高進行（USD/JPY {usd_change:+.1f}%）→ 輸出株に不利")
+
+    if not drivers:
+        drivers.append("主因は複合的な要因と推測（コンテキストに明確な材料なし）")
+
+    return "\n".join(f"・{d}" for d in drivers)
+
+
 def compress_finance_context(data: dict) -> str:
     """
     投資データを意味単位で圧縮してLLM向けコンテキストを生成する。
@@ -511,10 +556,18 @@ def compress_finance_context(data: dict) -> str:
     wti_chg_str = f"{wti_chg:+.1f}%" if isinstance(wti_chg, float) else str(wti_chg)
     sections.append(
         f"[重要:企業影響] マクロ({date_str[:10]})\n"
-        f"日経: {nikkei} / USD/JPY: {usd_jpy}円\n"
-        f"S&P500: {sp500}({sp_chg_str}) / VIX: {vix}\n"
-        f"WTI: ${wti}({wti_chg_str}) / 金: {gold}"
+        f"【単位: 為替は円建て、株価指数はドル/ポイント、原油・金はドル建て】\n"
+        f"日経: {nikkei}円 前日比: {nikkei_change if nikkei_change else '取得中'}\n"
+        f"USD/JPY: {usd_jpy}円（円安＝輸出企業に有利）\n"
+        f"S&P500: {sp500}ドル({sp_chg_str}) / VIX: {vix}（高いほど市場不安）\n"
+        f"WTI原油: ${wti}({wti_chg_str}) / 金: ${gold}ドル"
     )
+
+    # =====================================================
+    # 2b. [重要:最優先] 本日の市場変動の主因候補（架空補完防止）
+    # =====================================================
+    drivers = _estimate_market_drivers(data)
+    sections.append(f"[重要:最優先] 本日の市場変動の主因候補\n{drivers}")
 
     # =====================================================
     # 3. [重要:最優先] 適時開示サマリー（分類済み）
