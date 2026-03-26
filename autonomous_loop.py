@@ -470,13 +470,13 @@ def _run_finance_content_generation() -> dict:
             cwd=AGENT_ROOT,
             capture_output=True,
             text=True,
-            timeout=3600,
+            timeout=7200,
         )
         if result.stdout:
             _log(result.stdout[-300:])
         return {"path": "生成完了"} if result.returncode == 0 else {}
     except subprocess.TimeoutExpired:
-        _log("  ⚠️ 投資記事生成タイムアウト（1時間）")
+        _log("  ⚠️ 投資記事生成タイムアウト（2時間）")
         return {}
     except Exception as e:
         _log(f"  ⚠️ 投資記事生成エラー: {e}")

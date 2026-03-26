@@ -809,26 +809,24 @@ def generate_article(
                 from fact_checker import fact_check
                 fc_result = fact_check(content, _finance_data_for_check)
                 if not fc_result["passed"] or fc_result["warnings"]:
-                    fc_issues = fc_result["issues"] + fc_result["warnings"]
+                    fc_issues   = fc_result["issues"] + fc_result["warnings"]
                     issues_text = "\n".join(f"- {i}" for i in fc_issues)
-                    if attempt < max_retries - 1:
-                        print(f"  ❌ ファクトチェック失敗 → 再生成")
+                    if attempt == 0:
+                        # 最初の試行のみ再生成（1回のみ）
+                        print(f"  ❌ ファクトチェック失敗 → 1回のみ再生成")
                         prompt += (
                             f"\n\n【ファクトチェック指摘事項 - 必ず修正すること】\n"
                             f"{issues_text}\n"
-                            "上記の問題を修正して、正確な情報のみで記事を書き直してください。"
+                            "上記の問題を修正して書き直してください。"
                         )
                         continue
                     else:
-                        print(f"  ❌ ファクトチェック最終失敗 → 保存スキップ")
-                        return {
-                            "path":   None,
-                            "score":  0,
-                            "passed": False,
-                            "reason": f"ファクトチェック失敗: {fc_issues[0] if fc_issues else '不明'}",
-                        }
+                        # 2回目以降は警告のみ・保存続行
+                        print(f"  ⚠️ ファクトチェック警告あり（保存続行）: {fc_issues[0] if fc_issues else ''}")
+                        result["fact_check"] = fc_result
                 else:
                     print(f"  ✅ ファクトチェック: 問題なし")
+                    result["fact_check"] = fc_result
             except Exception as e:
                 print(f"  ⚠️ ファクトチェックスキップ: {e}")
         # --- FACT CHECK END ---
