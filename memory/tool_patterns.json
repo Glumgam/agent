@@ -6441,5 +6441,227 @@
       "_self_improve",
       "run"
     ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": []
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": []
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "run",
+      "run",
+      "run",
+      "_self_improve",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": []
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "run",
+      "read_file",
+      "create_file",
+      "create_file",
+      "edit_file",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "run",
+      "run",
+      "run",
+      "_self_improve",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "run",
+      "run",
+      "run",
+      "_self_improve",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "edit_file",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "edit_file",
+      "edit_file",
+      "edit_file",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": []
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "edit_file",
+      "edit_file",
+      "edit_file",
+      "read_file",
+      "run"
+    ]
   }
 ]

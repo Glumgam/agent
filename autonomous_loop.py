@@ -335,7 +335,7 @@ print(json.dumps({{
             cwd=AGENT_ROOT,
             capture_output=True,
             text=True,
-            timeout=300,   # 最大5分
+            timeout=600,   # 最大10分
         )
         for line in result.stdout.split("\n"):
             line = line.strip()
@@ -367,7 +367,7 @@ def _run_news_collection() -> dict:
         _log(result.stdout[-200:] if result.stdout else "")
         return {"success": result.returncode == 0}
     except subprocess.TimeoutExpired:
-        _log("  ⚠️ ニュース収集タイムアウト（5分）")
+        _log("  ⚠️ ニュース収集タイムアウト（10分）")
         return {}
     except Exception as e:
         _log(f"  ⚠️ ニュース収集エラー: {e}")

@@ -4,6 +4,8 @@ CLI Toolkit
 カテゴリ: cli
 作成日: 2026-03-19
 収録ツール:
+- tool_cli_encrypt_decrypt: Deep Research により獲得。分野: スキル発展
+- tool_secure_cli_builder: Deep Research により獲得。分野: スキル発展
 - tool_cli_builder: Deep Research により獲得。分野: セキュリティ
 - tool_typer_create_cli: Deep Research により獲得。分野: AI 論文
 - tool_typer_create_app: Deep Research により獲得。分野: Python 技術トレンド
@@ -254,3 +256,57 @@ if __name__ == "__main__":
     # Example usage of the tool
     result = tool_cli_builder("greet", "A simple command to greet users.")
     print(result)
+
+
+# ==================================================
+# tool_secure_cli_builder
+# ==================================================
+
+def tool_secure_cli_builder(user_input):
+    try:
+        key = load_key()
+        if not key:
+            key = generate_key()
+            save_key(key)
+
+        encrypted_input = encrypt_message(user_input, key)
+        return f"Encrypted: {encrypted_input}"
+    except Exception as e:
+        return f"ERROR: {str(e)}"
+
+if __name__ == "__main__":
+    try:
+        user_input = input("Enter your message to encrypt: ")
+        result = tool_secure_cli_builder(user_input)
+        print(result)
+    except EOFError:
+        print("No input provided.")
+
+
+# ==================================================
+# tool_cli_encrypt_decrypt
+# ==================================================
+
+def tool_cli_encrypt_decrypt(action, key=None, message=None, token=None):
+    if action == "generate_key":
+        return generate_key().decode()
+    elif action == "encrypt" and key and message:
+        return encrypt_message(key.encode(), message)
+    elif action == "decrypt" and key and token:
+        return decrypt_message(key.encode(), token)
+    else:
+        return "ERROR: Invalid arguments"
+
+if __name__ == "__main__":
+    # 例1: キー生成
+    print(tool_cli_encrypt_decrypt("generate_key"))
+    
+    # 例2: 暗号化
+    key = tool_cli_encrypt_decrypt("generate_key")
+    message = "Hello, World!"
+    encrypted_message = tool_cli_encrypt_decrypt("encrypt", key=key, message=message)
+    print(f"Encrypted: {encrypted_message}")
+    
+    # 例3: 復号化
+    decrypted_message = tool_cli_encrypt_decrypt("decrypt", key=key, token=encrypted_message)
+    print(f"Decrypted: {decrypted_message}")

@@ -4,6 +4,7 @@ SYSTEM Toolkit
 カテゴリ: system
 作成日: 2026-03-22
 収録ツール:
+- tool_cli_encryptor: Deep Research により獲得。分野: スキル発展
 - tool_encrypt_data_with_metadata: Deep Research により獲得。分野: スキル発展
 - tool_batch_cli_encrypt_decrypt: Deep Research により獲得。分野: スキル発展
 - tool_batch_encrypt_decrypt: Deep Research により獲得。分野: スキル発展
@@ -121,3 +122,31 @@ if __name__ == "__main__":
     
     result = tool_encrypt_data_with_metadata(data, metadata, key_path)
     print(result)
+
+
+# ==================================================
+# tool_cli_encryptor
+# ==================================================
+
+def tool_cli_encryptor(action, file_path, key_filename):
+    if action == 'generate_key':
+        key = generate_key()
+        save_key(key, key_filename)
+        return f"Key generated and saved to {key_filename}."
+    
+    key = load_key(key_filename)
+    if not key:
+        return "ERROR: Key file not found."
+    
+    if action == 'encrypt':
+        return encrypt_file(file_path, key)
+    elif action == 'decrypt':
+        return decrypt_file(file_path, key)
+    else:
+        return "ERROR: Invalid action. Use 'generate_key', 'encrypt', or 'decrypt'."
+
+if __name__ == "__main__":
+    # Example usage:
+    print(tool_cli_encryptor('generate_key', '', 'secret.key'))
+    print(tool_cli_encryptor('encrypt', 'sample.txt', 'secret.key'))
+    print(tool_cli_encryptor('decrypt', 'sample.txt', 'secret.key'))

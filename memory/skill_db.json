@@ -73,12 +73,14 @@
     "coding": {
       "name": "coding",
       "task_example": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
-      "success_count": 435,
-      "last_used": "2026-03-25T12:33:40.694445+00:00",
+      "success_count": 479,
+      "last_used": "2026-03-26T13:56:09.396905+00:00",
       "tools_used": [
         "create_file",
         "run",
-        "done"
+        "done",
+        "edit_file",
+        "read_file"
       ],
       "key_imports": [],
       "keywords": [
@@ -133,8 +135,8 @@
     "bug_fix": {
       "name": "bug_fix",
       "task_example": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
-      "success_count": 316,
-      "last_used": "2026-03-25T12:21:26.458979+00:00",
+      "success_count": 342,
+      "last_used": "2026-03-26T14:07:31.818693+00:00",
       "tools_used": [
         "run",
         "done",
@@ -170,8 +172,8 @@
     "testing": {
       "name": "testing",
       "task_example": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
-      "success_count": 297,
-      "last_used": "2026-03-25T12:28:35.997166+00:00",
+      "success_count": 322,
+      "last_used": "2026-03-26T14:17:26.635317+00:00",
       "tools_used": [
         "done",
         "run",
@@ -1048,6 +1050,65 @@
         "builder"
       ],
       "summary": "Deep Research により獲得。分野: セキュリティ"
+    },
+    "tool_cli_encryptor": {
+      "name": "tool_cli_encryptor",
+      "task_example": "[深掘り獲得] CLIアプリケーションでファイルの暗号化と復号化を簡単に実行できるツール。 (from: スキル発展)",
+      "success_count": 1,
+      "last_used": "2026-03-26T01:51:30.850134+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [
+        "cryptography"
+      ],
+      "keywords": [
+        "スキル発展",
+        "tool",
+        "cli",
+        "encryptor"
+      ],
+      "summary": "Deep Research により獲得。分野: スキル発展"
+    },
+    "tool_secure_cli_builder": {
+      "name": "tool_secure_cli_builder",
+      "task_example": "[深掘り獲得] セキュアなCLIアプリケーションを構築し、ユーザー入力データを暗号化する。 (from: スキル発展)",
+      "success_count": 1,
+      "last_used": "2026-03-26T05:35:01.201877+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [
+        "cryptography"
+      ],
+      "keywords": [
+        "スキル発展",
+        "tool",
+        "secure",
+        "cli",
+        "builder"
+      ],
+      "summary": "Deep Research により獲得。分野: スキル発展"
+    },
+    "tool_cli_encrypt_decrypt": {
+      "name": "tool_cli_encrypt_decrypt",
+      "task_example": "[深掘り獲得] CLIで暗号化と復号化を行う。 (from: スキル発展)",
+      "success_count": 1,
+      "last_used": "2026-03-26T06:12:17.329904+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [
+        "cryptography"
+      ],
+      "keywords": [
+        "スキル発展",
+        "tool",
+        "cli",
+        "encrypt",
+        "decrypt"
+      ],
+      "summary": "Deep Research により獲得。分野: スキル発展"
     }
   }
 }
