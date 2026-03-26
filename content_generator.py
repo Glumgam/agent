@@ -802,6 +802,37 @@ def generate_article(
         review_passed   = review["passed"]
         review_feedback = review["feedback"]
         # --- QUALITY REVIEW END ---
+
+        # --- FACT CHECK START ---
+        if is_finance and _finance_data_for_check:
+            try:
+                from fact_checker import fact_check
+                fc_result = fact_check(content, _finance_data_for_check)
+                if not fc_result["passed"] or fc_result["warnings"]:
+                    fc_issues = fc_result["issues"] + fc_result["warnings"]
+                    issues_text = "\n".join(f"- {i}" for i in fc_issues)
+                    if attempt < max_retries - 1:
+                        print(f"  ❌ ファクトチェック失敗 → 再生成")
+                        prompt += (
+                            f"\n\n【ファクトチェック指摘事項 - 必ず修正すること】\n"
+                            f"{issues_text}\n"
+                            "上記の問題を修正して、正確な情報のみで記事を書き直してください。"
+                        )
+                        continue
+                    else:
+                        print(f"  ❌ ファクトチェック最終失敗 → 保存スキップ")
+                        return {
+                            "path":   None,
+                            "score":  0,
+                            "passed": False,
+                            "reason": f"ファクトチェック失敗: {fc_issues[0] if fc_issues else '不明'}",
+                        }
+                else:
+                    print(f"  ✅ ファクトチェック: 問題なし")
+            except Exception as e:
+                print(f"  ⚠️ ファクトチェックスキップ: {e}")
+        # --- FACT CHECK END ---
+
         break
 
     # フッターを追加（投資記事は技術ツール紹介フッターをスキップ）
@@ -837,17 +868,6 @@ def generate_article(
             review_score  = 6
             review_passed = False
             print(f"  ⬇️ スコア強制降格: {review_score}/10（異常文字残存）")
-
-    # ファクトチェック（投資記事のみ）
-    if genre_id == "finance_news" and _finance_data_for_check:
-        try:
-            from fact_checker import fact_check
-            fc_result = fact_check(content, _finance_data_for_check)
-            if fc_result["score_penalty"] > 0:
-                review_score = max(1, review_score - fc_result["score_penalty"])
-                print(f"  📉 ファクトチェックペナルティ: -{fc_result['score_penalty']}点 → {review_score}/10")
-        except Exception as e:
-            print(f"  ⚠️ ファクトチェックスキップ: {e}")
 
     # ファイル保存
     path = _save_article(topic, content, variant=variant)
