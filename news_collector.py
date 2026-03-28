@@ -497,6 +497,52 @@ def show_stats():
             print(f"  {genre:10s}: {len(items)}件")
 
 
+def filter_new_patent_items(patent_items: list) -> list:
+    """
+    前日までの特許ニュースと比較して新規情報のみ返す。
+    legal_collector の filter_new_legal_items と同じ設計。
+    本日分は knowledge/patent/ に保存して次回の重複排除に使用する。
+    """
+    PATENT_DIR = AGENT_ROOT / "knowledge" / "patent"
+    PATENT_DIR.mkdir(parents=True, exist_ok=True)
+
+    PROGRESS_KEYWORDS = ["登録", "査定", "審決", "判決", "異議", "無効", "侵害", "和解"]
+
+    # 直近5件の特許キャッシュからタイトルを収集
+    prev_titles = set()
+    for f in sorted(PATENT_DIR.glob("*_patent.json"), reverse=True)[:5]:
+        try:
+            data = json.loads(f.read_text(encoding="utf-8"))
+            for item in data:
+                prev_titles.add(item.get("title", "")[:30])
+        except Exception:
+            continue
+
+    # 新規・進展のある情報のみフィルタリング
+    new_items = []
+    for item in patent_items:
+        title_key = item.get("title", "")[:30]
+        if title_key not in prev_titles:
+            new_items.append(item)
+        elif any(kw in item.get("title", "") for kw in PROGRESS_KEYWORDS):
+            item = dict(item)
+            item["note"] = "進展あり"
+            new_items.append(item)
+
+    print(f"  📋 特許: 全{len(patent_items)}件 → 新規{len(new_items)}件（前日重複排除）")
+
+    # 本日分を保存（次回の重複排除に使用）
+    if patent_items:
+        date_str  = datetime.now().strftime("%Y-%m-%d_%H%M")
+        save_path = PATENT_DIR / f"{date_str}_patent.json"
+        save_path.write_text(
+            json.dumps(patent_items, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+
+    return new_items
+
+
 def summarize_patent_news(patent_items: list, llm_func=None) -> str:
     """
     特許ニュースをLLMで要約して投資・経済的影響を分析する。

@@ -843,6 +843,30 @@ def compress_finance_context(data: dict) -> str:
         )
 
     # =====================================================
+    # 8.7 [中:参考] 特許・知財動向（前日重複排除）
+    # =====================================================
+    patent_items = data.get("patent", [])
+    if patent_items:
+        try:
+            from news_collector import filter_new_patent_items
+            patent_new = filter_new_patent_items(patent_items)
+        except Exception as e:
+            print(f"  ⚠️ 特許重複排除スキップ: {e}")
+            patent_new = patent_items
+
+        if patent_new:
+            patent_titles = "\n".join(
+                f"・{item['title'][:60]}"
+                + ("（進展あり）" if item.get("note") == "進展あり" else "")
+                for item in patent_new[:5]
+            )
+            sections.append(f"[中:参考] 本日の特許・知財動向\n{patent_titles}")
+        else:
+            sections.append(
+                "[補助:傾向] 本日の特許・知財動向\n本日新たな特許・知財情報はありません"
+            )
+
+    # =====================================================
     # [制約] 利用可能なデータ一覧（架空補完防止）
     # =====================================================
     sections.append(
