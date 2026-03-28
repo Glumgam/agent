@@ -753,6 +753,36 @@ def compress_finance_context(data: dict) -> str:
         sections.append("\n".join(sent_lines))
 
     # =====================================================
+    # 8.5 [中:参考] 値動き銘柄の関連ニュース紐付け
+    # =====================================================
+    def _find_stock_news(company_name: str, news_list: list) -> str:
+        """ニュース一覧から特定企業に言及しているものを探す"""
+        for news in news_list:
+            title = news.get("title", "")
+            if company_name in title:
+                return title[:50]
+        return ""
+
+    all_news          = data.get("news", [])
+    stock_news_lines  = []
+    up_items   = data.get("up_ranking",   [])[:5]
+    down_items = data.get("down_ranking", [])[:5]
+    for item in up_items + down_items:
+        m = re.match(r'\d+\.\s*(.+?)\s*\([+-]', item)
+        if m:
+            company = m.group(1).strip()
+            related = _find_stock_news(company, all_news)
+            if related:
+                stock_news_lines.append(f"・{company}: {related}")
+    if stock_news_lines:
+        sections.append("[中:参考] 値動き銘柄の関連ニュース\n" + "\n".join(stock_news_lines))
+    else:
+        sections.append(
+            "[中:参考] 値動き銘柄の関連ニュース\n"
+            "・本日は各銘柄の明確な材料ニュースは確認できませんでした"
+        )
+
+    # =====================================================
     # [制約] 利用可能なデータ一覧（架空補完防止）
     # =====================================================
     sections.append(

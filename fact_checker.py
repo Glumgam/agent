@@ -112,6 +112,45 @@ def check_vix_consistency(content: str, finance_data: dict) -> list:
     return warnings
 
 
+_SPECULATION_PATTERNS = [
+    r'業績改善の期待が背景',
+    r'新規プロジェクトの発表',
+    r'パートナー企業との提携が影響',
+    r'技術革新や市場拡大の見込み',
+    r'新規事業の発表が背景',
+    r'投資家の関心が高まった.*可能性',
+    r'市場シェアの低下が要因',
+    r'収益モデルの見直しが背景',
+    r'業績回復への期待が背景',
+    r'新商品発表が材料',
+]
+
+
+def check_stock_explanations(content: str, finance_data: dict) -> list:
+    """
+    銘柄の説明に根拠のない推測が含まれていないか確認する。
+    コンテキストのニュースに根拠がある場合は許容する。
+    """
+    warnings = []
+
+    # コンテキストのニュースタイトルを結合（許容キーワード集合）
+    allowed_text = " ".join(
+        n.get("title", "") for n in finance_data.get("news", [])
+    )
+
+    for pattern in _SPECULATION_PATTERNS:
+        if re.search(pattern, content):
+            # コンテキストのニュースに関連語がある場合はスキップ
+            keyword = re.findall(pattern, content)
+            if keyword and keyword[0] not in allowed_text:
+                warnings.append(
+                    f"根拠なし推測の可能性: 「{keyword[0]}」"
+                    f"→「背景は未公表」に変更してください"
+                )
+
+    return warnings
+
+
 def fact_check(content: str, finance_data: dict) -> dict:
     """
     記事のファクトチェックを実行する。
@@ -124,7 +163,11 @@ def fact_check(content: str, finance_data: dict) -> dict:
         }
     """
     all_issues   = check_numbers(content, finance_data)
-    all_warnings = check_hallucination(content, finance_data) + check_vix_consistency(content, finance_data)
+    all_warnings = (
+        check_hallucination(content, finance_data)
+        + check_vix_consistency(content, finance_data)
+        + check_stock_explanations(content, finance_data)
+    )
 
     score_penalty = len(all_issues) * 2 + len(all_warnings) * 1
     passed = len(all_issues) == 0
