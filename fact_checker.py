@@ -112,6 +112,39 @@ def check_vix_consistency(content: str, finance_data: dict) -> list:
     return warnings
 
 
+def check_unverifiable_time_expressions(content: str, finance_data: dict) -> list:
+    """
+    「〇〇ぶり」「過去〇ヶ月の高水準」等の時間表現が
+    コンテキストで検証不可能な場合に警告する。
+    ルール:
+    - 表現自体は許容（削除不要）
+    - ただし具体的な数値（「2週間ぶり」等）は警告
+    - 「数カ月」「最近」等の曖昧表現は許容
+    """
+    issues = []
+    # 具体的な数値を伴う時間表現（検証不可）
+    SPECIFIC_TIME_PATTERNS = [
+        r'\d+週間ぶり',          # 「2週間ぶり」
+        r'\d+ヶ月ぶり',          # 「3ヶ月ぶり」
+        r'\d+カ月ぶり',          # 「3カ月ぶり」
+        r'\d+年ぶり',            # 「1年ぶり」
+        r'\d+日ぶり',            # 「10日ぶり」
+        r'過去\d+[週ヶカ年日]',  # 「過去3ヶ月」
+        r'\d+ヶ月来',            # 「3ヶ月来」
+        r'\d+カ月来',            # 「3カ月来」
+        r'\d+[週年日]来',        # 「3週来」「1年来」「30日来」
+    ]
+    for pattern in SPECIFIC_TIME_PATTERNS:
+        matches = re.findall(pattern, content)
+        for match in matches:
+            issues.append(
+                f"時間表現の検証不可: 「{match}」"
+                f"→ コンテキストに過去データがないため数値の正確性を確認できません。"
+                f"「数週間ぶり」等の曖昧表現への変更を推奨します。"
+            )
+    return issues
+
+
 _SPECULATION_PATTERNS = [
     r'業績改善の期待が背景',
     r'新規プロジェクトの発表',
@@ -223,6 +256,10 @@ def fact_check(content: str, finance_data: dict) -> dict:
         + check_stock_explanations(content, finance_data)
         + check_format_compliance(content)
     )
+
+    # 時間表現チェック
+    time_issues = check_unverifiable_time_expressions(content, finance_data)
+    all_warnings.extend(time_issues)
 
     score_penalty = len(all_issues) * 2 + len(all_warnings) * 1
     passed = len(all_issues) == 0

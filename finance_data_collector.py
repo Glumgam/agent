@@ -445,6 +445,33 @@ def collect_finance_data() -> dict:
         data["corr_text"]     = ""
         data["tracking_text"] = ""
 
+    # ローカルニュースから法務・経済関連情報を取得
+    try:
+        from local_news_collector import collect_local_news
+        from legal_collector import extract_legal_from_local_news
+        print("  🗾 ローカルニュース収集中...")
+        local_items = collect_local_news()
+        # 法務関連をlegalに追加
+        legal_from_local = extract_legal_from_local_news(local_items)
+        if legal_from_local:
+            existing_legal = data.get("legal", {})
+            existing_high  = existing_legal.get("high", [])
+            existing_high.extend(legal_from_local)
+            data["legal"]["high"] = existing_high
+            print(f"  ⚖️ ローカル法務情報追加: {len(legal_from_local)}件")
+        # 一般ニュースをnewsに追加
+        existing_news = data.get("news", [])
+        # 重複除去（URL基準）
+        existing_urls = {n.get("url", "") for n in existing_news}
+        new_local = [
+            item for item in local_items
+            if item.get("url", "") not in existing_urls
+        ]
+        data["news"] = existing_news + new_local[:20]  # 最大20件追加
+        print(f"  🗾 ローカルニュース追加: {len(new_local[:20])}件")
+    except Exception as e:
+        print(f"  ⚠️ ローカルニュース収集スキップ: {e}")
+
     # 保存（日時付きファイル名で重複しない）
     FINANCE_DIR.mkdir(parents=True, exist_ok=True)
     stamp    = datetime.now().strftime("%Y-%m-%d_%H%M")
