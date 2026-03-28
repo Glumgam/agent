@@ -148,6 +148,23 @@ def check_stock_explanations(content: str, finance_data: dict) -> list:
                     f"→「背景は未公表」に変更してください"
                 )
 
+    # 曖昧な"逃げの推測"パターン
+    VAGUE_PATTERNS = [
+        r'とみられます',
+        r'期待されています',
+        r'見込まれています',
+        r'と考えられます',
+        r'影響していると見られる',
+        r'要因と推測される',
+        r'背景にあると見られる',
+        r'影響を与えたと考えられる',
+    ]
+    for pattern in VAGUE_PATTERNS:
+        if re.search(pattern, content):
+            warnings.append(
+                f"曖昧表現の検出: 「{pattern}」→ 根拠を明示するか「背景は未公表」に変更"
+            )
+
     return warnings
 
 

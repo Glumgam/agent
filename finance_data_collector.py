@@ -756,11 +756,29 @@ def compress_finance_context(data: dict) -> str:
     # 8.5 [中:参考] 値動き銘柄の関連ニュース紐付け
     # =====================================================
     def _find_stock_news(company_name: str, news_list: list) -> str:
-        """ニュース一覧から特定企業に言及しているものを探す"""
+        """
+        ニュース一覧から特定企業に言及しているものを探す。
+        完全一致優先 → 先頭4文字の部分一致 → なし
+        """
+        company_short = company_name[:4]  # 先頭4文字で部分一致
+
         for news in news_list:
-            title = news.get("title", "")
-            if company_name in title:
-                return title[:50]
+            title   = news.get("title", "")
+            summary = news.get("summary", "")
+            text    = title + " " + summary
+            # 完全一致優先
+            if company_name in text:
+                return title[:60]
+
+        # 部分一致（4文字以上の場合のみ）
+        if len(company_short) >= 4:
+            for news in news_list:
+                title   = news.get("title", "")
+                summary = news.get("summary", "")
+                text    = title + " " + summary
+                if company_short in text:
+                    return title[:60]
+
         return ""
 
     all_news          = data.get("news", [])
