@@ -149,7 +149,7 @@ def scan_existing_articles() -> int:
     """既存の記事を全てデータベースに登録する"""
     db    = {"titles": {}, "fingerprints": {}}
     count = 0
-    for md in sorted(CONTENT_DIR.glob("*.md")):
+    for md in sorted(CONTENT_DIR.rglob("*.md")):
         if md.name.startswith("._"):
             continue
         try:

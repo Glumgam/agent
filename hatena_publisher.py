@@ -259,7 +259,7 @@ def publish_article(article_path: Path, api_key: str, dry_run: bool = False) -> 
 def publish_all(api_key: str, dry_run: bool = False) -> dict:
     """未投稿の記事を全て投稿する"""
     log      = _load_log()
-    articles = sorted(CONTENT_DIR.glob("*.md"))
+    articles = sorted(CONTENT_DIR.rglob("*.md"))
     articles = [a for a in articles if not a.name.startswith("._")]
 
     unpublished = [
@@ -294,7 +294,7 @@ def publish_all(api_key: str, dry_run: bool = False) -> dict:
 
 def show_stats():
     log      = _load_log()
-    articles = list(CONTENT_DIR.glob("*.md"))
+    articles = list(CONTENT_DIR.rglob("*.md"))
     print(f"\n## はてなブログ投稿状況")
     print(f"生成記事: {len(articles)}件")
     print(f"投稿済み: {len(log)}件")

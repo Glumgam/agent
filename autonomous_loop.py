@@ -448,7 +448,7 @@ def _finance_already_generated_today(slot: str) -> bool:
     if not content.exists():
         return False
     pattern  = f"{today}_*"
-    existing = list(content.glob(pattern))
+    existing = list(content.rglob(pattern))
     now_hour = datetime.now().hour
     for f in existing:
         try:

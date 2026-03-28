@@ -11,8 +11,30 @@ from pathlib import Path
 from datetime import datetime
 
 AGENT_ROOT   = Path(__file__).parent
-CONTENT_DIR  = AGENT_ROOT / "content"
+CONTENT_DIR  = AGENT_ROOT / "content"          # ルート（後方互換）
 PERF_LOG     = AGENT_ROOT / "memory" / "content_log.json"
+
+# ジャンル別サブディレクトリ
+CONTENT_DIRS = {
+    "finance_news": AGENT_ROOT / "content" / "finance",
+    "python_tips":  AGENT_ROOT / "content" / "tech",
+    "ai_tools":     AGENT_ROOT / "content" / "tech",
+    "library_intro":AGENT_ROOT / "content" / "tech",
+    "automation":   AGENT_ROOT / "content" / "tech",
+    "ai_news":      AGENT_ROOT / "content" / "tech",
+    "arxiv_ai":     AGENT_ROOT / "content" / "tech",
+    "security":     AGENT_ROOT / "content" / "tech",
+    "science":      AGENT_ROOT / "content" / "general",
+    "food":         AGENT_ROOT / "content" / "general",
+    "gadget":       AGENT_ROOT / "content" / "general",
+}
+
+
+def get_content_dir(genre_id: str) -> Path:
+    """ジャンルに対応するコンテンツ保存ディレクトリを返す（なければ作成）"""
+    base = CONTENT_DIRS.get(genre_id, AGENT_ROOT / "content" / "general")
+    base.mkdir(parents=True, exist_ok=True)
+    return base
 
 # 技術記事のジャンル定義
 TECH_GENRES = [
@@ -987,7 +1009,7 @@ def generate_article(
             print(f"  ⬇️ スコア強制降格: {review_score}/10（異常文字残存）")
 
     # ファイル保存
-    path = _save_article(topic, content, variant=variant)
+    path = _save_article(topic, content, variant=variant, genre_id=genre_id)
 
     # --- DEDUP REGISTER START ---
     try:
@@ -1057,18 +1079,24 @@ def generate_article(
     return result
 
 
-def _save_article(topic: str, content: str, variant: str = "hatena") -> Path:
-    """記事をMarkdownファイルとして保存する"""
-    CONTENT_DIR.mkdir(exist_ok=True)
+def _save_article(
+    topic: str,
+    content: str,
+    variant: str = "hatena",
+    genre_id: str = "",
+) -> Path:
+    """記事をジャンル別サブディレクトリに保存する"""
+    save_dir = get_content_dir(genre_id) if genre_id else CONTENT_DIR
+    save_dir.mkdir(parents=True, exist_ok=True)
     date_str = datetime.now().strftime("%Y%m%d")
     slug     = re.sub(r"[^\w\s-]", "", topic.lower())
     slug     = re.sub(r"\s+", "_", slug.strip())[:40] or "article"
     suffix   = "_zenn" if variant == "zenn" else "_hatena"
     filename = f"{date_str}_{slug}{suffix}.md"
-    path     = CONTENT_DIR / filename
+    path     = save_dir / filename
     counter  = 1
     while path.exists():
-        path    = CONTENT_DIR / f"{date_str}_{slug}{suffix}_{counter}.md"
+        path    = save_dir / f"{date_str}_{slug}{suffix}_{counter}.md"
         counter += 1
     path.write_text(content, encoding="utf-8")
     return path
@@ -1101,7 +1129,7 @@ def show_content_stats() -> str:
     if not PERF_LOG.exists():
         return "生成記事なし"
     logs  = json.loads(PERF_LOG.read_text(encoding="utf-8"))
-    files = list(CONTENT_DIR.glob("*.md")) if CONTENT_DIR.exists() else []
+    files = list(CONTENT_DIR.rglob("*.md")) if CONTENT_DIR.exists() else []
     lines = [
         f"## 📝 コンテンツ統計",
         f"生成記事数: {len(files)}件",

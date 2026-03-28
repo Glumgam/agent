@@ -258,7 +258,7 @@ def publish_article(
 def publish_all(dry_run: bool = False) -> dict:
     """未投稿の記事を全て変換して1回だけgit pushする"""
     log      = _load_publish_log()
-    articles = sorted(CONTENT_DIR.glob("*.md"))
+    articles = sorted(CONTENT_DIR.rglob("*.md"))
 
     # ログ同期（zenn-contentに存在しないファイルはログから削除）
     cleaned = 0
@@ -354,7 +354,7 @@ def publish_all(dry_run: bool = False) -> dict:
 def show_stats():
     """投稿状況を表示する"""
     log      = _load_publish_log()
-    articles = list(CONTENT_DIR.glob("[0-9]*.md"))
+    articles = list(CONTENT_DIR.rglob("[0-9]*.md"))
     print(f"\n## Zenn投稿状況")
     print(f"生成記事: {len(articles)}件")
     print(f"投稿済み: {len(log)}件")
