@@ -937,6 +937,29 @@ def generate_article(
                 print(f"  ⚠️ ファクトチェックスキップ: {e}")
         # --- FACT CHECK END ---
 
+        # --- DYNAMIC VERIFICATION START ---
+        if is_finance and _finance_data_for_check:
+            try:
+                from dynamic_verifier import verify_article_time_expressions
+                verify_result = verify_article_time_expressions(
+                    content, _finance_data_for_check
+                )
+
+                if verify_result["has_issues"]:
+                    if attempt < max_retries - 1:
+                        print(f"  ❌ 時間表現の検証失敗 → 修正指示付きで再生成")
+                        prompt += verify_result["correction_prompt"]
+                        continue
+                    else:
+                        print(f"  ⚠️ 時間表現の検証警告（最終試行のため保存続行）")
+
+                elif verify_result["verified"]:
+                    print(f"  ✅ 時間表現の検証完了: {len(verify_result['verified'])}件")
+
+            except Exception as e:
+                print(f"  ⚠️ 時間表現検証スキップ: {e}")
+        # --- DYNAMIC VERIFICATION END ---
+
         break
 
     # フッターを追加（投資記事は技術ツール紹介フッターをスキップ）
