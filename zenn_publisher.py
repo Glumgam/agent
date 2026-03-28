@@ -182,7 +182,7 @@ def _make_slug(article_path: Path) -> str:
         "pathlib":          "pathlib",
     }
 
-    slug_parts = []  # 日付プレフィックスなし
+    slug_parts = []
     for ja, en in keyword_map.items():
         if ja in stem and en not in slug_parts:
             slug_parts.append(en)
@@ -193,10 +193,13 @@ def _make_slug(article_path: Path) -> str:
     slug = re.sub(r"[^a-z0-9\-_]", "", slug)
     slug = re.sub(r"-+", "-", slug).strip("-")
 
-    # 12文字未満は日付補完
-    if len(slug) < 12:
-        suffix = date_prefix[:6] if date_prefix else "article"
-        slug = slug + "-" + suffix if slug else "article-" + suffix
+    # 日付サフィックスを常に付加して一意性を保証（8桁全て使用）
+    # 旧: date_prefix[:6] → 同日に複数記事があると "article-202603" で衝突
+    suffix = date_prefix if date_prefix else "article"
+    if len(slug) < 5:
+        slug = f"finance-report-{suffix}"
+    else:
+        slug = f"{slug}-{suffix}"
 
     return slug[:50]
 

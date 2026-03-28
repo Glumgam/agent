@@ -406,11 +406,27 @@ Q&A形式で書いてください。
 
 
 # --- QUALITY FILTER START ---
+_REJECTION_PATTERNS = [
+    "ご指摘ありがとうございます",
+    "申し訳ありません",
+    "I cannot",
+    "I'm unable",
+    "不適切なリクエスト",
+    "作成することができません",
+]
+
+
 def _quality_check(content: str) -> tuple:
     """
     記事の品質をチェックする。
     Returns: (passed: bool, reason: str)
     """
+    # LLM拒否パターンを冒頭200文字で検出
+    head = content[:200] if content else ""
+    for pattern in _REJECTION_PATTERNS:
+        if pattern in head:
+            return False, f"LLM拒否パターン検出: 「{pattern}」"
+
     if not content or len(content) < 1500:
         return False, f"文字数不足: {len(content) if content else 0}文字（最低1500文字）"
     # 最初の非空行が # タイトルであることを確認

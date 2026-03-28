@@ -597,7 +597,16 @@ SEARCH_QUERY: 実装例を探すための検索クエリ
 BASED_ON: 元にした既存ツール名（なければ none）
 ---
 """
-    response = ask_plain(prompt)
+    try:
+        response = ask_plain(prompt)
+    except Exception as e:
+        print(f"  ⚠️ スキル発展LLM呼び出しエラー: {e}")
+        return []
+
+    # 空応答チェック
+    if not response or not response.strip():
+        print(f"  ⚠️ スキル発展: LLMが空応答を返しました")
+        return []
 
     # 候補を解析
     candidates = []

@@ -157,12 +157,9 @@ def run_autonomous_loop():
                     _log(f"  ℹ️  Zenn投稿スキップ")
             else:
                 _log(f"  ℹ️  コンテンツ生成スキップ")
-            # X投稿（24サイクルに1回）
-            x_result = _run_x_post()
-            if x_result.get("success"):
-                _log(f"  🐦 X投稿完了")
-            else:
-                _log(f"  ℹ️  X投稿スキップ（APIキー未設定または上限）")
+            # X投稿（有料プランが必要なため無効化）
+            # x_result = _run_x_post()
+            _log(f"  ℹ️ X投稿: 無効化中（有料プランが必要）")
 
         # 投資系記事（時間帯ベース制御）
         if cycle_num % 8 == 0:
@@ -362,7 +359,7 @@ def _run_news_collection() -> dict:
              "r = collect_news(); "
              "total = sum(len(v) for v in r.values()); "
              "print(f'収集完了: {total}件')"],
-            cwd=AGENT_ROOT, capture_output=True, text=True, timeout=300,
+            cwd=AGENT_ROOT, capture_output=True, text=True, timeout=600,
         )
         _log(result.stdout[-200:] if result.stdout else "")
         return {"success": result.returncode == 0}
