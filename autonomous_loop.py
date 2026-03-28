@@ -376,7 +376,10 @@ def _run_news_collection() -> dict:
 
 
 def _run_zenn_publish() -> dict:
-    """生成した記事をZennに自動投稿する"""
+    """生成した記事をZennに自動投稿する。
+    finance ジャンルのみ投稿（zenn_publisher.PUBLISH_GENRES で制御）。
+    tech/general 記事はローカル保存のみ・投稿はスキップされる。
+    """
     try:
         result = subprocess.run(
             [PYTHON, "zenn_publisher.py"],

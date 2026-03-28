@@ -256,8 +256,13 @@ def publish_article(article_path: Path, api_key: str, dry_run: bool = False) -> 
     return result
 
 
+PUBLISH_GENRES = {"finance"}  # 投稿対象ジャンル（tech/general はローカル保存のみ）
+
+
 def publish_all(api_key: str, dry_run: bool = False) -> dict:
-    """未投稿の記事を全て投稿する"""
+    """未投稿の記事を全て投稿する。
+    finance ジャンルのみ投稿。tech/general はローカル保存のみ。
+    """
     log      = _load_log()
     articles = sorted(CONTENT_DIR.rglob("*.md"))
     articles = [a for a in articles if not a.name.startswith("._")]
@@ -265,13 +270,21 @@ def publish_all(api_key: str, dry_run: bool = False) -> dict:
     unpublished = [
         a for a in articles
         if a.name not in log
-        and not a.name.endswith("_zenn.md")  # Zenn版は除外
+        and not a.name.endswith("_zenn.md")     # Zenn版は除外
+        and a.parent.name in PUBLISH_GENRES      # finance のみ投稿
     ]
 
+    non_finance = [
+        a for a in articles
+        if not a.name.endswith("_zenn.md")
+        and a.parent.name not in PUBLISH_GENRES
+    ]
     print(f"\n{'='*50}")
-    print(f"  はてなブログ自動投稿")
-    print(f"  未投稿記事: {len(unpublished)}件")
+    print(f"  はてなブログ自動投稿（finance のみ）")
+    print(f"  投稿対象: {len(unpublished)}件 / スキップ（tech/general）: {len(non_finance)}件")
     print(f"{'='*50}\n")
+    for a in non_finance:
+        print(f"  ⏭️ 投稿スキップ（{a.parent.name}）: {a.name}")
 
     results = {"success": 0, "skipped": len(articles) - len(unpublished), "failed": 0}
 

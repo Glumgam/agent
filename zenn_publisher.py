@@ -255,8 +255,13 @@ def publish_article(
     return {"success": True, "slug": slug, "zenn_path": str(zenn_path)}
 
 
+PUBLISH_GENRES = {"finance"}  # 投稿対象ジャンル（tech/general はローカル保存のみ）
+
+
 def publish_all(dry_run: bool = False) -> dict:
-    """未投稿の記事を全て変換して1回だけgit pushする"""
+    """未投稿の記事を全て変換して1回だけgit pushする。
+    finance ジャンルのみ投稿。tech/general はローカル保存のみ。
+    """
     log      = _load_publish_log()
     articles = sorted(CONTENT_DIR.rglob("*.md"))
 
@@ -276,12 +281,22 @@ def publish_all(dry_run: bool = False) -> dict:
         if not a.name.startswith("._")
         and a.name not in log
         and not a.name.endswith("_hatena.md")  # はてな版は除外
+        and a.parent.name in PUBLISH_GENRES     # finance のみ投稿
     ]
 
+    # ジャンル別に件数を表示
+    non_finance = [
+        a for a in articles
+        if not a.name.startswith("._")
+        and not a.name.endswith("_hatena.md")
+        and a.parent.name not in PUBLISH_GENRES
+    ]
     print(f"\n{'='*50}")
-    print(f"  Zenn自動投稿")
-    print(f"  未投稿記事: {len(unpublished)}件")
+    print(f"  Zenn自動投稿（finance のみ）")
+    print(f"  投稿対象: {len(unpublished)}件 / スキップ（tech/general）: {len(non_finance)}件")
     print(f"{'='*50}\n")
+    for a in non_finance:
+        print(f"  ⏭️ 投稿スキップ（{a.parent.name}）: {a.name}")
 
     if not unpublished:
         print("  投稿する記事なし")
