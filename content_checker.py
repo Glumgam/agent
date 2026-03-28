@@ -113,6 +113,118 @@ def register_article(title: str, content: str, path: str):
     _save_dedup_db(db)
 
 
+# =====================================================
+# 品質比較付き重複解決
+# =====================================================
+
+def check_and_resolve_duplicate(
+    new_content: str,
+    new_score: int,
+    new_path: Path,
+    existing_path: Path,
+    existing_score: int = None,
+) -> dict:
+    """
+    重複タイトルが存在する場合、品質を比較して高品質な方を残す。
+
+    Returns:
+        {"action": "keep_new" | "keep_existing", "reason": str}
+    """
+    # 既存ファイルのスコアをメタデータから取得（なければ7と仮定）
+    if existing_score is None:
+        try:
+            existing_text = existing_path.read_text(encoding="utf-8")
+            m = re.search(r'<!-- score:(\d+) ', existing_text)
+            existing_score = int(m.group(1)) if m else 7
+        except Exception:
+            existing_score = 7
+
+    if new_score > existing_score:
+        try:
+            existing_path.unlink()
+            print(f"  🔄 品質比較: 新記事({new_score}点) > 既存({existing_score}点) → 既存を置換")
+        except Exception as e:
+            print(f"  ⚠️ 既存ファイル削除失敗: {e}")
+        return {"action": "keep_new", "reason": f"新記事({new_score}点) > 既存({existing_score}点)"}
+
+    elif new_score == existing_score:
+        try:
+            existing_len = len(existing_path.read_text(encoding="utf-8"))
+            new_len      = len(new_content)
+            if new_len > existing_len:
+                existing_path.unlink()
+                print(f"  🔄 同スコア({new_score}点)・文字数比較: 新({new_len}字) > 既存({existing_len}字) → 既存を置換")
+                return {"action": "keep_new", "reason": "同スコアだが新記事の方が詳細"}
+            else:
+                print(f"  ⏭️ 同スコア・既存の方が詳細 → 新記事をスキップ")
+                return {"action": "keep_existing", "reason": "同スコアだが既存記事の方が詳細"}
+        except Exception:
+            return {"action": "keep_existing", "reason": "比較失敗のため既存を維持"}
+
+    else:
+        print(f"  ⏭️ 品質比較: 既存({existing_score}点) >= 新記事({new_score}点) → スキップ")
+        return {"action": "keep_existing", "reason": f"既存({existing_score}点) >= 新記事({new_score}点)"}
+
+
+def check_duplicate(
+    title: str,
+    content: str,
+    out_path: Path,
+    score: int = 7,
+) -> dict:
+    """
+    重複チェック。重複時は品質比較して処理を決定する。
+    DBの登録・更新もここで行う。
+
+    Returns:
+        {"duplicate": bool, "action": str, "reason": str}
+    """
+    db     = _load_dedup_db()
+    titles = db.get("titles", {})
+    fp     = _fingerprint(content)
+
+    # タイトル重複チェック
+    if title in titles:
+        existing_path = Path(titles[title])
+
+        if not existing_path.exists():
+            # 既存ファイルが消えている → 新規として扱う
+            titles[title]   = str(out_path)
+            db["fingerprints"][fp] = str(out_path)
+            _save_dedup_db(db)
+            return {"duplicate": False, "action": "keep_new", "reason": "既存ファイル消失のため新規登録"}
+
+        result = check_and_resolve_duplicate(
+            new_content=content,
+            new_score=score,
+            new_path=out_path,
+            existing_path=existing_path,
+        )
+
+        if result["action"] == "keep_new":
+            titles[title]   = str(out_path)
+            db["fingerprints"][fp] = str(out_path)
+            _save_dedup_db(db)
+            return {"duplicate": False, "action": "keep_new", "reason": result["reason"]}
+        else:
+            return {"duplicate": True, "action": "keep_existing", "reason": result["reason"]}
+
+    # フィンガープリント重複チェック
+    if fp in db.get("fingerprints", {}):
+        return {
+            "duplicate": True,
+            "action":    "keep_existing",
+            "reason":    f"内容重複: {db['fingerprints'][fp]}",
+        }
+
+    # 新規 → 登録
+    titles[title]   = str(out_path)
+    db["titles"]    = titles
+    db["fingerprints"][fp] = str(out_path)
+    _save_dedup_db(db)
+    return {"duplicate": False, "action": "new", "reason": "新規登録"}
+
+
 def check_topic_saturation(genre_id: str, topic: str) -> tuple:
     """
     同ジャンル・同トピックの記事が多すぎないかチェック。

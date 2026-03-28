@@ -1032,18 +1032,28 @@ def generate_article(
             review_passed = False
             print(f"  ⬇️ スコア強制降格: {review_score}/10（異常文字残存）")
 
-    # ファイル保存
-    path = _save_article(topic, content, variant=variant, genre_id=genre_id)
+    # ファイル保存（スコアをメタデータとして末尾に付加）
+    path = _save_article(topic, content, variant=variant, genre_id=genre_id, score=review_score)
 
     # --- DEDUP REGISTER START ---
     try:
-        from content_checker import is_duplicate, register_article
-        is_dup, dup_reason = is_duplicate(topic, content, variant=variant)
-        if is_dup:
-            print(f"  ⚠️ 重複検出: {dup_reason} → 保存をスキップ")
+        from content_checker import check_duplicate
+        dup_result = check_duplicate(
+            title=topic,
+            content=content,
+            out_path=path,
+            score=review_score,
+        )
+        if dup_result["duplicate"]:
+            reason = dup_result.get("reason", "")
+            print(f"  ⏭️ 既存記事の方が高品質のためスキップ: {reason}")
             path.unlink(missing_ok=True)
-            return {"error": f"重複: {dup_reason}"}
-        register_article(topic, content, str(path))
+            return {
+                "path":   None,
+                "score":  review_score,
+                "passed": False,
+                "reason": f"品質比較スキップ: {reason}",
+            }
     except Exception as e:
         print(f"  ⚠️ 重複登録スキップ: {e}")
     # --- DEDUP REGISTER END ---
@@ -1108,8 +1118,11 @@ def _save_article(
     content: str,
     variant: str = "hatena",
     genre_id: str = "",
+    score: int = 0,
 ) -> Path:
-    """記事をジャンル別サブディレクトリに保存する"""
+    """記事をジャンル別サブディレクトリに保存する。
+    スコアをHTMLコメントとして末尾に付加する（重複比較で使用）。
+    """
     save_dir = get_content_dir(genre_id) if genre_id else CONTENT_DIR
     save_dir.mkdir(parents=True, exist_ok=True)
     date_str = datetime.now().strftime("%Y%m%d")
@@ -1122,7 +1135,11 @@ def _save_article(
     while path.exists():
         path    = save_dir / f"{date_str}_{slug}{suffix}_{counter}.md"
         counter += 1
-    path.write_text(content, encoding="utf-8")
+    meta = (
+        f"\n<!-- score:{score} variant:{variant}"
+        f" generated:{datetime.now().strftime('%Y-%m-%d %H:%M')} -->"
+    )
+    path.write_text(content + meta, encoding="utf-8")
     return path
 
 
