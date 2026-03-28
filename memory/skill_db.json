@@ -73,8 +73,8 @@
     "coding": {
       "name": "coding",
       "task_example": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
-      "success_count": 479,
-      "last_used": "2026-03-26T13:56:09.396905+00:00",
+      "success_count": 608,
+      "last_used": "2026-03-28T04:59:49.524672+00:00",
       "tools_used": [
         "create_file",
         "run",
@@ -135,8 +135,8 @@
     "bug_fix": {
       "name": "bug_fix",
       "task_example": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
-      "success_count": 342,
-      "last_used": "2026-03-26T14:07:31.818693+00:00",
+      "success_count": 423,
+      "last_used": "2026-03-28T05:10:22.293465+00:00",
       "tools_used": [
         "run",
         "done",
@@ -172,15 +172,16 @@
     "testing": {
       "name": "testing",
       "task_example": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
-      "success_count": 322,
-      "last_used": "2026-03-26T14:17:26.635317+00:00",
+      "success_count": 402,
+      "last_used": "2026-03-28T05:18:09.800232+00:00",
       "tools_used": [
         "done",
         "run",
         "run_test",
         "read_file",
         "create_file",
-        "ask_user"
+        "ask_user",
+        "edit_file"
       ],
       "key_imports": [
         "calculator",
@@ -1107,6 +1108,143 @@
         "cli",
         "encrypt",
         "decrypt"
+      ],
+      "summary": "Deep Research により獲得。分野: スキル発展"
+    },
+    "tool_cli_encrypt_data": {
+      "name": "tool_cli_encrypt_data",
+      "task_example": "[深掘り獲得] CLIから直接データを暗号化および復号化する機能を提供します。 (from: スキル発展)",
+      "success_count": 1,
+      "last_used": "2026-03-26T18:25:58.234781+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [
+        "cryptography"
+      ],
+      "keywords": [
+        "スキル発展",
+        "tool",
+        "cli",
+        "encrypt",
+        "data"
+      ],
+      "summary": "Deep Research により獲得。分野: スキル発展"
+    },
+    "tool_encrypted_cli_command": {
+      "name": "tool_encrypted_cli_command",
+      "task_example": "[深掘り獲得] CLIアプリケーションを構築し、そのコマンド入出力を暗号化する。 (from: スキル発展)",
+      "success_count": 1,
+      "last_used": "2026-03-26T19:10:55.328240+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [
+        "cryptography"
+      ],
+      "keywords": [
+        "スキル発展",
+        "tool",
+        "encrypted",
+        "cli",
+        "command"
+      ],
+      "summary": "Deep Research により獲得。分野: スキル発展"
+    },
+    "tool_cli_encrypter": {
+      "name": "tool_cli_encrypter",
+      "task_example": "[深掘り獲得] CLIアプリケーションを構築し、ユーザー入力データを暗号化する機能を提供します。 (from: スキル発展)",
+      "success_count": 1,
+      "last_used": "2026-03-26T20:43:18.220250+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [
+        "cryptography"
+      ],
+      "keywords": [
+        "スキル発展",
+        "tool",
+        "cli",
+        "encrypter"
+      ],
+      "summary": "Deep Research により獲得。分野: スキル発展"
+    },
+    "tool_cli_encrypt": {
+      "name": "tool_cli_encrypt",
+      "task_example": "[深掘り獲得] CLIから直接データを暗号化・復号化できるツール (from: スキル発展)",
+      "success_count": 1,
+      "last_used": "2026-03-27T16:59:57.367829+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [
+        "cryptography"
+      ],
+      "keywords": [
+        "スキル発展",
+        "tool",
+        "cli",
+        "encrypt"
+      ],
+      "summary": "Deep Research により獲得。分野: スキル発展"
+    },
+    "tool_secure_backup": {
+      "name": "tool_secure_backup",
+      "task_example": "[深掘り獲得] セキュアなバックアップファイル作成と復元機能を提供 (from: スキル発展)",
+      "success_count": 1,
+      "last_used": "2026-03-27T18:32:58.417726+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [
+        "cryptography"
+      ],
+      "keywords": [
+        "スキル発展",
+        "tool",
+        "secure",
+        "backup"
+      ],
+      "summary": "Deep Research により獲得。分野: スキル発展"
+    },
+    "tool_cli_secure_command": {
+      "name": "tool_cli_secure_command",
+      "task_example": "[深掘り獲得] セキュアなCLIコマンドを自動生成し、暗号化されたデータの作成とデコードを行う。 (from: スキル発展)",
+      "success_count": 1,
+      "last_used": "2026-03-28T03:08:57.127150+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [
+        "cryptography"
+      ],
+      "keywords": [
+        "スキル発展",
+        "tool",
+        "cli",
+        "secure",
+        "command"
+      ],
+      "summary": "Deep Research により獲得。分野: スキル発展"
+    },
+    "tool_cli_security_manager": {
+      "name": "tool_cli_security_manager",
+      "task_example": "[深掘り獲得] CLIアプリケーションでセキュアな暗号化とデクリプション機能を提供するマネージャー (from: スキル発展)",
+      "success_count": 1,
+      "last_used": "2026-03-28T04:54:38.299196+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [
+        "cryptography"
+      ],
+      "keywords": [
+        "スキル発展",
+        "tool",
+        "cli",
+        "security",
+        "manager"
       ],
       "summary": "Deep Research により獲得。分野: スキル発展"
     }

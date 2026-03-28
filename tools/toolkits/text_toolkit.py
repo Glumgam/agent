@@ -4,6 +4,8 @@ TEXT Toolkit
 カテゴリ: text
 作成日: 2026-03-18
 収録ツール:
+- tool_cli_security_manager: Deep Research により獲得。分野: スキル発展
+- tool_encrypted_cli_command: Deep Research により獲得。分野: スキル発展
 - tool_multi_toolkit: Deep Research により獲得。分野: スキル発展
 - tool_batch_transformers: Deep Research により獲得。分野: スキル発展
 - tool_batch_cli_command: Deep Research により獲得。分野: スキル発展
@@ -912,3 +914,59 @@ def tool_multi_toolkit(command):
         return result.stdout.strip()
     except subprocess.CalledProcessError as e:
         return f"ERROR: {e.stderr}"
+
+
+# ==================================================
+# tool_encrypted_cli_command
+# ==================================================
+
+def tool_encrypted_cli_command(command):
+    try:
+        # Generate a new encryption key
+        key = generate_key()
+        
+        # Execute the CLI command
+        result = subprocess.run(command, shell=True, check=True, capture_output=True, text=True)
+        
+        # Encrypt the output of the command
+        encrypted_output = encrypt_message(result.stdout, key)
+        
+        return f"Key: {key.decode()}, Encrypted Output: {encrypted_output}"
+    except subprocess.CalledProcessError as e:
+        return f"ERROR: Command execution failed with error: {e.stderr}"
+    except Exception as e:
+        return f"ERROR: An unexpected error occurred: {str(e)}"
+
+if __name__ == "__main__":
+    # Example usage
+    command = "echo Hello, World!"
+    encrypted_result = tool_encrypted_cli_command(command)
+    print(encrypted_result)
+
+
+# ==================================================
+# tool_cli_security_manager
+# ==================================================
+
+def tool_cli_security_manager(action: str, message: str):
+    """
+    CLI security manager for encrypting and decrypting messages
+    action: 'encrypt' or 'decrypt'
+    message: the text to be encrypted or decrypted
+    """
+    if action == "encrypt":
+        return encrypt_message(message)
+    elif action == "decrypt":
+        return decrypt_message(message)
+    else:
+        return "ERROR: Invalid action. Use 'encrypt' or 'decrypt'."
+
+if __name__ == "__main__":
+    # Example usage
+    print("Encrypting message:")
+    encrypted = tool_cli_security_manager("encrypt", "Hello, World!")
+    print(f"Encrypted message: {encrypted}")
+
+    print("\nDecrypting message:")
+    decrypted = tool_cli_security_manager("decrypt", encrypted)
+    print(f"Decrypted message: {decrypted}")

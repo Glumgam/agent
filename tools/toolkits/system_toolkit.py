@@ -4,6 +4,8 @@ SYSTEM Toolkit
 カテゴリ: system
 作成日: 2026-03-22
 収録ツール:
+- tool_secure_backup: Deep Research により獲得。分野: スキル発展
+- tool_cli_encrypter: Deep Research により獲得。分野: スキル発展
 - tool_cli_encryptor: Deep Research により獲得。分野: スキル発展
 - tool_encrypt_data_with_metadata: Deep Research により獲得。分野: スキル発展
 - tool_batch_cli_encrypt_decrypt: Deep Research により獲得。分野: スキル発展
@@ -150,3 +152,90 @@ if __name__ == "__main__":
     print(tool_cli_encryptor('generate_key', '', 'secret.key'))
     print(tool_cli_encryptor('encrypt', 'sample.txt', 'secret.key'))
     print(tool_cli_encryptor('decrypt', 'sample.txt', 'secret.key'))
+
+
+# ==================================================
+# tool_cli_encrypter
+# ==================================================
+
+def tool_cli_encrypter(input_data):
+    try:
+        # 既存のキーファイルがあれば読み込む、なければ生成する
+        key_file = 'secret.key'
+        try:
+            with open(key_file, 'rb') as file:
+                key = file.read()
+        except FileNotFoundError:
+            key = Fernet.generate_key()
+            with open(key_file, 'wb') as file:
+                file.write(key)
+        
+        # 暗号化オブジェクトを生成
+        cipher_suite = Fernet(key)
+        
+        # ユーザー入力データをバイト型に変換して暗号化
+        encrypted_data = cipher_suite.encrypt(input_data.encode('utf-8'))
+        
+        return encrypted_data.decode('utf-8')
+    except Exception as e:
+        return f"ERROR: {str(e)}"
+
+if __name__ == "__main__":
+    # 動作確認用の入力データ
+    input_data = "Sensitive information"
+    result = tool_cli_encrypter(input_data)
+    print("Encrypted:", result)
+
+
+# ==================================================
+# tool_secure_backup
+# ==================================================
+
+def tool_secure_backup(action, file_path, key=None):
+    try:
+        if action == "backup":
+            if not key:
+                return "ERROR: Key is required for backup"
+            with open(file_path, 'rb') as file:
+                original = file.read()
+            fernet = Fernet(key)
+            encrypted = fernet.encrypt(original)
+            backup_file_path = file_path + ".bak"
+            with open(backup_file_path, 'wb') as backup_file:
+                backup_file.write(encrypted)
+            return f"Backup created successfully: {backup_file_path}"
+        
+        elif action == "restore":
+            if not key:
+                return "ERROR: Key is required for restore"
+            backup_file_path = file_path + ".bak"
+            if not os.path.exists(backup_file_path):
+                return "ERROR: Backup file does not exist"
+            with open(backup_file_path, 'rb') as backup_file:
+                encrypted = backup_file.read()
+            fernet = Fernet(key)
+            decrypted = fernet.decrypt(encrypted)
+            with open(file_path, 'wb') as file:
+                file.write(decrypted)
+            return "File restored successfully"
+        
+        else:
+            return "ERROR: Invalid action. Use 'backup' or 'restore'"
+    
+    except FileNotFoundError:
+        return "ERROR: File not found"
+    except Exception as e:
+        return f"ERROR: {str(e)}"
+
+if __name__ == "__main__":
+    # Example usage
+    key = Fernet.generate_key()
+    print("Generated Key:", key.decode())
+    
+    # Backup example
+    result = tool_secure_backup("backup", "example.txt", key)
+    print(result)
+    
+    # Restore example
+    result = tool_secure_backup("restore", "example.txt", key)
+    print(result)

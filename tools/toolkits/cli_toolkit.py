@@ -4,6 +4,9 @@ CLI Toolkit
 カテゴリ: cli
 作成日: 2026-03-19
 収録ツール:
+- tool_cli_secure_command: Deep Research により獲得。分野: スキル発展
+- tool_cli_encrypt: Deep Research により獲得。分野: スキル発展
+- tool_cli_encrypt_data: Deep Research により獲得。分野: スキル発展
 - tool_cli_encrypt_decrypt: Deep Research により獲得。分野: スキル発展
 - tool_secure_cli_builder: Deep Research により獲得。分野: スキル発展
 - tool_cli_builder: Deep Research により獲得。分野: セキュリティ
@@ -310,3 +313,122 @@ if __name__ == "__main__":
     # 例3: 復号化
     decrypted_message = tool_cli_encrypt_decrypt("decrypt", key=key, token=encrypted_message)
     print(f"Decrypted: {decrypted_message}")
+
+
+# ==================================================
+# tool_cli_encrypt_data
+# ==================================================
+
+def tool_cli_encrypt_data(data, key=None):
+    try:
+        if not key:
+            key = Fernet.generate_key()
+            cipher_suite = Fernet(key)
+        else:
+            cipher_suite = Fernet(key.encode())
+        
+        encrypted_data = cipher_suite.encrypt(data.encode()).decode()
+        return f"ENCRYPTED_DATA: {encrypted_data}\nKEY: {key.decode()}"
+    except Exception as e:
+        return f"ERROR: {str(e)}"
+
+def tool_cli_decrypt_data(encrypted_data, key):
+    try:
+        cipher_suite = Fernet(key.encode())
+        decrypted_data = cipher_suite.decrypt(encrypted_data.encode()).decode()
+        return f"DECRYPTED_DATA: {decrypted_data}"
+    except Exception as e:
+        return f"ERROR: {str(e)}"
+
+if __name__ == "__main__":
+    # Example usage
+    data_to_encrypt = "Hello, World!"
+    encrypted_result = tool_cli_encrypt_data(data_to_encrypt)
+    print(encrypted_result)
+
+    key_from_encrypted = encrypted_result.split("KEY: ")[1]
+    encrypted_data_from_result = encrypted_result.split("ENCRYPTED_DATA: ")[1].split("\nKEY")[0]
+
+    decrypted_result = tool_cli_decrypt_data(encrypted_data_from_result, key_from_encrypted)
+    print(decrypted_result)
+
+
+# ==================================================
+# tool_cli_encrypt
+# ==================================================
+
+def tool_cli_encrypt(command, data):
+    if command == 'generate_key':
+        return generate_key().decode()
+    elif command == 'encrypt':
+        key, *data_to_encrypt = data.split(',')
+        return encrypt_data(key.encode(), ','.join(data_to_encrypt))
+    elif command == 'decrypt':
+        key, encrypted_data = data.split(',')
+        return decrypt_data(key.encode(), encrypted_data)
+    else:
+        return "ERROR: Invalid command"
+
+if __name__ == "__main__":
+    # Example usage
+    print("Generating a new encryption key:")
+    key = tool_cli_encrypt('generate_key', '')
+    print(f"Key: {key}")
+
+    print("\nEncrypting data 'Hello, World!' with the generated key:")
+    encrypted_data = tool_cli_encrypt('encrypt', f"{key},Hello, World!")
+    print(f"Encrypted Data: {encrypted_data}")
+
+    print("\nDecrypting the encrypted data:")
+    decrypted_data = tool_cli_encrypt('decrypt', f"{key},{encrypted_data}")
+    print(f"Decrypted Data: {decrypted_data}")
+
+
+# ==================================================
+# tool_cli_secure_command
+# ==================================================
+
+def tool_cli_secure_command(command):
+    try:
+        # Generate a secure CLI command
+        if "generate_key" in command.lower():
+            key = Fernet.generate_key()
+            return f"Generated Key: {key.decode()}"
+        
+        elif "encrypt" in command.lower():
+            parts = command.split(" ")
+            if len(parts) < 3:
+                return "ERROR: Invalid encrypt command. Usage: encrypt <key> <data>"
+            
+            key = parts[1].encode()
+            data = ' '.join(parts[2:]).encode()
+            fernet = Fernet(key)
+            encrypted_data = fernet.encrypt(data)
+            return f"Encrypted Data: {encrypted_data.decode()}"
+        
+        elif "decrypt" in command.lower():
+            parts = command.split(" ")
+            if len(parts) < 3:
+                return "ERROR: Invalid decrypt command. Usage: decrypt <key> <data>"
+            
+            key = parts[1].encode()
+            encrypted_data = ' '.join(parts[2:]).encode()
+            fernet = Fernet(key)
+            decrypted_data = fernet.decrypt(encrypted_data)
+            return f"Decrypted Data: {decrypted_data.decode()}"
+        
+        else:
+            return "ERROR: Unsupported command. Use 'generate_key', 'encrypt <key> <data>', or 'decrypt <key> <data>'."
+    
+    except Exception as e:
+        return f"ERROR: An error occurred - {str(e)}"
+
+if __name__ == "__main__":
+    # Example usage
+    print(tool_cli_secure_command("generate_key"))
+    key = "your_generated_key_here"  # Replace with your generated key
+    data = "Hello, secure world!"
+    encrypted = tool_cli_secure_command(f"encrypt {key} {data}")
+    print(encrypted)
+    decrypted = tool_cli_secure_command(f"decrypt {key} {encrypted.split(': ')[1]}")
+    print(decrypted)
