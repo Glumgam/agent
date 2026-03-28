@@ -35,6 +35,43 @@ HEADERS    = {
 }
 
 # =====================================================
+# ローカルニュース → 法務情報抽出用キーワード
+# =====================================================
+LEGAL_KEYWORDS = [
+    "逮捕", "起訴", "書類送検", "摘発", "捜査",
+    "詐欺", "横領", "背任", "インサイダー",
+    "行政処分", "業務停止", "課徴金", "排除措置",
+    "訴訟", "損害賠償", "和解", "判決",
+    "倒産", "破産", "民事再生", "上場廃止",
+]
+
+
+def extract_legal_from_local_news(news_items: list) -> list:
+    """
+    ローカルニュース（地方紙等）から法務・犯罪関連情報を抽出する。
+    LEGAL_KEYWORDS にマッチするタイトルのみを返す。
+
+    Args:
+        news_items: news_collector.collect_all_news() の "local" リスト
+    Returns:
+        法務関連ニュースのリスト（risk="medium" をデフォルト付与）
+    """
+    legal_items = []
+    for item in news_items:
+        title = item.get("title", "")
+        if any(kw in title for kw in LEGAL_KEYWORDS):
+            # 既存の _classify_legal_risk でリスクレベルを判定
+            risk = _classify_legal_risk(title)
+            legal_items.append({
+                "title":  title,
+                "source": item.get("source", "地方紙"),
+                "url":    item.get("link", item.get("url", "")),
+                "risk":   risk,
+            })
+    return legal_items
+
+
+# =====================================================
 # リスク分類定義
 # =====================================================
 

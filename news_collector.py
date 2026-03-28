@@ -51,9 +51,41 @@ RSS_SOURCES = {
         {"name": "東洋経済テック",  "url": "https://toyokeizai.net/list/feed/rss",                            "credibility": "high"},
     ],
     "finance": [
-        {"name": "NHK経済",         "url": "https://www3.nhk.or.jp/rss/news/cat5.xml",                       "credibility": "high"},
+        # 既存ソース
+        {"name": "NHK経済",         "url": "https://www3.nhk.or.jp/rss/news/cat4.xml",                       "credibility": "high"},
         {"name": "東洋経済",        "url": "https://toyokeizai.net/list/feed/rss",                            "credibility": "high"},
         {"name": "Yahoo金融",       "url": "https://news.yahoo.co.jp/rss/topics/business.xml",               "credibility": "high"},
+        # 政府・公的機関
+        {"name": "金融庁",          "url": "https://www.fsa.go.jp/news/rss.xml",                             "credibility": "high"},
+        {"name": "日本銀行",        "url": "https://www.boj.or.jp/rss/boj_news.xml",                         "credibility": "high"},
+        {"name": "財務省",          "url": "https://www.mof.go.jp/rss/topics.xml",                           "credibility": "high"},
+        {"name": "経済産業省",      "url": "https://www.meti.go.jp/rss/topics.xml",                          "credibility": "high"},
+        # 海外・マクロ
+        {"name": "ロイター日本語",  "url": "https://feeds.reuters.com/reuters/JPBusinessNews",               "credibility": "high"},
+        {"name": "NHK国際",         "url": "https://www3.nhk.or.jp/rss/news/cat6.xml",                       "credibility": "high"},
+    ],
+    # 法務・行政処分・裁判系
+    "legal": [
+        {"name": "公正取引委員会",  "url": "https://www.jftc.go.jp/rss/index.xml",                          "credibility": "high"},
+        {"name": "消費者庁",        "url": "https://www.caa.go.jp/rss/topics.xml",                           "credibility": "high"},
+        {"name": "警察庁",          "url": "https://www.npa.go.jp/rss/index.xml",                            "credibility": "high"},
+        {"name": "検察庁",          "url": "https://www.kensatsu.go.jp/rss/index.xml",                       "credibility": "high"},
+        {"name": "法務省",          "url": "https://www.moj.go.jp/rss/topics.xml",                           "credibility": "high"},
+        {"name": "裁判所",          "url": "https://www.courts.go.jp/rss/index.xml",                         "credibility": "high"},
+    ],
+    # 地方紙・地域ニュース（法務・行政処分の補完）
+    "local": [
+        # 山口県
+        {"name": "周南地域ニュース",       "url": "https://www.shinshunan.co.jp/news/shunan/rss.xml",        "credibility": "medium"},
+        {"name": "周南・下松・光ニュース", "url": "https://shunan-kudamatsu-hikari.goguynet.jp/feed/",       "credibility": "medium"},
+        # 全国地方紙
+        {"name": "北海道新聞",      "url": "https://www.hokkaido-np.co.jp/rss/news.xml",                    "credibility": "high"},
+        {"name": "河北新報",        "url": "https://kahoku.news/feed/",                                      "credibility": "high"},
+        {"name": "中日新聞",        "url": "https://www.chunichi.co.jp/rss/list/economics.xml",              "credibility": "high"},
+        {"name": "西日本新聞",      "url": "https://www.nishinippon.co.jp/rss/economy.xml",                  "credibility": "high"},
+        {"name": "南日本新聞",      "url": "https://373news.com/feed/",                                      "credibility": "medium"},
+        {"name": "琉球新報",        "url": "https://ryukyushimpo.jp/rss/index.xml",                          "credibility": "high"},
+        {"name": "NHK社会",         "url": "https://www3.nhk.or.jp/rss/news/cat5.xml",                      "credibility": "high"},
     ],
     "general": [
         {"name": "NHK総合",         "url": "https://www3.nhk.or.jp/rss/news/cat0.xml",                       "credibility": "high"},
@@ -296,6 +328,44 @@ def collect_news(
     )
     total = sum(len(v) for v in results.values())
     print(f"  💾 保存: {out_path.name}  (合計 {total}件)")
+    return results
+
+
+def collect_all_news(max_per_source: int = 10) -> dict:
+    """
+    全ジャンル（legal・local 含む）のニュースを収集する。
+    genre="local" の記事は legal_collector の extract_legal_from_local_news()
+    にも転送して地域の犯罪・行政処分情報を法務データに補完する。
+
+    Returns:
+        {ジャンル: [ニュースリスト]}
+    """
+    results = collect_news(
+        genres=list(RSS_SOURCES.keys()),
+        max_per_source=max_per_source,
+        skip_seen=True,
+        cross_check=True,
+    )
+
+    # ローカルニュースから法務情報を抽出して "legal" に追記
+    local_items = results.get("local", [])
+    if local_items:
+        try:
+            from legal_collector import extract_legal_from_local_news
+            legal_from_local = extract_legal_from_local_news(local_items)
+            if legal_from_local:
+                results.setdefault("legal", [])
+                # 重複除去（タイトル先頭40文字）
+                existing_titles = {
+                    item.get("title", "")[:40] for item in results["legal"]
+                }
+                for item in legal_from_local:
+                    if item.get("title", "")[:40] not in existing_titles:
+                        results["legal"].append(item)
+                print(f"  ⚖️ 地方紙から法務情報を追補: {len(legal_from_local)}件")
+        except Exception as e:
+            print(f"  ⚠️ 地方紙→法務転送スキップ: {e}")
+
     return results
 
 
