@@ -1051,6 +1051,7 @@ def generate_article(
             content=content,
             out_path=path,
             score=review_score,
+            variant=variant,
         )
         if dup_result["duplicate"]:
             reason = dup_result.get("reason", "")

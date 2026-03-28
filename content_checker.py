@@ -187,26 +187,29 @@ def check_duplicate(
     content: str,
     out_path: Path,
     score: int = 7,
+    variant: str = "hatena",
 ) -> dict:
     """
-    重複チェック。重複時は品質比較して処理を決定する。
-    DBの登録・更新もここで行う。
+    重複チェック。ZennとはてなはTitleが同じでも別エントリ。
+    重複時は品質比較して処理を決定する。DBの登録・更新もここで行う。
 
     Returns:
         {"duplicate": bool, "action": str, "reason": str}
     """
-    db     = _load_dedup_db()
-    titles = db.get("titles", {})
-    fp     = _fingerprint(content)
+    db        = _load_dedup_db()
+    titles    = db.get("titles", {})
+    fp        = _fingerprint(content)
+    title_key = f"{variant}:{title}"   # variant を含めて区別
+    fp_key    = f"{variant}:{fp}"      # フィンガープリントも variant 単位
 
     # タイトル重複チェック
-    if title in titles:
-        existing_path = Path(titles[title])
+    if title_key in titles:
+        existing_path = Path(titles[title_key])
 
         if not existing_path.exists():
             # 既存ファイルが消えている → 新規として扱う
-            titles[title]   = str(out_path)
-            db["fingerprints"][fp] = str(out_path)
+            titles[title_key]      = str(out_path)
+            db["fingerprints"][fp_key] = str(out_path)
             _save_dedup_db(db)
             return {"duplicate": False, "action": "keep_new", "reason": "既存ファイル消失のため新規登録"}
 
@@ -218,25 +221,25 @@ def check_duplicate(
         )
 
         if result["action"] == "keep_new":
-            titles[title]   = str(out_path)
-            db["fingerprints"][fp] = str(out_path)
+            titles[title_key]      = str(out_path)
+            db["fingerprints"][fp_key] = str(out_path)
             _save_dedup_db(db)
             return {"duplicate": False, "action": "keep_new", "reason": result["reason"]}
         else:
             return {"duplicate": True, "action": "keep_existing", "reason": result["reason"]}
 
-    # フィンガープリント重複チェック
-    if fp in db.get("fingerprints", {}):
+    # フィンガープリント重複チェック（同 variant 内のみ）
+    if fp_key in db.get("fingerprints", {}):
         return {
             "duplicate": True,
             "action":    "keep_existing",
-            "reason":    f"内容重複: {db['fingerprints'][fp]}",
+            "reason":    f"内容重複: {db['fingerprints'][fp_key]}",
         }
 
-    # 新規 → 登録
-    titles[title]   = str(out_path)
-    db["titles"]    = titles
-    db["fingerprints"][fp] = str(out_path)
+    # 新規登録
+    titles[title_key]          = str(out_path)
+    db["titles"]               = titles
+    db["fingerprints"][fp_key] = str(out_path)
     _save_dedup_db(db)
     return {"duplicate": False, "action": "new", "reason": "新規登録"}
 
