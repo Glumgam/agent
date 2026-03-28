@@ -168,6 +168,30 @@ def check_stock_explanations(content: str, finance_data: dict) -> list:
     return warnings
 
 
+def check_format_compliance(content: str) -> list:
+    """
+    銘柄説明が強制フォーマットに従っているか確認する。
+    ランキングセクションが存在する記事のみ対象。
+    """
+    issues = []
+
+    if "値上がり" not in content and "値下がり" not in content:
+        return issues  # ランキング記事でなければスキップ
+
+    if "関連ニュース:" not in content:
+        issues.append("フォーマット違反: 「関連ニュース:」が存在しない")
+
+    if "背景:" not in content:
+        issues.append("フォーマット違反: 「背景:」が存在しない")
+
+    # 背景の内容チェック（空でないか）
+    for match in re.findall(r'背景:\s*(.+)', content):
+        if not match.strip() or match.strip() in ["", "なし"]:
+            issues.append("フォーマット違反: 「背景:」の内容が空")
+
+    return issues
+
+
 def fact_check(content: str, finance_data: dict) -> dict:
     """
     記事のファクトチェックを実行する。
@@ -184,6 +208,7 @@ def fact_check(content: str, finance_data: dict) -> dict:
         check_hallucination(content, finance_data)
         + check_vix_consistency(content, finance_data)
         + check_stock_explanations(content, finance_data)
+        + check_format_compliance(content)
     )
 
     score_penalty = len(all_issues) * 2 + len(all_warnings) * 1

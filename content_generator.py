@@ -522,6 +522,26 @@ def _quality_check_v2(content: str, min_chars: int = 1500, require_code: bool = 
 # --- CJK FILTER END ---
 
 
+_NORMALIZE_PATTERNS = [
+    (r'背景は不明確?', '背景は未公表'),
+    (r'明確な理由はなし', '背景は未公表'),
+    (r'特段の材料なし', '背景は未公表'),
+    (r'明確な要因はなし', '背景は未公表'),
+    (r'具体的な背景は公表されていない', '背景は未公表'),
+    (r'具体的な背景は不明', '背景は未公表'),
+    (r'詳細は不明', '背景は未公表'),
+    (r'背景情報なし', '背景は未公表'),
+    (r'関連ニュースなし', '関連ニュース: なし'),
+]
+
+
+def _normalize_stock_expressions(content: str) -> str:
+    """銘柄説明の表現を統一する（「背景は不明」→「背景は未公表」等）"""
+    for pattern, replacement in _NORMALIZE_PATTERNS:
+        content = re.sub(pattern, replacement, content)
+    return content
+
+
 def _final_clean(content: str, topic: str, genre_id: str) -> str:
     """
     スコアに関わらず必ず適用する最終クリーニング。
@@ -871,6 +891,10 @@ def generate_article(
 
     # 保存前の最終クリーニング（スコアに関わらず必ず実行）
     content = _final_clean(content, topic, genre_id)
+
+    # 表現正規化（投資記事のみ）
+    if genre_id == "finance_news":
+        content = _normalize_stock_expressions(content)
 
     # 最終品質確認（中国語・韓国語が残っていないか）
     remaining_chinese = re.findall(
