@@ -7,6 +7,7 @@ Zenn（無料・概要）→ はてな（有料・詳細）への誘導文を
 - 有料記事の価値を具体的に示す
 - 押しつけがましくない自然な文体
 """
+import re
 from pathlib import Path
 from datetime import datetime
 
@@ -173,7 +174,7 @@ def generate_upsell_text(
     zenn_url: str = "",
     hatena_url: str = "",
     zenn_title: str = "",
-    affiliate_url: str = "（準備中）",
+    affiliate_url: str = "",
 ) -> str:
     """
     記事の導線文を生成する。
@@ -192,11 +193,20 @@ def generate_upsell_text(
 
     if variant == "zenn":
         template = template_set["zenn_footer"]
-        return template.format(
+        result = template.format(
             hatena_url=hatena_url or "（はてなブログで公開予定）",
             affiliate_url=affiliate_url,
             topic=topic,
         )
+        # affiliate_url 未設定時は CTA ブロックを除去
+        if not affiliate_url:
+            result = re.sub(
+                r'\n---\n## 💡 銘柄スクリーニングの環境について.*?→.*?\n',
+                '\n',
+                result,
+                flags=re.DOTALL,
+            )
+        return result
     else:
         template = template_set["hatena_header"]
         return template.format(

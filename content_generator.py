@@ -544,6 +544,23 @@ def _normalize_stock_expressions(content: str) -> str:
     return content
 
 
+_SPECULATIVE_PATTERNS = [
+    (r'業績の改善が期待される企業や、特定の要因が背景にある銘柄も見られ', '一部銘柄では個別の値動きが見られ'),
+    (r'業績の改善が期待される企業が目立ちました', '個別に値上がりした銘柄も見られました'),
+    (r'可能性が背景にあるとされています', '背景は未公表です'),
+    (r'市場の需要が拡大している可能性が背景にあるとされています', '背景は未公表です'),
+    (r'それぞれの業界における具体的な要因が影響している可能性があります', '背景は未公表です'),
+    (r'明確な情報が公表されていません', '背景は未公表です'),
+]
+
+
+def _remove_speculative_expressions(content: str) -> str:
+    """ランキング外の本文に残る推測表現をニュートラルな表現に置換する。"""
+    for pattern, replacement in _SPECULATIVE_PATTERNS:
+        content = re.sub(pattern, replacement, content)
+    return content
+
+
 def _final_clean(content: str, topic: str, genre_id: str) -> str:
     """
     スコアに関わらず必ず適用する最終クリーニング。
@@ -897,6 +914,7 @@ def generate_article(
     # 表現正規化（投資記事のみ）
     if genre_id == "finance_news":
         content = _normalize_stock_expressions(content)
+        content = _remove_speculative_expressions(content)
 
     # 最終品質確認（中国語・韓国語が残っていないか）
     remaining_chinese = re.findall(
