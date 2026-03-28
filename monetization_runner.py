@@ -196,78 +196,111 @@ def run_finance_news(topic: str, max_restart: int = 2) -> dict:
                 print(f"  ❌ はてな版: {max_restart}回再スタート後も品質未達 → 終了")
                 return {"zenn": zenn_result, "hatena": hatena_result}
 
-        # 整合性チェック
-        zenn_path   = Path(zenn_result["path"])   if zenn_result.get("path")   else None
-        hatena_path = Path(hatena_result["path"]) if hatena_result.get("path") else None
+        # 整合性チェックループ（最大 MAX_CONSISTENCY_FIX 回修正）
+        MAX_CONSISTENCY_FIX = 3
+        from consistency_checker import check_consistency
+        from content_generator import generate_article
 
-        if zenn_path and hatena_path and zenn_path.exists() and hatena_path.exists():
+        consistency_fix_count = 0
+        while consistency_fix_count < MAX_CONSISTENCY_FIX:
+            if not zenn_result.get("path") or not hatena_result.get("path"):
+                break
+
+            zenn_path   = Path(zenn_result["path"])
+            hatena_path = Path(hatena_result["path"])
+
+            if not zenn_path.exists() or not hatena_path.exists():
+                print(f"  ⚠️ 整合性チェックスキップ: ファイルが見つかりません")
+                print(f"     Zenn: {zenn_path}")
+                print(f"     はてな: {hatena_path}")
+                break
+
             try:
-                from consistency_checker import check_consistency
+                zenn_c   = zenn_path.read_text(encoding="utf-8")
+                hatena_c = hatena_path.read_text(encoding="utf-8")
 
-                zenn_content   = zenn_path.read_text(encoding="utf-8")
-                hatena_content = hatena_path.read_text(encoding="utf-8")
+                print(f"\n  🔍 整合性チェック中（{consistency_fix_count + 1}/{MAX_CONSISTENCY_FIX}）...")
+                consistency = check_consistency(zenn_c, hatena_c, finance_data)
 
-                print(f"\n  🔍 整合性チェック中...")
-                consistency = check_consistency(zenn_content, hatena_content, finance_data)
+                if consistency["consistent"]:
+                    print(f"  ✅ 整合性チェック: 問題なし")
+                    break
 
-                if not consistency["consistent"]:
-                    corrections = consistency.get("corrections", [])
-                    issues      = consistency.get("issues", [])
-                    print(f"  ❌ 整合性不一致: {issues}")
+                consistency_fix_count += 1
 
-                    # 修正プロンプトを構築
-                    correction_lines = ["以下の数値を正確に記載してください:"]
-                    for c in corrections:
-                        correction_lines.append(f"  - {c}")
-                    correction_prompt = "\n".join(correction_lines)
+                if consistency_fix_count >= MAX_CONSISTENCY_FIX:
+                    print(f"  ⚠️ 整合性修正{MAX_CONSISTENCY_FIX}回試行後も不一致（保存続行）")
+                    break
 
-                    # どちらの版が間違っているか判定（corrections の prefix で識別）
-                    wrong_versions = set()
-                    for c in corrections:
-                        if c.startswith("zenn:") or "Zenn版" in c:
-                            wrong_versions.add("zenn")
-                        elif c.startswith("hatena:") or "はてな版" in c:
-                            wrong_versions.add("hatena")
-                    if not wrong_versions:
-                        wrong_versions = {"zenn", "hatena"}  # 判定不能 → 両方修正
+                # 正値と方向性をプロンプトに埋め込む
+                market    = finance_data.get("market_summary", {}) if finance_data else {}
+                macro     = finance_data.get("macro", {})          if finance_data else {}
+                us        = macro.get("us_stocks", {})
+                forex     = macro.get("forex", {})
+                comm      = macro.get("commodities", {})
 
-                    # 間違った版のみ削除して再生成（restart カウントは消費しない）
-                    from content_generator import generate_article
-                    if "zenn" in wrong_versions:
-                        zenn_path.unlink(missing_ok=True)
-                        print(f"  🔧 Zenn版を修正再生成中...")
-                        zenn_result = generate_article(
-                            topic=topic, genre_id="finance_news",
-                            variant="zenn", finance_cache=finance_data,
-                            extra_prompt=correction_prompt,
-                        )
-                        zenn_path = Path(zenn_result["path"]) if zenn_result.get("path") else None
-                    if "hatena" in wrong_versions:
-                        hatena_path.unlink(missing_ok=True)
-                        print(f"  🔧 はてな版を修正再生成中...")
-                        hatena_result = generate_article(
-                            topic=topic, genre_id="finance_news",
-                            variant="hatena", finance_cache=finance_data,
-                            extra_prompt=correction_prompt,
-                        )
-                        hatena_path = Path(hatena_result["path"]) if hatena_result.get("path") else None
+                nikkei_chg = market.get("nikkei_change_pct", 0) or 0
+                nikkei_dir = "上昇" if nikkei_chg > 0 else "下落" if nikkei_chg < 0 else "横ばい"
+                vix_chg    = (us.get("VIX", {}).get("change_pct") or 0)
+                vix_dir    = "上昇" if vix_chg > 0 else "下落"
+                usd_chg    = (forex.get("USD/JPY", {}).get("change_pct") or 0)
+                forex_dir  = "円安" if usd_chg > 0 else "円高"
+                sp500_chg  = (us.get("S&P500", {}).get("change_pct") or 0)
+                wti_chg    = (comm.get("WTI原油", {}).get("change_pct") or 0)
 
-                    # 修正後に再チェック（失敗してもログのみ）
-                    if zenn_path and hatena_path and zenn_path.exists() and hatena_path.exists():
-                        zenn_content2   = zenn_path.read_text(encoding="utf-8")
-                        hatena_content2 = hatena_path.read_text(encoding="utf-8")
-                        consistency2    = check_consistency(zenn_content2, hatena_content2, finance_data)
-                        if not consistency2["consistent"]:
-                            print(f"  ⚠️ 修正後も不一致（保存続行）: {consistency2.get('issues', [])}")
-                        else:
-                            print(f"  ✅ 修正後の整合性OK")
+                issues_text = "\n".join(
+                    f"  - {i}" for i in consistency["issues"]
+                )
+                correction_prompt = f"""
+【整合性チェックで検出された問題】
+{issues_text}
+
+【必ず使用する正しい数値と方向性】
+  日経平均: {market.get("nikkei_price", "")}円 （前日比{nikkei_dir}）
+  VIX: {us.get("VIX", {}).get("price", "")} （前日比{vix_chg:+.1f}%→{vix_dir}）
+  USD/JPY: {forex.get("USD/JPY", {}).get("price", "")}円 （{forex_dir}進行）
+  S&P500: {us.get("S&P500", {}).get("price", "")} （前日比{sp500_chg:+.1f}%）
+  WTI原油: ${comm.get("WTI原油", {}).get("price", "")} （前日比{wti_chg:+.1f}%）
+
+上記の数値と方向性を必ずそのまま使用して、矛盾のない記事を書き直してください。
+"""
+
+                # 間違っている版を特定
+                wrong_versions = []
+                for issue in consistency["issues"]:
+                    if "Zenn版" in issue:
+                        wrong_versions.append("zenn")
+                    elif "はてな版" in issue:
+                        wrong_versions.append("hatena")
+                for correction in consistency.get("corrections", []):
+                    if "はてな版が正しい" in correction:
+                        wrong_versions.append("zenn")
+                    elif "Zenn版が正しい" in correction:
+                        wrong_versions.append("hatena")
+                if not wrong_versions:
+                    wrong_versions = ["hatena"]  # 判定不能 → Zenn版を正として扱う
+                wrong_versions = list(set(wrong_versions))
+                print(f"  🔧 修正対象: {wrong_versions}版（試行{consistency_fix_count}/{MAX_CONSISTENCY_FIX}）")
+
+                for v in wrong_versions:
+                    target = zenn_path if v == "zenn" else hatena_path
+                    target.unlink(missing_ok=True)
+                    new_result = generate_article(
+                        topic=topic,
+                        genre_id="finance_news",
+                        variant=v,
+                        finance_cache=finance_data,
+                        extra_prompt=correction_prompt,
+                    )
+                    if v == "zenn":
+                        zenn_result = new_result
+                    else:
+                        hatena_result = new_result
 
             except Exception as e:
                 print(f"  ⚠️ 整合性チェックスキップ: {e}")
-        else:
-            print(f"  ⚠️ 整合性チェックスキップ: ファイルが見つかりません")
-            print(f"     Zenn: {zenn_path}")
-            print(f"     はてな: {hatena_path}")
+                import traceback; traceback.print_exc()
+                break
 
         # 両方成功
         print(f"\n✅ Zenn版 完了: {zenn_result['path']}")
