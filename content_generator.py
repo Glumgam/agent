@@ -768,9 +768,17 @@ def generate_article(
     genre      = next((g for g in TECH_GENRES if g["id"] == genre_id), TECH_GENRES[0])
     is_finance = genre_id == "finance_news"
 
-    # 投資記事は品質スコア10必須・リトライ3回固定
-    PASS_SCORE  = 10 if is_finance else 7
-    max_retries = 3  if is_finance else max_retries
+    # 品質スコア設定
+    # 投資記事: 理想10点・最終試行での許容下限9点・3回固定
+    # その他:   合格7点・許容下限7点（変更なし）
+    if is_finance:
+        PASS_SCORE   = 10  # 理想スコア（1〜2回目の合格基準）
+        ACCEPT_SCORE = 9   # 最終試行での保存許容スコア
+        max_retries  = 3
+    else:
+        PASS_SCORE   = 7
+        ACCEPT_SCORE = 7
+        max_retries  = max_retries
     if is_finance:
         if variant == "zenn":
             template   = ZENN_FINANCE_TEMPLATE
@@ -849,25 +857,34 @@ def generate_article(
         review_score    = review["score"]
         review_passed   = review["passed"]
         review_feedback = review["feedback"]
+        is_last_attempt = (attempt == max_retries - 1)
         if review_score < PASS_SCORE:
-            if attempt < max_retries - 1:
-                # リトライ可能 → フィードバック付きで再生成
-                print(f"  ⚠️ 品質不足（score={review_score} < {PASS_SCORE}）→ 再生成")
-                prompt = (
-                    prompt
-                    + f"\n\n【品質レビューのフィードバック】\n{review_feedback}\n"
-                    + f"以下の問題を修正してください: {', '.join(review['issues'])}"
-                )
+            if not is_last_attempt:
+                # 1〜2回目: レビュー指摘をプロンプトに追加して再生成
+                issues_text = "\n".join(review.get("issues", []))
+                if issues_text:
+                    prompt += (
+                        f"\n\n【前回の品質指摘（必ず修正すること）】\n"
+                        f"{issues_text}\n"
+                        "上記の問題を修正して、より高品質な記事を書き直してください。"
+                    )
+                print(f"  ⚠️ 品質不足（score={review_score} < {PASS_SCORE}）"
+                      f"→ 再生成 {attempt + 1}/{max_retries}")
                 continue
             else:
-                # 最終試行でも基準未達
-                print(f"  ❌ 品質基準未達（最終試行）: score={review_score}/{PASS_SCORE}")
-                return {
-                    "path":   None,
-                    "score":  review_score,
-                    "passed": False,
-                    "reason": f"品質基準未達: {review_score}/{PASS_SCORE}",
-                }
+                # 最終試行: ACCEPT_SCORE以上なら保存、未満なら破棄
+                if review_score >= ACCEPT_SCORE:
+                    print(f"  ⚠️ 最終試行: score={review_score}"
+                          f"（目標{PASS_SCORE}未達だが{ACCEPT_SCORE}以上のため保存）")
+                    # 保存続行（breakせずここを抜ける）
+                else:
+                    print(f"  ❌ 品質基準未達（最終試行）: score={review_score} < {ACCEPT_SCORE}")
+                    return {
+                        "path":   None,
+                        "score":  review_score,
+                        "passed": False,
+                        "reason": f"品質基準未達: {review_score}/{ACCEPT_SCORE}",
+                    }
         # --- QUALITY REVIEW END ---
 
         # --- FACT CHECK START ---
