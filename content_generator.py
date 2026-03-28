@@ -736,6 +736,7 @@ def generate_article(
 
     # 投資ジャンルの場合: リアルタイムデータをコンテキストに注入（圧縮版）
     _finance_data_for_check = None  # ファクトチェック用に保持
+    _fc_result              = None  # ファクトチェック結果（ループ外で保持・result定義後に代入）
     if genre_id == "finance_news" and not extra_context:
         try:
             from finance_data_collector import collect_finance_data, compress_finance_context
@@ -880,10 +881,10 @@ def generate_article(
                     else:
                         # 2回目以降は警告のみ・保存続行
                         print(f"  ⚠️ ファクトチェック警告あり（保存続行）: {fc_issues[0] if fc_issues else ''}")
-                        result["fact_check"] = fc_result
+                        _fc_result = fc_result  # ループ外で result 定義後に代入
                 else:
                     print(f"  ✅ ファクトチェック: 問題なし")
-                    result["fact_check"] = fc_result
+                    _fc_result = fc_result  # ループ外で result 定義後に代入
             except Exception as e:
                 print(f"  ⚠️ ファクトチェックスキップ: {e}")
         # --- FACT CHECK END ---
@@ -1016,6 +1017,9 @@ def generate_article(
         "paid_suitable":   paid_suitable,
         "paid_label":      paid_label,
     }
+    # ファクトチェック結果をループ外から代入（ループ内では result 未定義のため）
+    if _fc_result is not None:
+        result["fact_check"] = _fc_result
     _log_performance(result)
     print(f"  ✅ 生成完了: {path.name} ({len(content)}文字)")
 
