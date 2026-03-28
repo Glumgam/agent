@@ -170,7 +170,7 @@ def check_stock_explanations(content: str, finance_data: dict) -> list:
 
 def check_format_compliance(content: str) -> list:
     """
-    銘柄説明が強制フォーマットに従っているか確認する。
+    銘柄説明が強制フォーマットに従っているか銘柄ブロック単位で確認する。
     ランキングセクションが存在する記事のみ対象。
     """
     issues = []
@@ -178,16 +178,29 @@ def check_format_compliance(content: str) -> list:
     if "値上がり" not in content and "値下がり" not in content:
         return issues  # ランキング記事でなければスキップ
 
-    if "関連ニュース:" not in content:
-        issues.append("フォーマット違反: 「関連ニュース:」が存在しない")
+    # 銘柄ブロックを「**銘柄名（変動率）**」行単位で分割
+    blocks = re.split(r'\n(?=\*\*.+?\([+-]?\d+)', content)
+    checked = 0
+    for block in blocks:
+        if not re.search(r'\([+-]?\d+', block):
+            continue  # 変動率を含まないブロックはスキップ
+        checked += 1
 
-    if "背景:" not in content:
-        issues.append("フォーマット違反: 「背景:」が存在しない")
-
-    # 背景の内容チェック（空でないか）
-    for match in re.findall(r'背景:\s*(.+)', content):
-        if not match.strip() or match.strip() in ["", "なし"]:
+        if "背景:" in block and "関連ニュース:" not in block:
+            issues.append("フォーマット違反: 銘柄ブロックに「関連ニュース:」がない")
+        if "関連ニュース:" in block and "背景:" not in block:
+            issues.append("フォーマット違反: 銘柄ブロックに「背景:」がない")
+        if re.search(r'背景:\s*$', block, re.MULTILINE):
             issues.append("フォーマット違反: 「背景:」の内容が空")
+        if re.search(r'関連ニュース:\s*$', block, re.MULTILINE):
+            issues.append("フォーマット違反: 「関連ニュース:」の内容が空")
+
+    # 銘柄ブロックが検出されなかった場合は記事全体で簡易チェック
+    if checked == 0:
+        if "関連ニュース:" not in content:
+            issues.append("フォーマット違反: 「関連ニュース:」が存在しない")
+        if "背景:" not in content:
+            issues.append("フォーマット違反: 「背景:」が存在しない")
 
     return issues
 
