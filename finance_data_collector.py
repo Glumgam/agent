@@ -687,18 +687,33 @@ def compress_finance_context(data: dict) -> str:
             sections.append("[中:参考] 相関分析（解釈）\n" + "\n".join(interp_lines[:5]))
 
     # =====================================================
-    # 5. [重要:企業影響] 法務リスク（高+中リスク）
+    # 5. [重要:企業影響] 法務リスク（高+中リスク、前日重複排除済み）
     # =====================================================
     legal      = data.get("legal", {})
-    high_legal = legal.get("high", [])[:5]
-    med_legal  = legal.get("medium", [])[:2]
+    high_legal = legal.get("high", [])
+    med_legal  = legal.get("medium", [])
+    # 新規・進展のある情報のみに絞り込む
+    try:
+        from legal_collector import filter_new_legal_items
+        all_legal_items = high_legal + med_legal
+        new_legal_items = filter_new_legal_items(all_legal_items, date_str)
+        high_legal = [i for i in new_legal_items if i.get("risk", {}).get("level") == "high"][:5]
+        med_legal  = [i for i in new_legal_items if i.get("risk", {}).get("level") == "medium"][:2]
+    except Exception as e:
+        print(f"  ⚠️ 法務重複排除スキップ: {e}")
+        high_legal = high_legal[:5]
+        med_legal  = med_legal[:2]
     if high_legal or med_legal:
-        legal_lines = ["[重要:企業影響] 法務リスク情報"]
+        legal_lines = ["[重要:企業影響] 法務リスク情報（本日新規・進展）"]
         for item in high_legal:
-            legal_lines.append(f"🔴 {item.get('title', '')[:60]}")
+            note = f"（{item['note']}）" if item.get("note") else ""
+            legal_lines.append(f"🔴 {item.get('title', '')[:60]}{note}")
         for item in med_legal:
-            legal_lines.append(f"🟡 {item.get('title', '')[:60]}")
+            note = f"（{item['note']}）" if item.get("note") else ""
+            legal_lines.append(f"🟡 {item.get('title', '')[:60]}{note}")
         sections.append("\n".join(legal_lines))
+    else:
+        sections.append("[重要:企業影響] 法務リスク情報\n本日新たな行政処分情報はありません")
 
     # =====================================================
     # 6. [中:参考] ニュース → トピック要約

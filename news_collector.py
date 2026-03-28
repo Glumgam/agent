@@ -111,11 +111,15 @@ RSS_SOURCES = {
     ],
     # 特許庁（各国公式）
     "patent": [
-        {"name": "JPO（日本）",     "url": "https://www.jpo.go.jp/rss/index.xml",                            "credibility": "high"},
-        {"name": "USPTO（米国）",   "url": "https://www.uspto.gov/rss/pressrelease.xml",                     "credibility": "high"},
-        {"name": "EPO（欧州）",     "url": "https://www.epo.org/news-events/news/rss.xml",                   "credibility": "high"},
-        {"name": "WIPO（国際）",    "url": "https://www.wipo.int/pressroom/en/rss.xml",                      "credibility": "high"},
-        {"name": "CNIPA（中国）",   "url": "https://www.cnipa.gov.cn/rss/index.xml",                         "credibility": "high"},
+        {"name": "JPO（日本）",       "url": "https://www.jpo.go.jp/rss/index.xml",                              "credibility": "high"},
+        {"name": "USPTO（米国）",     "url": "https://www.uspto.gov/rss/pressrelease.xml",                       "credibility": "high"},
+        {"name": "EPO（欧州）",       "url": "https://www.epo.org/news-events/news/rss.xml",                     "credibility": "high"},
+        {"name": "WIPO（国際）",      "url": "https://www.wipo.int/pressroom/en/rss.xml",                        "credibility": "high"},
+        {"name": "CNIPA（中国）",     "url": "https://www.cnipa.gov.cn/rss/index.xml",                           "credibility": "high"},
+        # 日本語・国内知財情報
+        {"name": "J-PlatPat新着",     "url": "https://www.j-platpat.inpit.go.jp/rss/news.rss",                  "credibility": "high"},
+        {"name": "WIPO日本語",        "url": "https://www.wipo.int/pressroom/ja/rss/news.rss",                   "credibility": "high"},
+        {"name": "知財情報センター",  "url": "https://www.jiii.or.jp/rss/index.xml",                             "credibility": "high"},
     ],
     # 技術ブログ・コミュニティ（信頼度: medium）
     "tech_blog": [
@@ -491,6 +495,37 @@ def show_stats():
         print("ジャンル別件数:")
         for genre, items in data.items():
             print(f"  {genre:10s}: {len(items)}件")
+
+
+def summarize_patent_news(patent_items: list, llm_func=None) -> str:
+    """
+    特許ニュースをLLMで要約して投資・経済的影響を分析する。
+    RSS取得失敗等で patent_items が空の場合は空文字を返す。
+    """
+    if not patent_items:
+        return ""
+
+    titles = "\n".join(
+        f"・{item['title'][:80]}"
+        for item in patent_items[:10]
+        if item.get("title")
+    )
+    if not titles:
+        return ""
+
+    prompt = (
+        "以下の特許・知財ニュースを読んで、"
+        "経済・投資への影響を50文字以内で要約してください。\n"
+        "影響が小さい場合は「特筆すべき特許動向はありません」と回答してください。\n\n"
+        f"特許ニュース:\n{titles}\n\n"
+        "要約（50文字以内）:"
+    )
+
+    try:
+        from llm import ask_plain
+        return ask_plain(prompt)
+    except Exception:
+        return ""
 
 
 if __name__ == "__main__":

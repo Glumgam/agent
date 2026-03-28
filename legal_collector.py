@@ -440,6 +440,54 @@ def format_legal_for_article(data: dict) -> str:
     return "\n".join(lines)
 
 
+def filter_new_legal_items(current_items: list, date_str: str) -> list:
+    """
+    前日までの行政処分と比較して、新規・進展のある情報のみ返す。
+
+    Returns:
+        新規または進展のある行政処分情報のみ
+    """
+    import json as _json
+    from datetime import datetime as _dt, timedelta as _td
+
+    LEGAL_KNOWLEDGE_DIR = AGENT_ROOT / "knowledge" / "finance"
+    PROGRESS_KEYWORDS   = ["判決", "確定", "追加", "拡大", "解除", "取消", "控訴", "上告"]
+
+    # 直近5件の法務JSONから既出タイトルを収集
+    prev_files  = sorted(LEGAL_KNOWLEDGE_DIR.glob("*_legal.json"), reverse=True)
+    prev_titles = set()
+    for f in prev_files[:5]:
+        try:
+            data = _json.loads(f.read_text(encoding="utf-8"))
+            for item in data.get("high", []) + data.get("medium", []):
+                prev_titles.add(item.get("title", "")[:30])
+        except Exception:
+            continue
+
+    # LEGAL_DB からも既出タイトルを補完
+    if LEGAL_DB.exists():
+        try:
+            db_entries = _json.loads(LEGAL_DB.read_text(encoding="utf-8"))
+            for entry in db_entries[-10:]:
+                for item in entry.get("high", []) + entry.get("medium", []):
+                    prev_titles.add(item.get("title", "")[:30])
+        except Exception:
+            pass
+
+    new_items = []
+    for item in current_items:
+        title_key = item.get("title", "")[:30]
+        if title_key not in prev_titles:
+            new_items.append(item)
+        elif any(kw in item.get("title", "") for kw in PROGRESS_KEYWORDS):
+            item = dict(item)
+            item["note"] = "進展あり"
+            new_items.append(item)
+
+    print(f"  ⚖️ 行政処分: 全{len(current_items)}件 → 新規{len(new_items)}件（前日重複排除）")
+    return new_items
+
+
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="法務・行政処分データ収集")

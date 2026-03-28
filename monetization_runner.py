@@ -166,6 +166,31 @@ def run_finance_news(topic: str, max_restart: int = 2) -> dict:
                 print(f"  ❌ はてな版: {max_restart}回再スタート後も品質未達 → 終了")
                 return {"zenn": zenn_result, "hatena": hatena_result}
 
+        # 整合性チェック
+        if zenn_result.get("path") and hatena_result.get("path"):
+            try:
+                from consistency_checker import check_consistency
+
+                zenn_content   = Path(zenn_result["path"]).read_text(encoding="utf-8")
+                hatena_content = Path(hatena_result["path"]).read_text(encoding="utf-8")
+
+                print(f"\n  🔍 整合性チェック中...")
+                consistency = check_consistency(zenn_content, hatena_content, finance_data)
+
+                if not consistency["consistent"]:
+                    if restart < max_restart:
+                        print(f"  ❌ 整合性不一致 → 両版を破棄して再スタート")
+                        Path(zenn_result["path"]).unlink(missing_ok=True)
+                        Path(hatena_result["path"]).unlink(missing_ok=True)
+                        continue
+                    else:
+                        print(f"  ⚠️ 整合性不一致（最終試行のため保存続行）")
+                        if consistency["corrections"]:
+                            print(f"     修正案: {consistency['corrections']}")
+
+            except Exception as e:
+                print(f"  ⚠️ 整合性チェックスキップ: {e}")
+
         # 両方成功
         print(f"\n✅ Zenn版 完了: {zenn_result['path']}")
         print(f"✅ はてな版 完了: {hatena_result['path']}")
