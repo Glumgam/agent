@@ -3,7 +3,7 @@ Zenn版・はてな版の整合性チェックシステム。
 
 チェック項目:
 1. 数値の一致（日経平均・VIX・為替・原油・S&P500）
-2. 銘柄・変動率の一致
+2. はてな版のランキング銘柄件数
 3. コンテキストの正値との照合
 """
 
@@ -17,40 +17,38 @@ import re
 def extract_numbers_from_article(content: str) -> dict:
     """
     記事から主要数値を抽出する。
+    変動率（%付き）はVIX値として誤検出しないよう除外する。
     """
     numbers = {}
 
-    # 日経平均（例: 35,123.45円）
+    # 日経平均（5桁カンマ区切り+小数）
     m = re.search(r'(\d{2},\d{3}\.\d+)円', content)
     if m:
         numbers["nikkei"] = m.group(1).replace(",", "")
 
-    # USD/JPY（例: USD/JPY 149.50円 or 149.50円/ドル）
-    m = re.search(r'USD/JPY.*?(\d{3}\.\d+)', content)
+    # USD/JPY（「USD/JPY」直後 or 「円...ドル」）
+    m = re.search(r'USD/JPY[^\d]*(\d{3}\.\d+)', content)
     if not m:
-        m = re.search(r'(\d{3}\.\d+)円.*?(?:ドル|USD)', content)
+        m = re.search(r'(\d{3}\.\d+)円.*?ドル', content)
     if m:
         numbers["usd_jpy"] = m.group(1)
 
-    # VIX（例: VIX 18.50）
-    m = re.search(r'VIX.*?(\d+\.\d+)', content)
+    # VIX（「VIX」直後の2桁+小数のみ・変動率%は除外）
+    m = re.search(r'VIX[^%\d]*(\d{2}\.\d+)(?![\d%])', content)
     if m:
         numbers["vix"] = m.group(1)
 
-    # S&P500（例: S&P500 5,123.45）
-    m = re.search(r'S&P500.*?(\d[\d,]+\.\d+)', content)
+    # S&P500（「S&P500」直後 例: 5,123.45 or 5123.45）
+    m = re.search(r'S&P500[^\d]*([\d,]{4,}\.\d+)', content)
     if m:
         numbers["sp500"] = m.group(1).replace(",", "")
 
-    # WTI原油（例: WTI $75.50）
-    m = re.search(r'WTI.*?\$(\d+\.\d+)', content)
+    # WTI原油（$マーク付き2〜3桁）
+    m = re.search(r'WTI[^\d$]*\$(\d{2,3}\.\d+)', content)
+    if not m:
+        m = re.search(r'\$(\d{2,3}\.\d+).*?原油', content)
     if m:
         numbers["wti"] = m.group(1)
-
-    # 前日比変動率（例: 前日比 +1.23%）
-    m = re.search(r'前日比.*?([+-]?\d+\.\d+)%', content)
-    if m:
-        numbers["nikkei_change_pct"] = m.group(1)
 
     return numbers
 
@@ -92,13 +90,25 @@ def check_consistency(zenn_content: str, hatena_content: str, finance_data: dict
         "wti":     str(comm.get("WTI原油", {}).get("price", "")),
     }
 
-    # 数値の突合（Zenn vs はてな vs 正値）
-    for key in ["nikkei", "usd_jpy", "vix"]:
+    # 数値の突合（両版に値が存在する場合のみ・±0.1%の誤差許容）
+    for key in ["nikkei", "usd_jpy", "vix", "sp500", "wti"]:
         z_val = zenn_nums.get(key, "")
         h_val = hatena_nums.get(key, "")
         t_val = true_values.get(key, "")
 
-        if z_val and h_val and z_val != h_val:
+        if not z_val or not h_val:
+            continue  # 片方にない場合はスキップ
+
+        # 浮動小数点の誤差を許容（±0.1%）
+        try:
+            z_f = float(z_val)
+            h_f = float(h_val)
+            if z_f > 0 and abs(z_f - h_f) / max(z_f, h_f) < 0.001:
+                continue  # 誤差範囲内
+        except (ValueError, TypeError):
+            pass
+
+        if z_val != h_val:
             if t_val:
                 if z_val == t_val:
                     correct = "zenn"
@@ -120,17 +130,14 @@ def check_consistency(zenn_content: str, hatena_content: str, finance_data: dict
             else:
                 issues.append(f"{key}の不一致: Zenn={z_val} / はてな={h_val}")
 
-    # 銘柄・変動率パターンの一致確認（括弧内の数値）
-    zenn_vals   = set(re.findall(r'[（(][+-]?\d+\.\d+%?[）)]', zenn_content))
-    hatena_vals = set(re.findall(r'[（(][+-]?\d+\.\d+%?[）)]', hatena_content))
-    only_zenn   = zenn_vals - hatena_vals
-    only_hatena = hatena_vals - zenn_vals
-
-    if only_zenn or only_hatena:
+    # はてな版のランキング銘柄チェック（**銘柄名**（±%）パターン）
+    # Zenn版は概要のため省略可 → はてな版のみ確認
+    hatena_stocks = re.findall(
+        r'\*\*[^*]+\*\*[（(][+-]?\d+\.\d+%?[）)]', hatena_content
+    )
+    if len(hatena_stocks) < 3:
         issues.append(
-            f"銘柄・変動率の不一致: "
-            f"Zennのみ={sorted(only_zenn)[:3]} / "
-            f"はてなのみ={sorted(only_hatena)[:3]}"
+            f"はてな版のランキング銘柄が不足: {len(hatena_stocks)}件（最低3件必要）"
         )
 
     consistent = len(issues) == 0

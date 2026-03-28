@@ -201,11 +201,15 @@ def check_stock_explanations(content: str, finance_data: dict) -> list:
     return warnings
 
 
-def check_format_compliance(content: str) -> list:
+def check_format_compliance(content: str, variant: str = "hatena") -> list:
     """
     銘柄説明が強制フォーマットに従っているか銘柄ブロック単位で確認する。
     ランキングセクションが存在する記事のみ対象。
+    Zenn版（概要）はランキング詳細が不要のためスキップ。
     """
+    if variant == "zenn":
+        return []  # Zenn版はフォーマットチェック不要
+
     issues = []
 
     if "値上がり" not in content and "値下がり" not in content:
@@ -238,9 +242,10 @@ def check_format_compliance(content: str) -> list:
     return issues
 
 
-def fact_check(content: str, finance_data: dict) -> dict:
+def fact_check(content: str, finance_data: dict, variant: str = "hatena") -> dict:
     """
     記事のファクトチェックを実行する。
+    variant: "zenn" or "hatena"（フォーマットチェックの対象を制御）
     Returns:
         {
             "passed": bool,
@@ -254,7 +259,7 @@ def fact_check(content: str, finance_data: dict) -> dict:
         check_hallucination(content, finance_data)
         + check_vix_consistency(content, finance_data)
         + check_stock_explanations(content, finance_data)
-        + check_format_compliance(content)
+        + check_format_compliance(content, variant=variant)
     )
 
     # 時間表現チェック

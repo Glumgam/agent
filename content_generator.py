@@ -913,22 +913,23 @@ def generate_article(
         if is_finance and _finance_data_for_check:
             try:
                 from fact_checker import fact_check
-                fc_result = fact_check(content, _finance_data_for_check)
+                fc_result = fact_check(content, _finance_data_for_check, variant=variant)
                 if not fc_result["passed"] or fc_result["warnings"]:
                     fc_issues   = fc_result["issues"] + fc_result["warnings"]
                     issues_text = "\n".join(f"- {i}" for i in fc_issues)
-                    if attempt == 0:
-                        # 最初の試行のみ再生成（1回のみ）
-                        print(f"  ❌ ファクトチェック失敗 → 1回のみ再生成")
+                    if attempt < max_retries - 1:
+                        print(f"  ❌ ファクトチェック失敗 → 修正指示付きで再生成")
                         prompt += (
                             f"\n\n【ファクトチェック指摘事項 - 必ず修正すること】\n"
                             f"{issues_text}\n"
-                            "上記の問題を修正して書き直してください。"
+                            "上記の問題を修正してください。特に:\n"
+                            "- 「と考えられます」→「背景は未公表」に変更\n"
+                            "- 曖昧表現を削除して事実のみを記載\n"
                         )
-                        continue
+                        continue  # 再生成
                     else:
-                        # 2回目以降は警告のみ・保存続行
-                        print(f"  ⚠️ ファクトチェック警告あり（保存続行）: {fc_issues[0] if fc_issues else ''}")
+                        # 最終試行は警告のみ・保存続行
+                        print(f"  ⚠️ ファクトチェック警告（最終試行のため保存続行）")
                         _fc_result = fc_result  # ループ外で result 定義後に代入
                 else:
                     print(f"  ✅ ファクトチェック: 問題なし")
