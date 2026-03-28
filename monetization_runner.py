@@ -101,6 +101,79 @@ def select_topic(genre_id: str) -> str:
     return random.choice(remaining)
 
 
+def run_finance_news(topic: str, max_restart: int = 2) -> dict:
+    """
+    投資記事を生成する。品質未達時は情報再収集してZenn・はてな両方を再生成。
+    - Zenn版失敗   → Zenn版のみ破棄して再スタート
+    - はてな版失敗 → Zenn版・はてな版両方破棄して再スタート
+    - 再スタートは最大 max_restart 回
+    - Zenn版・はてな版は常に同じ finance_data を使用（整合性保証）
+    """
+    from content_generator import generate_article
+    from finance_data_collector import collect_finance_data, compress_finance_context
+
+    for restart in range(max_restart + 1):
+        if restart > 0:
+            print(f"\n  🔄 情報再収集して再スタート（{restart}/{max_restart}回目）")
+
+        # 毎回新鮮なデータを収集
+        print(f"  📈 投資データ収集中...")
+        try:
+            finance_data = collect_finance_data()
+            ctx = compress_finance_context(finance_data)
+            print(f"  📐 コンテキスト: {len(ctx)}文字")
+        except Exception as e:
+            print(f"  ⚠️ データ収集失敗: {e}")
+            finance_data = None
+
+        # Zenn版生成
+        print(f"\n--- Zenn版（概要）---")
+        zenn_result = generate_article(
+            topic=topic,
+            genre_id="finance_news",
+            variant="zenn",
+            finance_cache=finance_data,
+        )
+        zenn_failed = zenn_result.get("path") is None or "error" in zenn_result
+        if zenn_failed:
+            if restart < max_restart:
+                print(f"  ❌ Zenn版品質未達 → 再スタート")
+                if zenn_result.get("path"):
+                    Path(zenn_result["path"]).unlink(missing_ok=True)
+                continue
+            else:
+                print(f"  ❌ Zenn版: {max_restart}回再スタート後も品質未達 → 終了")
+                return {"zenn": zenn_result, "hatena": None}
+
+        # はてな版生成（Zenn版と同じ finance_data を使用）
+        print(f"\n--- はてな版（詳細）---")
+        hatena_result = generate_article(
+            topic=topic,
+            genre_id="finance_news",
+            variant="hatena",
+            finance_cache=finance_data,
+        )
+        hatena_failed = hatena_result.get("path") is None or "error" in hatena_result
+        if hatena_failed:
+            if restart < max_restart:
+                print(f"  ❌ はてな版品質未達 → Zenn版も破棄して再スタート")
+                if zenn_result.get("path"):
+                    Path(zenn_result["path"]).unlink(missing_ok=True)
+                if hatena_result.get("path"):
+                    Path(hatena_result["path"]).unlink(missing_ok=True)
+                continue
+            else:
+                print(f"  ❌ はてな版: {max_restart}回再スタート後も品質未達 → 終了")
+                return {"zenn": zenn_result, "hatena": hatena_result}
+
+        # 両方成功
+        print(f"\n✅ Zenn版 完了: {zenn_result['path']}")
+        print(f"✅ はてな版 完了: {hatena_result['path']}")
+        return {"zenn": zenn_result, "hatena": hatena_result}
+
+    return {"zenn": None, "hatena": None}
+
+
 def run_single(genre_id: str = None, topic: str = None) -> dict:
     """1トピックについてZenn版（概要）・はてな版（詳細）の2記事を生成する"""
     from content_generator import generate_article, TECH_GENRES
@@ -114,30 +187,19 @@ def run_single(genre_id: str = None, topic: str = None) -> dict:
     print(f"  トピック: {topic}")
     print(f"{'='*50}")
 
-    # 投資記事はデータ収集を1回だけ実行してZenn・はてなで共有
-    finance_cache = None
+    # 投資記事は再スタートロジックを含む専用関数に委譲
     if genre_id == "finance_news":
-        try:
-            from finance_data_collector import collect_finance_data, compress_finance_context
-            print("\n  📊 投資データを事前収集中（Zenn・はてな共有）...")
-            finance_cache = collect_finance_data()
-            ctx = compress_finance_context(finance_cache)
-            print(f"  📐 コンテキスト: {len(ctx)}文字")
-        except Exception as e:
-            print(f"  ⚠️ 事前収集失敗（各variant内で個別収集にフォールバック）: {e}")
+        return run_finance_news(topic)
 
+    # 技術記事: Zenn版・はてな版を順次生成
     results = {}
-    # Zenn版（概要）を生成
     print(f"\n--- Zenn版（概要）---")
     results["zenn"] = generate_article(
-        topic=topic, genre_id=genre_id,
-        variant="zenn", finance_cache=finance_cache,
+        topic=topic, genre_id=genre_id, variant="zenn",
     )
-    # はてな版（詳細）を生成
     print(f"\n--- はてな版（詳細）---")
     results["hatena"] = generate_article(
-        topic=topic, genre_id=genre_id,
-        variant="hatena", finance_cache=finance_cache,
+        topic=topic, genre_id=genre_id, variant="hatena",
     )
     return results
 
