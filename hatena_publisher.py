@@ -23,9 +23,65 @@ PUBLISH_LOG  = AGENT_ROOT / "memory" / "hatena_publish_log.json"
 CONFIG_FILE  = AGENT_ROOT / "config" / "hatena_config.json"
 
 # はてなブログ設定
-HATENA_ID    = "granking"
-BLOG_DOMAIN  = "granking.hatenablog.com"
-API_ENDPOINT = f"https://blog.hatena.ne.jp/{HATENA_ID}/{BLOG_DOMAIN}/atom/entry"
+HATENA_ID          = "granking"
+BLOG_DOMAIN        = "granking.hatenablog.com"
+API_ENDPOINT       = f"https://blog.hatena.ne.jp/{HATENA_ID}/{BLOG_DOMAIN}/atom/entry"
+PHOTLIFE_ENDPOINT  = f"https://f.hatena.ne.jp/{HATENA_ID}/atom/post"
+
+
+def upload_image_to_hatena(image_path: Path, api_key: str) -> "str | None":
+    """
+    はてなフォトライフに画像をアップロードし、画像URLを返す。
+    Args:
+        image_path: アップロードするPNG画像のPath
+        api_key:    はてなAPIキー
+    Returns:
+        画像URL（str）または None
+    """
+    try:
+        image_data = image_path.read_bytes()
+        encoded    = base64.b64encode(image_data).decode("utf-8")
+        title      = saxutils.escape(image_path.stem)
+        xml = f"""<?xml version="1.0" encoding="utf-8"?>
+<entry xmlns="http://www.w3.org/2005/Atom"
+       xmlns:dc="http://purl.org/dc/elements/1.1/"
+       xmlns:hatena="http://www.hatena.ne.jp/info/xmlns#">
+  <title>{title}</title>
+  <content mode="base64" type="image/png">{encoded}</content>
+  <dc:subject>agent-charts</dc:subject>
+</entry>"""
+        credentials = base64.b64encode(
+            f"{HATENA_ID}:{api_key}".encode()
+        ).decode()
+        headers = {
+            "Content-Type": "application/atom+xml",
+            "Authorization": f"Basic {credentials}",
+        }
+        response = requests.post(
+            PHOTLIFE_ENDPOINT,
+            data=xml.encode("utf-8"),
+            headers=headers,
+            timeout=30,
+        )
+        response.raise_for_status()
+        # <hatena:imageurl> から画像URLを抽出
+        m = re.search(r"<hatena:imageurl>([^<]+)</hatena:imageurl>", response.text)
+        if m:
+            img_url = m.group(1)
+            print(f"  🖼️ 画像アップロード完了: {img_url}")
+            return img_url
+        # フォールバック: syntaxが異なる場合
+        m = re.search(r'src="(https://[^"]+fotolife[^"]+)"', response.text)
+        if m:
+            return m.group(1)
+        print(f"  ⚠️ 画像URL取得失敗（レスポンス: {response.text[:200]}）")
+        return None
+    except requests.exceptions.HTTPError as e:
+        print(f"  ❌ 画像アップロードHTTPエラー: {e.response.status_code} {e.response.text[:200]}")
+        return None
+    except Exception as e:
+        print(f"  ⚠️ 画像アップロード失敗: {e}")
+        return None
 
 
 def _load_config() -> dict:
