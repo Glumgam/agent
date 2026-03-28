@@ -182,8 +182,8 @@ def check_format_compliance(content: str) -> list:
     blocks = re.split(r'\n(?=.*?\([+-]?\d+)', content)
     checked = 0
     for block in blocks:
-        if not re.search(r'[+-]?\d+(\.\d+)?%?', block):
-            continue  # 変動率を含まないブロックはスキップ
+        if not re.search(r'\([+-]?\d+(\.\d+)?%?\)', block):
+            continue  # 括弧付き変動率を含まないブロックはスキップ
         checked += 1
 
         if "背景:" in block and "関連ニュース:" not in block:
