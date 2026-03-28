@@ -101,20 +101,50 @@ def select_topic(genre_id: str) -> str:
     return random.choice(remaining)
 
 
+def _cleanup_failed_files(topic: str, content_dir: Path):
+    """前回の不完全な生成ファイルを削除し、重複DBからも除去する"""
+    import re
+    from content_checker import _load_dedup_db, _save_dedup_db
+
+    date_str = datetime.now().strftime("%Y%m%d")
+    # タイトルの記号を除去してパターンを作成
+    slug_hint = re.sub(r"[^\w]", "", topic[:10])
+    pattern   = f"{date_str}_*{slug_hint}*"
+
+    for f in content_dir.glob(pattern + "*.md"):
+        f.unlink(missing_ok=True)
+        print(f"  🗑️ クリーンアップ: {f.name}")
+
+    # 重複DBからも削除（variant:title 形式）
+    db     = _load_dedup_db()
+    titles = db.get("titles", {})
+    keys_to_remove = [k for k in titles if topic in k]
+    for k in keys_to_remove:
+        del titles[k]
+    if keys_to_remove:
+        db["titles"] = titles
+        _save_dedup_db(db)
+        print(f"  🗑️ 重複DB削除: {len(keys_to_remove)}件")
+
+
 def run_finance_news(topic: str, max_restart: int = 2) -> dict:
     """
     投資記事を生成する。品質未達時は情報再収集してZenn・はてな両方を再生成。
     - Zenn版失敗   → Zenn版のみ破棄して再スタート
     - はてな版失敗 → Zenn版・はてな版両方破棄して再スタート
+    - 整合性不一致 → 間違った版のみ正値を与えて修正再生成
     - 再スタートは最大 max_restart 回
     - Zenn版・はてな版は常に同じ finance_data を使用（整合性保証）
     """
     from content_generator import generate_article
     from finance_data_collector import collect_finance_data, compress_finance_context
 
+    finance_dir = AGENT_ROOT / "content" / "finance"
+
     for restart in range(max_restart + 1):
         if restart > 0:
             print(f"\n  🔄 情報再収集して再スタート（{restart}/{max_restart}回目）")
+            _cleanup_failed_files(topic, finance_dir)
 
         # 毎回新鮮なデータを収集
         print(f"  📈 投資データ収集中...")
@@ -181,15 +211,56 @@ def run_finance_news(topic: str, max_restart: int = 2) -> dict:
                 consistency = check_consistency(zenn_content, hatena_content, finance_data)
 
                 if not consistency["consistent"]:
-                    if restart < max_restart:
-                        print(f"  ❌ 整合性不一致 → 両版を破棄して再スタート")
+                    corrections = consistency.get("corrections", [])
+                    issues      = consistency.get("issues", [])
+                    print(f"  ❌ 整合性不一致: {issues}")
+
+                    # 修正プロンプトを構築
+                    correction_lines = ["以下の数値を正確に記載してください:"]
+                    for c in corrections:
+                        correction_lines.append(f"  - {c}")
+                    correction_prompt = "\n".join(correction_lines)
+
+                    # どちらの版が間違っているか判定（corrections の prefix で識別）
+                    wrong_versions = set()
+                    for c in corrections:
+                        if c.startswith("zenn:") or "Zenn版" in c:
+                            wrong_versions.add("zenn")
+                        elif c.startswith("hatena:") or "はてな版" in c:
+                            wrong_versions.add("hatena")
+                    if not wrong_versions:
+                        wrong_versions = {"zenn", "hatena"}  # 判定不能 → 両方修正
+
+                    # 間違った版のみ削除して再生成（restart カウントは消費しない）
+                    from content_generator import generate_article
+                    if "zenn" in wrong_versions:
                         zenn_path.unlink(missing_ok=True)
+                        print(f"  🔧 Zenn版を修正再生成中...")
+                        zenn_result = generate_article(
+                            topic=topic, genre_id="finance_news",
+                            variant="zenn", finance_cache=finance_data,
+                            extra_prompt=correction_prompt,
+                        )
+                        zenn_path = Path(zenn_result["path"]) if zenn_result.get("path") else None
+                    if "hatena" in wrong_versions:
                         hatena_path.unlink(missing_ok=True)
-                        continue
-                    else:
-                        print(f"  ⚠️ 整合性不一致（最終試行のため保存続行）")
-                        if consistency["corrections"]:
-                            print(f"     修正案: {consistency['corrections']}")
+                        print(f"  🔧 はてな版を修正再生成中...")
+                        hatena_result = generate_article(
+                            topic=topic, genre_id="finance_news",
+                            variant="hatena", finance_cache=finance_data,
+                            extra_prompt=correction_prompt,
+                        )
+                        hatena_path = Path(hatena_result["path"]) if hatena_result.get("path") else None
+
+                    # 修正後に再チェック（失敗してもログのみ）
+                    if zenn_path and hatena_path and zenn_path.exists() and hatena_path.exists():
+                        zenn_content2   = zenn_path.read_text(encoding="utf-8")
+                        hatena_content2 = hatena_path.read_text(encoding="utf-8")
+                        consistency2    = check_consistency(zenn_content2, hatena_content2, finance_data)
+                        if not consistency2["consistent"]:
+                            print(f"  ⚠️ 修正後も不一致（保存続行）: {consistency2.get('issues', [])}")
+                        else:
+                            print(f"  ✅ 修正後の整合性OK")
 
             except Exception as e:
                 print(f"  ⚠️ 整合性チェックスキップ: {e}")
@@ -265,7 +336,7 @@ if __name__ == "__main__":
         result = run_single(genre_id=args.genre, topic=args.topic)
         # run_single は {"zenn": ..., "hatena": ...} を返す
         for variant, r in result.items():
-            if "error" in r:
-                print(f"❌ {variant}版 失敗: {r['error']}")
+            if r is None or r.get("path") is None:
+                print(f"❌ {variant}版 失敗: {r.get('error', '不明') if r else '結果なし'}")
             else:
                 print(f"✅ {variant}版 完了: {r.get('path', '?')} ({r.get('word_count', 0)}文字)")
