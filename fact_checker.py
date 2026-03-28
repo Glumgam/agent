@@ -178,11 +178,11 @@ def check_format_compliance(content: str) -> list:
     if "値上がり" not in content and "値下がり" not in content:
         return issues  # ランキング記事でなければスキップ
 
-    # 銘柄ブロックを「**銘柄名（変動率）**」行単位で分割
-    blocks = re.split(r'\n(?=\*\*.+?\([+-]?\d+)', content)
+    # 銘柄ブロックを変動率行単位で分割（太字あり/なし両対応）
+    blocks = re.split(r'\n(?=.*?\([+-]?\d+)', content)
     checked = 0
     for block in blocks:
-        if not re.search(r'\([+-]?\d+', block):
+        if not re.search(r'[+-]?\d+(\.\d+)?%?', block):
             continue  # 変動率を含まないブロックはスキップ
         checked += 1
 
