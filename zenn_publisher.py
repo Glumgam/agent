@@ -300,7 +300,7 @@ def publish_all(dry_run: bool = False) -> dict:
     if dry_run or results["success"] == 0:
         return results
 
-    # 1回だけgit add & commit & push
+    # 1回だけgit add & commit & push（zenn-content）
     try:
         subprocess.run(
             ["git", "add", "articles/"],
@@ -315,10 +315,38 @@ def publish_all(dry_run: bool = False) -> dict:
             ["git", "push", "origin", "main"],
             cwd=ZENN_REPO, check=True, capture_output=True,
         )
-        print(f"\n  ✅ push完了: {results['success']}件")
+        print(f"\n  ✅ Zenn push完了: {results['success']}件")
     except subprocess.CalledProcessError as e:
-        print(f"\n  ❌ push失敗: {e}")
+        print(f"\n  ❌ Zenn push失敗: {e}")
         results["failed"] += 1
+
+    # グラフ画像を agent リポジトリへ push（GitHub raw URL で配信するため）
+    charts_dir = AGENT_ROOT / "content" / "charts"
+    if charts_dir.exists() and any(charts_dir.iterdir()):
+        try:
+            subprocess.run(
+                ["git", "add", "content/charts/"],
+                cwd=AGENT_ROOT, check=True, capture_output=True,
+            )
+            # 差分がある場合のみコミット
+            diff = subprocess.run(
+                ["git", "diff", "--cached", "--quiet"],
+                cwd=AGENT_ROOT, capture_output=True,
+            )
+            if diff.returncode != 0:  # returncode=1 → staged changes あり
+                subprocess.run(
+                    ["git", "commit", "-m", "chore: update chart images"],
+                    cwd=AGENT_ROOT, check=True, capture_output=True,
+                )
+                subprocess.run(
+                    ["git", "push", "origin", "master"],
+                    cwd=AGENT_ROOT, check=True, capture_output=True,
+                )
+                print("  ✅ charts push完了（agent repo）")
+            else:
+                print("  ℹ️ charts に差分なし（push スキップ）")
+        except subprocess.CalledProcessError as e:
+            print(f"  ⚠️ charts push失敗: {e}")
 
     return results
 

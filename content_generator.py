@@ -910,38 +910,34 @@ def generate_article(
         print(f"  ⚠️ 導線文注入スキップ: {e}")
 
     # グラフ生成・埋め込み（はてな版・投資記事のみ）
-    if genre_id == "finance_news" and variant == "hatena" and _finance_data_for_check:
+    if is_finance and variant == "hatena" and _finance_data_for_check:
         try:
             from chart_generator import generate_all_charts
-            from hatena_publisher import upload_image_to_hatena, _load_config as _load_hatena_config
+            from hatena_publisher import get_chart_github_url
             charts = generate_all_charts(_finance_data_for_check)
             if charts:
-                config  = _load_hatena_config()
-                api_key = config.get("api_key", "")
-                _label_map = {
-                    "up_chart":    "値上がりランキング Top5",
-                    "down_chart":  "値下がりランキング Top5",
+                LABELS = {
+                    "up_chart":    "値上がり率ランキング TOP5",
+                    "down_chart":  "値下がり率ランキング TOP5",
                     "macro_chart": "主要指標 変動率比較",
                 }
-                chart_lines = ["## 📊 本日の市場データ（グラフ）\n"]
+                chart_section = "\n\n## 📊 本日の市場データ（グラフ）\n\n"
                 for key, img_path in charts.items():
-                    label = _label_map.get(key, key)
-                    if api_key:
-                        img_url = upload_image_to_hatena(img_path, api_key)
-                        if img_url:
-                            chart_lines.append(f"### {label}\n\n![]({img_url})\n")
-                            continue
-                    # APIキーなし or アップロード失敗: コメントのみ記録
-                    chart_lines.append(f"### {label}\n\n<!-- chart: {img_path} -->\n")
-                chart_section = "\n".join(chart_lines)
+                    label   = LABELS.get(key, key)
+                    img_url = get_chart_github_url(img_path)
+                    chart_section += f"### {label}\n"
+                    chart_section += (
+                        f'<figure><img src="{img_url}" alt="{label}"'
+                        f' style="max-width:100%;" /></figure>\n\n'
+                    )
                 # "## まとめ" の直前に挿入
                 if "## まとめ" in content:
-                    content = content.replace("## まとめ", chart_section + "\n## まとめ", 1)
+                    content = content.replace("## まとめ", chart_section + "## まとめ", 1)
                 else:
-                    content += "\n\n" + chart_section
+                    content += chart_section
                 print(f"  📊 チャートセクション埋め込み完了（{len(charts)}枚）")
         except Exception as e:
-            print(f"  ⚠️ グラフ生成・埋め込みスキップ: {e}")
+            print(f"  ⚠️ グラフ生成スキップ: {e}")
 
     # 保存前の最終クリーニング（スコアに関わらず必ず実行）
     content = _final_clean(content, topic, genre_id)

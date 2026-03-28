@@ -28,6 +28,26 @@ BLOG_DOMAIN        = "granking.hatenablog.com"
 API_ENDPOINT       = f"https://blog.hatena.ne.jp/{HATENA_ID}/{BLOG_DOMAIN}/atom/entry"
 PHOTLIFE_ENDPOINT  = f"https://f.hatena.ne.jp/{HATENA_ID}/atom/post"
 
+# GitHub raw URL 設定（グラフ画像の配信用）
+GITHUB_USER   = "Glumgam"
+GITHUB_REPO   = "agent"
+GITHUB_BRANCH = "master"
+_AGENT_ROOT_FOR_URL = Path("/Volumes/ESD-EHA/agent")
+
+
+def get_chart_github_url(image_path: Path) -> str:
+    """
+    ローカルのグラフパスをGitHub raw URLに変換する。
+    git pushされている前提。
+    例: /Volumes/ESD-EHA/agent/content/charts/xxx.png
+        → https://raw.githubusercontent.com/Glumgam/agent/master/content/charts/xxx.png
+    """
+    rel_path = image_path.relative_to(_AGENT_ROOT_FOR_URL)
+    return (
+        f"https://raw.githubusercontent.com/"
+        f"{GITHUB_USER}/{GITHUB_REPO}/{GITHUB_BRANCH}/{rel_path}"
+    )
+
 
 def upload_image_to_hatena(image_path: Path, api_key: str) -> "str | None":
     """
