@@ -591,6 +591,16 @@ def ask_finance(prompt: str, retries: int = 3) -> str:
     汎用モデルのqwen3:14bを使用する。
     """
     import time
+
+    # 言語強制: 中国語・韓国語を禁止し、思考プロセスを出力させない
+    enforced_prompt = (
+        "You must respond in Japanese only. "
+        "Do not use Chinese characters (简体字/繁體字), Korean, "
+        "or any language other than Japanese. "
+        "Do not output your thinking process.\n\n"
+        + prompt
+    )
+
     unload_model(CODER_MODEL)
     time.sleep(2)
     for attempt in range(retries):
@@ -603,7 +613,7 @@ def ask_finance(prompt: str, retries: int = 3) -> str:
                 OLLAMA_URL,
                 json={
                     "model":  THINKING_MODEL,  # qwen3:14b
-                    "prompt": prompt,
+                    "prompt": enforced_prompt,
                     "stream": False,
                     "options": {
                         "temperature": 0.5,

@@ -767,6 +767,10 @@ def generate_article(
     # テンプレート選択（variant・ジャンルに応じて切り替え）
     genre      = next((g for g in TECH_GENRES if g["id"] == genre_id), TECH_GENRES[0])
     is_finance = genre_id == "finance_news"
+
+    # 投資記事は品質スコア10必須・リトライ3回固定
+    PASS_SCORE  = 10 if is_finance else 7
+    max_retries = 3  if is_finance else max_retries
     if is_finance:
         if variant == "zenn":
             template   = ZENN_FINANCE_TEMPLATE
@@ -842,23 +846,28 @@ def generate_article(
               f"({'✅ pass' if review['passed'] else '❌ fail'})")
         if review["issues"]:
             print(f"  ⚠️ 問題点: {', '.join(review['issues'][:3])}")
-        if not review["passed"]:
-            if review["score"] >= 5:
-                # スコア5以上なら低品質でも許容して保存
-                print(f"  ⚠️ 低品質だが許容範囲（score={review['score']}）→ 保存")
-            elif attempt < max_retries - 1:
-                # スコア5未満かつリトライ可能 → フィードバック付きで再生成
-                print(f"  🔄 フィードバック: {review['feedback']} → リトライ")
-                prompt = (prompt
-                          + f"\n\n【品質レビューのフィードバック】\n{review['feedback']}\n"
-                          + f"以下の問題を修正してください: {', '.join(review['issues'])}")
-                continue
-            else:
-                # 最終リトライ失敗 → 強制保存（記事ゼロを防ぐ）
-                print(f"  ❌ 最終リトライ失敗（score={review['score']}）→ 強制保存")
         review_score    = review["score"]
         review_passed   = review["passed"]
         review_feedback = review["feedback"]
+        if review_score < PASS_SCORE:
+            if attempt < max_retries - 1:
+                # リトライ可能 → フィードバック付きで再生成
+                print(f"  ⚠️ 品質不足（score={review_score} < {PASS_SCORE}）→ 再生成")
+                prompt = (
+                    prompt
+                    + f"\n\n【品質レビューのフィードバック】\n{review_feedback}\n"
+                    + f"以下の問題を修正してください: {', '.join(review['issues'])}"
+                )
+                continue
+            else:
+                # 最終試行でも基準未達
+                print(f"  ❌ 品質基準未達（最終試行）: score={review_score}/{PASS_SCORE}")
+                return {
+                    "path":   None,
+                    "score":  review_score,
+                    "passed": False,
+                    "reason": f"品質基準未達: {review_score}/{PASS_SCORE}",
+                }
         # --- QUALITY REVIEW END ---
 
         # --- FACT CHECK START ---
