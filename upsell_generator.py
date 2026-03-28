@@ -32,6 +32,15 @@ UPSELL_TEMPLATES = {
 👉 [詳細版を読む（はてなブログ）]({hatena_url})
 
 ---
+## 💡 銘柄スクリーニングの環境について
+今回のような値動きが大きい相場では、
+事前に銘柄をスクリーニングしておくことが重要になります。
+主要な証券口座では無料でスクリーニング機能が使えるため、
+まだ環境がない方は確認しておくと良いでしょう。
+
+→ [証券口座を確認する]({affiliate_url})
+
+---
 > ⚠️ 本記事は情報提供のみを目的としており、投資助言ではありません。
 """,
         "hatena_header": """
@@ -73,6 +82,13 @@ UPSELL_TEMPLATES = {
 はてなブログでご覧いただけます。
 
 👉 [はてなブログで読む]({hatena_url})
+
+---
+## 💡 銘柄スクリーニングの環境について
+主要な証券口座では無料でスクリーニング機能が使えるため、
+まだ環境がない方は確認しておくと良いでしょう。
+
+→ [証券口座を確認する]({affiliate_url})
 
 ---
 > ⚠️ 本記事は情報提供のみを目的としており、投資助言ではありません。
@@ -157,6 +173,7 @@ def generate_upsell_text(
     zenn_url: str = "",
     hatena_url: str = "",
     zenn_title: str = "",
+    affiliate_url: str = "（準備中）",
 ) -> str:
     """
     記事の導線文を生成する。
@@ -177,6 +194,7 @@ def generate_upsell_text(
         template = template_set["zenn_footer"]
         return template.format(
             hatena_url=hatena_url or "（はてなブログで公開予定）",
+            affiliate_url=affiliate_url,
             topic=topic,
         )
     else:
