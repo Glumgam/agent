@@ -117,6 +117,28 @@ def register_article(title: str, content: str, path: str):
 # 品質比較付き重複解決
 # =====================================================
 
+def _get_score_from_file(file_path: Path) -> int:
+    """
+    ファイルから品質スコアを読み取る。
+    <!-- score:N --> コメントがなければ文字数から推定。
+    """
+    try:
+        text = file_path.read_text(encoding="utf-8")
+        m = re.search(r'<!--\s*score:(\d+)', text)
+        if m:
+            return int(m.group(1))
+        # コメントがない古いファイル → 文字数から推定
+        char_count = len(text)
+        if char_count > 3000:
+            return 9
+        elif char_count > 1500:
+            return 7
+        else:
+            return 5
+    except Exception:
+        return 7
+
+
 def check_and_resolve_duplicate(
     new_content: str,
     new_score: int,
@@ -130,14 +152,8 @@ def check_and_resolve_duplicate(
     Returns:
         {"action": "keep_new" | "keep_existing", "reason": str}
     """
-    # 既存ファイルのスコアをメタデータから取得（なければ7と仮定）
     if existing_score is None:
-        try:
-            existing_text = existing_path.read_text(encoding="utf-8")
-            m = re.search(r'<!-- score:(\d+) ', existing_text)
-            existing_score = int(m.group(1)) if m else 7
-        except Exception:
-            existing_score = 7
+        existing_score = _get_score_from_file(existing_path)
 
     if new_score > existing_score:
         try:
