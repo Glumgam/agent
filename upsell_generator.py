@@ -25,17 +25,31 @@ UPSELL_TEMPLATES = {
 この記事では市場の概要をお伝えしました。
 **はてなブログの詳細版**では以下を掲載しています：
 
-- 📈 **相関分析グラフ**（値上がり銘柄×為替・原油の連動性）
 - ⚖️ **法務・行政処分リスク情報**（金融庁・公取委の最新動向）
-- 💼 **企業採用動向から読む経営戦略**
-- 🔔 **相関変化トラッキング**（前回比での変化検知）
+- 🌏 **マクロ経済の詳細分析**（為替・原油・米株の動向）
+- 📋 **適時開示の分類結果**
+- ❓ **FAQ**（投資初心者向け解説）
+
+👉 [詳細版を読む（はてなブログ）]({hatena_url})
+
+---
+> ⚠️ 本記事は情報提供のみを目的としており、投資助言ではありません。
+""",
+        "zenn_footer_with_affiliate": """
+---
+## 📊 より詳しい分析はこちら
+この記事では市場の概要をお伝えしました。
+**はてなブログの詳細版**では以下を掲載しています：
+
+- ⚖️ **法務・行政処分リスク情報**（金融庁・公取委の最新動向）
+- 🌏 **マクロ経済の詳細分析**（為替・原油・米株の動向）
+- 📋 **適時開示の分類結果**
+- ❓ **FAQ**（投資初心者向け解説）
 
 👉 [詳細版を読む（はてなブログ）]({hatena_url})
 
 ---
 ## 💡 銘柄スクリーニングの環境について
-今回のような値動きが大きい相場では、
-事前に銘柄をスクリーニングしておくことが重要になります。
 主要な証券口座では無料でスクリーニング機能が使えるため、
 まだ環境がない方は確認しておくと良いでしょう。
 
@@ -79,7 +93,21 @@ UPSELL_TEMPLATES = {
 今週も市場情報をお届けします。
 **毎週月曜日は全文無料公開**しています。
 
-火曜日以降の詳細分析版（相関グラフ・法務リスク情報など）は
+火曜日以降の詳細版（法務リスク情報・マクロ分析など）は
+はてなブログでご覧いただけます。
+
+👉 [はてなブログで読む]({hatena_url})
+
+---
+> ⚠️ 本記事は情報提供のみを目的としており、投資助言ではありません。
+""",
+        "zenn_footer_with_affiliate": """
+---
+## 📰 週明け無料記事
+今週も市場情報をお届けします。
+**毎週月曜日は全文無料公開**しています。
+
+火曜日以降の詳細版（法務リスク情報・マクロ分析など）は
 はてなブログでご覧いただけます。
 
 👉 [はてなブログで読む]({hatena_url})
@@ -192,21 +220,17 @@ def generate_upsell_text(
         template_set = UPSELL_TEMPLATES.get(genre_id, UPSELL_TEMPLATES["default"])
 
     if variant == "zenn":
-        template = template_set["zenn_footer"]
-        result = template.format(
+        # affiliate_url 設定済みなら専用テンプレートを使用
+        if affiliate_url:
+            template_key = "zenn_footer_with_affiliate"
+            template = template_set.get(template_key) or template_set["zenn_footer"]
+        else:
+            template = template_set["zenn_footer"]
+        return template.format(
             hatena_url=hatena_url or "（はてなブログで公開予定）",
             affiliate_url=affiliate_url,
             topic=topic,
         )
-        # affiliate_url 未設定時は CTA ブロックを除去
-        if not affiliate_url:
-            result = re.sub(
-                r'\n---\n## 💡 銘柄スクリーニングの環境について.*?→.*?\n',
-                '\n',
-                result,
-                flags=re.DOTALL,
-            )
-        return result
     else:
         template = template_set["hatena_header"]
         return template.format(
