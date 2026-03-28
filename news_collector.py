@@ -334,8 +334,10 @@ def collect_news(
 def collect_all_news(max_per_source: int = 10) -> dict:
     """
     全ジャンル（legal・local 含む）のニュースを収集する。
-    genre="local" の記事は legal_collector の extract_legal_from_local_news()
-    にも転送して地域の犯罪・行政処分情報を法務データに補完する。
+    local は RSS_SOURCES["local"] に加えて local_news_collector
+    （Google News RSS + 号外NET + 登録済みサイト）も統合する。
+    genre="local" の記事は extract_legal_from_local_news() にも転送して
+    地域の犯罪・行政処分情報を法務データに補完する。
 
     Returns:
         {ジャンル: [ニュースリスト]}
@@ -347,22 +349,45 @@ def collect_all_news(max_per_source: int = 10) -> dict:
         cross_check=True,
     )
 
+    # ローカルニュース拡張（Google News + 号外NET + 登録済みサイト）
+    try:
+        from local_news_collector import collect_local_news
+        extended_local = collect_local_news()
+        if extended_local:
+            existing_urls = {
+                item.get("url", "") or item.get("title", "")
+                for item in results.get("local", [])
+            }
+            added = 0
+            for item in extended_local:
+                key = item.get("url", "") or item.get("title", "")
+                if key and key not in existing_urls:
+                    results.setdefault("local", []).append(item)
+                    existing_urls.add(key)
+                    added += 1
+            if added:
+                print(f"  🗾 ローカルニュース追補: +{added}件")
+    except Exception as e:
+        print(f"  ⚠️ ローカルニュース拡張スキップ: {e}")
+
     # ローカルニュースから法務情報を抽出して "legal" に追記
-    local_items = results.get("local", [])
-    if local_items:
+    all_local = results.get("local", [])
+    if all_local:
         try:
             from legal_collector import extract_legal_from_local_news
-            legal_from_local = extract_legal_from_local_news(local_items)
+            legal_from_local = extract_legal_from_local_news(all_local)
             if legal_from_local:
                 results.setdefault("legal", [])
-                # 重複除去（タイトル先頭40文字）
                 existing_titles = {
                     item.get("title", "")[:40] for item in results["legal"]
                 }
+                added_legal = 0
                 for item in legal_from_local:
                     if item.get("title", "")[:40] not in existing_titles:
                         results["legal"].append(item)
-                print(f"  ⚖️ 地方紙から法務情報を追補: {len(legal_from_local)}件")
+                        added_legal += 1
+                if added_legal:
+                    print(f"  ⚖️ 地方紙から法務情報を追補: {added_legal}件")
         except Exception as e:
             print(f"  ⚠️ 地方紙→法務転送スキップ: {e}")
 
