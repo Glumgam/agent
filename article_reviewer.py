@@ -27,7 +27,10 @@ def review_article(content: str, topic: str, genre_id: str = "") -> dict:
     """
     from llm import ask_thinking, ask_plain
 
-    review_target = content[:3000]
+    if len(content) > 6000:
+        review_target = content[:4000] + "\n...(中略)...\n" + content[-1500:]
+    else:
+        review_target = content
 
     if genre_id == "finance_news":
         from datetime import datetime as _dt
