@@ -242,11 +242,19 @@ def check_consistency(zenn_content: str, hatena_content: str, finance_data: dict
             else:
                 issues.append(f"{key}の不一致: Zenn={z_val} / はてな={h_val}")
 
-    # はてな版のランキング銘柄チェック（**銘柄名**（±%）パターン）
-    # Zenn版は概要のため省略可 → はてな版のみ確認
-    hatena_stocks = re.findall(
-        r'\*\*[^*]+\*\*[（(][+-]?\d+\.\d+%?[）)]', hatena_content
+    # はてな版のランキング銘柄チェック
+    # ランキングセクション内の (±数値%) パターンをカウント（マクロ指標との混同を防ぐ）
+    hatena_ranking_m = re.search(
+        r'(?:値上がり|値下がり|ランキング).+',
+        hatena_content, re.DOTALL
     )
+    if hatena_ranking_m:
+        hatena_stocks = re.findall(
+            r'[（(][+-]?\d+\.\d+%[）)]',
+            hatena_ranking_m.group(0)
+        )
+    else:
+        hatena_stocks = []
     if len(hatena_stocks) < 3:
         issues.append(
             f"はてな版のランキング銘柄が不足: {len(hatena_stocks)}件（最低3件必要）"
