@@ -1934,5 +1934,26 @@
     },
     "quality_passed": false,
     "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "本日の日本株市況まとめ（2026年03月29日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260329_本日の日本株市況まとめ2026年03月29日_zenn.md",
+    "rag_hits": 0,
+    "word_count": 2504,
+    "generated_at": "2026-03-29T13:15:10.697145",
+    "review_score": 9,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "paid_suitable": false,
+    "paid_label": "📝 無料記事",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [],
+      "score_penalty": 0
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
   }
 ]
