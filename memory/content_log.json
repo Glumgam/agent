@@ -1724,5 +1724,89 @@
     },
     "quality_passed": false,
     "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "本日の日本株市況まとめ（2026年03月29日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260329_本日の日本株市況まとめ2026年03月29日_zenn.md",
+    "rag_hits": 0,
+    "word_count": 1810,
+    "generated_at": "2026-03-29T06:57:18.318966",
+    "review_score": 10,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "paid_suitable": false,
+    "paid_label": "📝 無料記事",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [],
+      "score_penalty": 0
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "本日の日本株市況まとめ（2026年03月29日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260329_本日の日本株市況まとめ2026年03月29日_hatena_1.md",
+    "rag_hits": 0,
+    "word_count": 3386,
+    "generated_at": "2026-03-29T07:30:52.501954",
+    "review_score": 9,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "paid_suitable": true,
+    "paid_label": "💎 プレミアム記事（200円）",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [],
+      "score_penalty": 0
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "本日の日本株市況まとめ（2026年03月29日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260329_本日の日本株市況まとめ2026年03月29日_zenn.md",
+    "rag_hits": 0,
+    "word_count": 2093,
+    "generated_at": "2026-03-29T08:27:05.564601",
+    "review_score": 10,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "paid_suitable": false,
+    "paid_label": "📝 無料記事",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [],
+      "score_penalty": 0
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "本日の日本株市況まとめ（2026年03月29日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260329_本日の日本株市況まとめ2026年03月29日_hatena.md",
+    "rag_hits": 0,
+    "word_count": 3966,
+    "generated_at": "2026-03-29T08:54:44.930374",
+    "review_score": 9,
+    "review_passed": true,
+    "review_feedback": "免責事項の明記と、繰り返し表現の見直しが最も重要です。",
+    "paid_suitable": true,
+    "paid_label": "💎 プレミアム記事（200円）",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [],
+      "score_penalty": 0
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
   }
 ]
