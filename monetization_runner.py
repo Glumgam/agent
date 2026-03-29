@@ -266,20 +266,48 @@ def run_finance_news(topic: str, max_restart: int = 2) -> dict:
 """
 
                 # 間違っている版を特定
-                wrong_versions = []
+                wrong_versions = set()
+
                 for issue in consistency["issues"]:
-                    if "Zenn版" in issue:
-                        wrong_versions.append("zenn")
-                    elif "はてな版" in issue:
-                        wrong_versions.append("hatena")
-                for correction in consistency.get("corrections", []):
-                    if "はてな版が正しい" in correction:
-                        wrong_versions.append("zenn")
-                    elif "Zenn版が正しい" in correction:
-                        wrong_versions.append("hatena")
+                    if "はてな版" in issue:
+                        wrong_versions.add("hatena")
+                    elif "Zenn版" in issue:
+                        wrong_versions.add("zenn")
+
+                # 相互矛盾の場合: コンテキストの正値と照合してどちらが正しいか確認
+                zenn_c_current = zenn_path.read_text(encoding="utf-8") if zenn_path and zenn_path.exists() else ""
+                for issue in consistency["issues"]:
+                    if "Zenn版とはてな版の方向性矛盾" in issue:
+                        # VIXの場合: 変動率から正しい方向を判定
+                        if "VIX" in issue:
+                            vix_chg_val = (finance_data or {}).get("macro", {}).get("us_stocks", {}).get("VIX", {}).get("change_pct", 0) or 0
+                            true_vix_dir = "上昇" if vix_chg_val > 0 else "下落"
+                            import re as _re
+                            vix_in_zenn = _re.search(r'VIX[^。\n]{0,30}(上昇|下落|低下)', zenn_c_current)
+                            if vix_in_zenn and vix_in_zenn.group(1) == true_vix_dir:
+                                wrong_versions.discard("zenn")
+                                wrong_versions.add("hatena")
+                            else:
+                                wrong_versions.discard("hatena")
+                                wrong_versions.add("zenn")
+                        # 日経平均の場合
+                        elif "日経平均" in issue:
+                            nikkei_chg_val = (finance_data or {}).get("market_summary", {}).get("nikkei_change_pct", 0) or 0
+                            true_nikkei_dir = "上昇" if nikkei_chg_val > 0 else "下落"
+                            import re as _re
+                            nikkei_in_zenn = _re.search(r'日経平均.*?(上昇|下落)', zenn_c_current)
+                            if nikkei_in_zenn and nikkei_in_zenn.group(1) == true_nikkei_dir:
+                                wrong_versions.discard("zenn")
+                                wrong_versions.add("hatena")
+                            else:
+                                wrong_versions.discard("hatena")
+                                wrong_versions.add("zenn")
+
+                # どちらが間違っているか不明な場合ははてな版を修正（Zenn版を正として扱う）
                 if not wrong_versions:
-                    wrong_versions = ["hatena"]  # 判定不能 → Zenn版を正として扱う
-                wrong_versions = list(set(wrong_versions))
+                    wrong_versions = {"hatena"}
+
+                wrong_versions = list(wrong_versions)
                 print(f"  🔧 修正対象: {wrong_versions}版（試行{consistency_fix_count}/{MAX_CONSISTENCY_FIX}）")
 
                 for v in wrong_versions:
