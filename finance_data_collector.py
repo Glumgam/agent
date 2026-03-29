@@ -583,14 +583,21 @@ def compress_finance_context(data: dict) -> str:
     gold_chg = comm.get("金", {}).get("change_pct")
     sp_chg_str  = f"{sp_chg:+.1f}%" if isinstance(sp_chg, float) else str(sp_chg)
     wti_chg_str = f"{wti_chg:+.1f}%" if isinstance(wti_chg, float) else str(wti_chg)
-    # VIX: 変動率と解釈付き
+    # VIX: 変動率と方向性を【】で明示（記事の誤記防止）
     if isinstance(vix_val, float) and isinstance(vix_chg, float):
         if vix_chg < -3:
-            vix_note = f"{vix_val}({vix_chg:+.1f}%→恐怖感低下・リスクオン)"
+            vix_note = (
+                f"{vix_val}({vix_chg:+.1f}%) "
+                f"【VIXは下落=恐怖感低下=市場は安定方向】"
+            )
         elif vix_chg > 3:
-            vix_note = f"{vix_val}({vix_chg:+.1f}%→恐怖感上昇・リスクオフ)"
+            vix_note = (
+                f"{vix_val}({vix_chg:+.1f}%) "
+                f"【VIXは上昇=恐怖感上昇=市場は不安定方向】"
+                f"【記事でVIXが「低下」「緩和」と書くのは誤り】"
+            )
         else:
-            vix_note = f"{vix_val}({vix_chg:+.1f}%→高水準維持・警戒感残存)" if isinstance(vix_val, float) and vix_val > 20 else f"{vix_val}({vix_chg:+.1f}%)"
+            vix_note = f"{vix_val}({vix_chg:+.1f}%→高水準維持)" if isinstance(vix_val, float) and vix_val > 20 else f"{vix_val}({vix_chg:+.1f}%)"
     else:
         vix_note = str(vix_val)
     # 金: 変動率付き
