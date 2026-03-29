@@ -63,5 +63,32 @@
     "zenn_url": "https://zenn.dev/granking/articles/python-comparison-comprehension",
     "hatena_url": "https://granking.hatenablog.com/entry/2026/03/22/155019_1",
     "title": "Pythonの内包表記とジェネレータの使い分け"
+  },
+  "20260322_pythonでaiエージェントを自作する方法_zenn.md": {
+    "zenn_url": "https://zenn.dev/granking/articles/python-ai-how-to"
+  },
+  "20260322_pythonのwith文とコンテキストマネージャ_hatena_1.md": {
+    "zenn_url": "https://zenn.dev/granking/articles/python-context-manager"
+  },
+  "20260323_pythonで毎日の作業を自動化するスクリプト_zenn.md": {
+    "zenn_url": "https://zenn.dev/granking/articles/python-automation"
+  },
+  "20260323_pythonのpathlib完全活用ガイド_zenn.md": {
+    "zenn_url": "https://zenn.dev/granking/articles/python-guide-usage-complete-pathlib"
+  },
+  "20260323_python型ヒントの活用で保守性を上げる方法_zenn.md": {
+    "zenn_url": "https://zenn.dev/granking/articles/python-type-hints-usage-how-to"
+  },
+  "20260323_値上がり率ランキング解説2026年03月23日_hatena_1.md": {
+    "zenn_url": "https://zenn.dev/granking/articles/article-202603"
+  },
+  "20260326_pythonでwebスクレイピングを自動化する方法_zenn.md": {
+    "zenn_url": "https://zenn.dev/granking/articles/python-automation-how-to-scraping"
+  },
+  "20260329_本日の日本株市況まとめ2026年03月29日_hatena.md": {
+    "zenn_url": "https://zenn.dev/granking/articles/finance-report-20260329"
+  },
+  "20260329_本日の日本株市況まとめ2026年03月29日_zenn.md": {
+    "zenn_url": "https://zenn.dev/granking/articles/finance-report-20260329"
   }
 }
