@@ -205,8 +205,14 @@ def post_article(
         return {"success": False, "error": str(e)}
 
 
-def publish_article(article_path: Path, api_key: str, dry_run: bool = False) -> dict:
+def publish_article(article_path: Path, api_key: str = "", dry_run: bool = False) -> dict:
     """1記事をはてなブログに投稿する"""
+    if not api_key:
+        config  = _load_config()
+        api_key = config.get("api_key", "")
+    if not api_key:
+        return {"success": False, "reason": "api_key_missing"}
+
     log = _load_log()
     key = article_path.name
     if key in log:
@@ -259,10 +265,14 @@ def publish_article(article_path: Path, api_key: str, dry_run: bool = False) -> 
 PUBLISH_GENRES = {"finance"}  # 投稿対象ジャンル（tech/general はローカル保存のみ）
 
 
-def publish_all(api_key: str, dry_run: bool = False) -> dict:
+def publish_all(api_key: str = "", dry_run: bool = False) -> dict:
     """未投稿の記事を全て投稿する。
     finance ジャンルのみ投稿。tech/general はローカル保存のみ。
     """
+    if not api_key:
+        config  = _load_config()
+        api_key = config.get("api_key", "")
+
     log      = _load_log()
     articles = sorted(CONTENT_DIR.rglob("*.md"))
     articles = [a for a in articles if not a.name.startswith("._")]
