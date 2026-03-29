@@ -283,7 +283,8 @@ def run_finance_news(topic: str, max_restart: int = 2) -> dict:
                 print(f"  🔧 修正対象: {wrong_versions}版（試行{consistency_fix_count}/{MAX_CONSISTENCY_FIX}）")
 
                 for v in wrong_versions:
-                    target = zenn_path if v == "zenn" else hatena_path
+                    target      = zenn_path if v == "zenn" else hatena_path
+                    old_path    = target if target.exists() else None
                     target.unlink(missing_ok=True)
                     new_result = generate_article(
                         topic=topic,
@@ -291,20 +292,39 @@ def run_finance_news(topic: str, max_restart: int = 2) -> dict:
                         variant=v,
                         finance_cache=finance_data,
                         extra_prompt=correction_prompt,
+                        force_overwrite=True,
                     )
-                    if v == "zenn":
-                        zenn_result = new_result
+                    if new_result is None or new_result.get("path") is None:
+                        print(f"  ⚠️ {v}版の修正再生成失敗 → 既存ファイルをそのまま保持")
+                        # ファイルが既に削除されていれば復元不可・既存resultを維持
+                        if old_path and old_path.exists():
+                            if v == "zenn":
+                                zenn_result = {"path": str(old_path), "score": 9}
+                            else:
+                                hatena_result = {"path": str(old_path), "score": 9}
+                        # else: ファイルが消えた場合は None のまま（ループ先頭でbreakされる）
                     else:
-                        hatena_result = new_result
+                        if v == "zenn":
+                            zenn_result = new_result
+                        else:
+                            hatena_result = new_result
 
             except Exception as e:
                 print(f"  ⚠️ 整合性チェックスキップ: {e}")
                 import traceback; traceback.print_exc()
                 break
 
-        # 両方成功
-        print(f"\n✅ Zenn版 完了: {zenn_result['path']}")
-        print(f"✅ はてな版 完了: {hatena_result['path']}")
+        # 最終結果ログ（None安全）
+        zenn_path_str   = zenn_result.get("path")   if zenn_result   else None
+        hatena_path_str = hatena_result.get("path") if hatena_result else None
+        if zenn_path_str:
+            print(f"\n✅ Zenn版 完了: {zenn_path_str}")
+        else:
+            print(f"\n❌ Zenn版 失敗")
+        if hatena_path_str:
+            print(f"✅ はてな版 完了: {hatena_path_str}")
+        else:
+            print(f"❌ はてな版 失敗")
         return {"zenn": zenn_result, "hatena": hatena_result}
 
     return {"zenn": None, "hatena": None}

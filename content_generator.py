@@ -725,6 +725,8 @@ def generate_article(
     max_retries: int = 3,
     variant: str = "hatena",
     finance_cache: dict = None,
+    extra_prompt: str = "",
+    force_overwrite: bool = False,
 ) -> dict:
     """
     RAGを使って技術記事を生成する。
@@ -735,6 +737,7 @@ def generate_article(
         max_retries:    生成リトライ上限（デフォルト3）
         variant:        "zenn"（概要版）or "hatena"（詳細版）
         finance_cache:  投資データキャッシュ（collect_finance_data()の結果）
+        extra_prompt:   プロンプト末尾に追加するテキスト（整合性修正用の正値指示等）
     Returns:
         {"title", "content", "path", "rag_hits", "word_count"}
     """
@@ -846,6 +849,10 @@ def generate_article(
         template   = HATENA_TEMPLATE
         min_length = 2000
         prompt = _QUALITY_RULES + template.format(topic=topic, context=context[:6000])
+
+    # 整合性修正用の正値指示をプロンプト末尾に追加
+    if extra_prompt:
+        prompt += extra_prompt
 
     # 記事生成（品質チェック + レビュー付きリトライあり）
     from llm import ask_plain
@@ -1060,27 +1067,36 @@ def generate_article(
     path = _save_article(topic, content, variant=variant, genre_id=genre_id, score=review_score)
 
     # --- DEDUP REGISTER START ---
-    try:
-        from content_checker import check_duplicate
-        dup_result = check_duplicate(
-            title=topic,
-            content=content,
-            out_path=path,
-            score=review_score,
-            variant=variant,
-        )
-        if dup_result["duplicate"]:
-            reason = dup_result.get("reason", "")
-            print(f"  ⏭️ 既存記事の方が高品質のためスキップ: {reason}")
-            path.unlink(missing_ok=True)
-            return {
-                "path":   None,
-                "score":  review_score,
-                "passed": False,
-                "reason": f"品質比較スキップ: {reason}",
-            }
-    except Exception as e:
-        print(f"  ⚠️ 重複登録スキップ: {e}")
+    if force_overwrite:
+        # 整合性修正再生成：重複チェックをスキップしてDB登録のみ行う
+        try:
+            from content_checker import check_duplicate as _cd
+            _cd(title=topic, content=content, out_path=path,
+                score=review_score, variant=variant)
+        except Exception as e:
+            print(f"  ⚠️ 重複DB更新スキップ: {e}")
+    else:
+        try:
+            from content_checker import check_duplicate
+            dup_result = check_duplicate(
+                title=topic,
+                content=content,
+                out_path=path,
+                score=review_score,
+                variant=variant,
+            )
+            if dup_result["duplicate"]:
+                reason = dup_result.get("reason", "")
+                print(f"  ⏭️ 既存記事の方が高品質のためスキップ: {reason}")
+                path.unlink(missing_ok=True)
+                return {
+                    "path":   None,
+                    "score":  review_score,
+                    "passed": False,
+                    "reason": f"品質比較スキップ: {reason}",
+                }
+        except Exception as e:
+            print(f"  ⚠️ 重複登録スキップ: {e}")
     # --- DEDUP REGISTER END ---
 
     # 有料記事適性チェック・フッター注入（はてな版のみ）

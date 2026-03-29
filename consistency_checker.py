@@ -67,6 +67,7 @@ def check_directional_consistency(
     方向性表現の矛盾を検出する。
     """
     issues = []
+    seen   = set()  # 重複排除用
 
     market = finance_data.get("market_summary", {})
     macro  = finance_data.get("macro", {})
@@ -124,10 +125,13 @@ def check_directional_consistency(
             for pattern, group in patterns:
                 for match in re.findall(pattern, content):
                     if match in opposite_dirs:
-                        issues.append(
-                            f"方向性の矛盾({content_name}): "
-                            f"{key}は実際に「{true_dir}」なのに「{match}」と記述"
-                        )
+                        issue_key = f"{content_name}:{key}:{match}"
+                        if issue_key not in seen:
+                            seen.add(issue_key)
+                            issues.append(
+                                f"方向性の矛盾({content_name}): "
+                                f"{key}は実際に「{true_dir}」なのに「{match}」と記述"
+                            )
 
     # Zenn版とはてな版間の相互矛盾チェック
     MUTUAL_PATTERNS = {
@@ -149,10 +153,13 @@ def check_directional_consistency(
         h_dir = h_matches[0]
         for pair in CONFLICT_PAIRS:
             if z_dir in pair and h_dir in pair and z_dir != h_dir:
-                issues.append(
-                    f"Zenn版とはてな版の方向性矛盾({label}): "
-                    f"Zenn={z_dir} / はてな={h_dir}"
-                )
+                issue_key = f"mutual:{label}:{z_dir}:{h_dir}"
+                if issue_key not in seen:
+                    seen.add(issue_key)
+                    issues.append(
+                        f"Zenn版とはてな版の方向性矛盾({label}): "
+                        f"Zenn={z_dir} / はてな={h_dir}"
+                    )
                 break
 
     return issues
