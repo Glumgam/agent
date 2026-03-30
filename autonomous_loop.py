@@ -274,7 +274,7 @@ print(json.dumps({"passed": passed, "total": total}))
         result = subprocess.run(
             cmd, cwd=AGENT_ROOT,
             capture_output=True, text=True,
-            timeout=3600,   # 最大1時間
+            timeout=7200,   # 最大2時間
         )
 
         if CONFIG["quick_test_only"]:
@@ -492,13 +492,13 @@ def _run_content_generation() -> dict:
             cwd=AGENT_ROOT,
             capture_output=True,
             text=True,
-            timeout=3600,   # 最大1時間（品質優先）
+            timeout=7200,   # 最大2時間（品質優先）
         )
         if result.stdout:
             _log(result.stdout[-300:])
         return {"path": "生成完了"} if result.returncode == 0 else {}
     except subprocess.TimeoutExpired:
-        _log("  ⚠️ コンテンツ生成タイムアウト（1時間）")
+        _log("  ⚠️ コンテンツ生成タイムアウト（2時間）")
         return {}
     except Exception as e:
         _log(f"  ⚠️ コンテンツ生成エラー: {e}")
@@ -683,7 +683,7 @@ if __name__ == "__main__":
                 [PYTHON, "monetization_runner.py", "--genre", "finance_news",
                  "--topic", topic],
                 cwd=AGENT_ROOT,
-                timeout=3600,
+                timeout=7200,
             )
             if result.returncode == 0:
                 print(f"✅ 強制生成完了 → 通常ループに移行")
