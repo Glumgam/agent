@@ -670,20 +670,34 @@ if __name__ == "__main__":
                         help="--force-financeと組み合わせてトピックを指定する")
     args = parser.parse_args()
 
-    # 強制生成モード
+    # 強制生成モード（成功またはウィンドウ外になるまでリトライ）
     if args.force_finance:
-        import sys, subprocess
+        import time, subprocess
         from datetime import datetime as _dt
         today = _dt.now().strftime("%Y年%m月%d日")
         topic = args.force_topic or f"本日の日本株市況まとめ（{today}）"
         print(f"⚡ 強制生成モード: {topic}")
-        result = subprocess.run(
-            [PYTHON, "monetization_runner.py", "--genre", "finance_news",
-             "--topic", topic],
-            cwd=AGENT_ROOT,
-            timeout=3600,
-        )
-        sys.exit(result.returncode)
+        MAX_FORCE_RETRY = 10
+        for _attempt in range(MAX_FORCE_RETRY):
+            result = subprocess.run(
+                [PYTHON, "monetization_runner.py", "--genre", "finance_news",
+                 "--topic", topic],
+                cwd=AGENT_ROOT,
+                timeout=3600,
+            )
+            if result.returncode == 0:
+                print(f"✅ 強制生成完了 → 通常ループに移行")
+                break
+            # 失敗時: ウィンドウ内なら再試行
+            now = _dt.now()
+            ok, reason = _should_generate_finance_article()
+            if ok:
+                print(f"⚠️ 生成失敗 → 時間内のため再試行（{reason}）[{_attempt + 1}/{MAX_FORCE_RETRY}]")
+                time.sleep(60)
+            else:
+                print(f"⚠️ 生成失敗 → 時間外（{reason}）のため通常ループに移行")
+                break
+        args.force_finance = False  # ループに戻るためフラグをリセット
 
     CONFIG["max_hours"]       = 876000 if args.forever else args.hours  # 876000h ≈ 100年
     CONFIG["cycle_interval"]  = args.interval

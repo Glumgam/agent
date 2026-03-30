@@ -133,17 +133,32 @@ def run_finance_news(topic: str, max_restart: int = 2) -> dict:
     - Zenn版失敗   → Zenn版のみ破棄して再スタート
     - はてな版失敗 → Zenn版・はてな版両方破棄して再スタート
     - 整合性不一致 → 間違った版のみ正値を与えて修正再生成
-    - 再スタートは最大 max_restart 回
+    - 再スタートはウィンドウ内なら継続（最大 MAX_RESTART 回）
     - Zenn版・はてな版は常に同じ finance_data を使用（整合性保証）
     """
+    from datetime import datetime as _dt
     from content_generator import generate_article
     from finance_data_collector import collect_finance_data, compress_finance_context
 
+    def _is_in_window() -> bool:
+        now    = _dt.now()
+        hour   = now.hour
+        minute = now.minute
+        if 16 <= hour <= 23:
+            return True
+        if 6 <= hour <= 7 or (hour == 8 and minute <= 30):
+            return True
+        return False
+
+    MAX_RESTART = 10   # 無限ループ防止の上限
     finance_dir = AGENT_ROOT / "content" / "finance"
 
-    for restart in range(max_restart + 1):
+    for restart in range(MAX_RESTART + 1):
         if restart > 0:
-            print(f"\n  🔄 情報再収集して再スタート（{restart}/{max_restart}回目）")
+            if not _is_in_window():
+                print(f"  ⚠️ 生成ウィンドウ外のため再スタート中止（{restart}回目）")
+                break
+            print(f"\n  🔄 情報再収集して再スタート（{restart}/{MAX_RESTART}回目）")
             _cleanup_failed_files(topic, finance_dir)
 
         # 毎回新鮮なデータを収集
@@ -166,13 +181,13 @@ def run_finance_news(topic: str, max_restart: int = 2) -> dict:
         )
         zenn_failed = zenn_result.get("path") is None or "error" in zenn_result
         if zenn_failed:
-            if restart < max_restart:
+            if restart < MAX_RESTART and _is_in_window():
                 print(f"  ❌ Zenn版品質未達 → 再スタート")
                 if zenn_result.get("path"):
                     Path(zenn_result["path"]).unlink(missing_ok=True)
                 continue
             else:
-                print(f"  ❌ Zenn版: {max_restart}回再スタート後も品質未達 → 終了")
+                print(f"  ❌ Zenn版: {MAX_RESTART}回再スタート後も品質未達 → 終了")
                 return {"zenn": zenn_result, "hatena": None}
 
         # はてな版生成（Zenn版と同じ finance_data を使用）
@@ -185,7 +200,7 @@ def run_finance_news(topic: str, max_restart: int = 2) -> dict:
         )
         hatena_failed = hatena_result.get("path") is None or "error" in hatena_result
         if hatena_failed:
-            if restart < max_restart:
+            if restart < MAX_RESTART and _is_in_window():
                 print(f"  ❌ はてな版品質未達 → Zenn版も破棄して再スタート")
                 if zenn_result.get("path"):
                     Path(zenn_result["path"]).unlink(missing_ok=True)
@@ -193,7 +208,7 @@ def run_finance_news(topic: str, max_restart: int = 2) -> dict:
                     Path(hatena_result["path"]).unlink(missing_ok=True)
                 continue
             else:
-                print(f"  ❌ はてな版: {max_restart}回再スタート後も品質未達 → 終了")
+                print(f"  ❌ はてな版: {MAX_RESTART}回再スタート後も品質未達 → 終了")
                 return {"zenn": zenn_result, "hatena": hatena_result}
 
         # 整合性チェックループ（最大 MAX_CONSISTENCY_FIX 回修正）
