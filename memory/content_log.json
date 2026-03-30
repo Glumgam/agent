@@ -2209,5 +2209,28 @@
     },
     "quality_passed": false,
     "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "本日の日本株市況まとめ（2026年03月30日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260330_本日の日本株市況まとめ2026年03月30日_zenn.md",
+    "rag_hits": 0,
+    "word_count": 1844,
+    "generated_at": "2026-03-30T12:36:08.781942",
+    "review_score": 9,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "paid_suitable": false,
+    "paid_label": "📝 無料記事",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [
+        "時間表現の検証不可: 「27年ぶり」→ コンテキストに過去データがないため数値の正確性を確認できません。「数週間ぶり」等の曖昧表現への変更を推奨します。"
+      ],
+      "score_penalty": 1
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
   }
 ]

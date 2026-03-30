@@ -1,58 +1,42 @@
 [
   {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "summary": "created: fizzbuzz.py | last_run_output: [exit code 0]\n1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz\n16\n17\nFizz\n19\nBuzz | ended_with: run"
+  },
+  {
     "task": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
     "summary": "created: calculator.py | last_run_output: Error: repeated action detected (loop guard) | ended_with: create_file"
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "summary": "ended_with: read_file"
+  },
+  {
+    "task": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
+    "summary": "created: calculator.py | last_run_output: Error: repeated action detected (loop guard) | ended_with: create_file"
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "summary": "ended_with: read_file"
+  },
+  {
+    "task": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ\n\n[RETRY HINT] 次のリトライでHF_TOKENを設定し、認証情報を提供することを確認してください。また、タスクの実行に必要なファイル（calculator.py, test_calculator.py）が存在することを再度確認してください。",
+    "summary": "ended_with: read_file"
   },
   {
     "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
     "summary": "created: fizzbuzz.py | last_run_output: [exit code 0]\n1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz\n16\n17\nFizz\n19\nBuzz | ended_with: run"
   },
   {
-    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
-    "summary": "created: buggy.py | last_run_output: Error: repeated action detected (loop guard) | ended_with: create_file"
-  },
-  {
     "task": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
-    "summary": "created: calculator.py | last_run_output: Error: repeated action detected (loop guard) | ended_with: create_file"
+    "summary": "last_run_output: [exit code 0] | ended_with: read_file"
   },
   {
     "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
-    "summary": "created: fizzbuzz.py | edited: fizzbuzz.py | last_run_output: [exit code 0]\n1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz\n16\n17\nFizz\n19\nBuzz | ended_with: run"
-  },
-  {
-    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
-    "summary": "created: buggy.py | last_run_output: Error: repeated action detected (loop guard) | ended_with: create_file"
+    "summary": "no steps taken"
   },
   {
     "task": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
-    "summary": "created: calculator.py | last_run_output: Error: repeated action detected (loop guard) | ended_with: create_file"
-  },
-  {
-    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
-    "summary": "created: fizzbuzz.py | edited: fizzbuzz.py | last_run_output: [exit code 0]\n1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz\n16\n17\nFizz\n19\nBuzz | ended_with: run"
-  },
-  {
-    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
-    "summary": "created: buggy.py | last_run_output: Error: repeated action detected (loop guard) | ended_with: create_file"
-  },
-  {
-    "task": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
-    "summary": "created: calculator.py | last_run_output: Error: repeated action detected (loop guard) | ended_with: create_file"
-  },
-  {
-    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
-    "summary": "created: fizzbuzz.py | edited: fizzbuzz.py | last_run_output: [exit code 0]\n1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz\n16\n17\nFizz\n19\nBuzz | ended_with: run"
-  },
-  {
-    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
-    "summary": "created: buggy.py | last_run_output: Error: repeated action detected (loop guard) | ended_with: create_file"
-  },
-  {
-    "task": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
-    "summary": "created: calculator.py | last_run_output: Error: repeated action detected (loop guard) | ended_with: create_file"
-  },
-  {
-    "task": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ\n\n[RETRY HINT] 前の試行ではループ検出により強制終了した。同じコマンドを2回以上繰り返さないこと。前のステップの結果を必ず確認してから次のアクションを選べ。タスクが完了したら即座に {\"tool\": \"done\"} を返せ。",
     "summary": "created: calculator.py | last_run_output: Error: repeated action detected (loop guard) | ended_with: create_file"
   },
   {
@@ -60,8 +44,8 @@
     "summary": "no steps taken"
   },
   {
-    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
-    "summary": "created: buggy.py | last_run_output: Error: repeated action detected (loop guard) | ended_with: create_file"
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ\n\n[RETRY HINT] 次のリトライでタスク文末に追記する補足指示（2〜3文）",
+    "summary": "no steps taken"
   },
   {
     "task": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
@@ -72,8 +56,24 @@
     "summary": "created: fizzbuzz.py | last_run_output: [exit code 0]\n1\n2\nFizz\n4\nBuzz\nFizz\n7\n8\nFizz\nBuzz\n11\nFizz\n13\n14\nFizzBuzz\n16\n17\nFizz\n19\nBuzz | ended_with: run"
   },
   {
-    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
-    "summary": "created: buggy.py | last_run_output: Error: repeated action detected (loop guard) | ended_with: create_file"
+    "task": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
+    "summary": "created: calculator.py | last_run_output: Error: repeated action detected (loop guard) | ended_with: create_file"
+  },
+  {
+    "task": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
+    "summary": "created: calculator.py | last_run_output: Error: repeated action detected (loop guard) | ended_with: create_file"
+  },
+  {
+    "task": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
+    "summary": "created: calculator.py | last_run_output: Error: repeated action detected (loop guard) | ended_with: create_file"
+  },
+  {
+    "task": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
+    "summary": "ended_with: read_file"
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "summary": "no steps taken"
   },
   {
     "task": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
