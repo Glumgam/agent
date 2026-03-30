@@ -874,6 +874,30 @@ def compress_finance_context(data: dict) -> str:
             )
 
     # =====================================================
+    # [必須知識] 経済常識RAG注入
+    # =====================================================
+    economics_file = AGENT_ROOT / "knowledge" / "economics" / "basics.md"
+    if economics_file.exists():
+        relevant = []
+        usd_chg_val = forex.get("USD/JPY", {}).get("change_pct", 0) or 0
+        if isinstance(usd_chg_val, (int, float)):
+            if usd_chg_val > 0:
+                relevant.append("[経済原則] 円安進行: 輸出企業に有利・輸入コスト上昇")
+            else:
+                relevant.append("[経済原則] 円高進行: 輸出企業に不利（海外売上が円換算で目減り）・輸入コスト低下")
+        vix_chg_val = us.get("VIX", {}).get("change_pct", 0) or 0
+        if isinstance(vix_chg_val, (int, float)):
+            if vix_chg_val > 3:
+                relevant.append("[経済原則] VIX上昇: 市場の不安感が高まっている・リスクオフ")
+            elif vix_chg_val < -3:
+                relevant.append("[経済原則] VIX下落: 市場の不安感が緩和・リスクオン傾向")
+        wti_chg_val = comm.get("WTI原油", {}).get("change_pct", 0) or 0
+        if isinstance(wti_chg_val, (int, float)) and wti_chg_val > 3:
+            relevant.append("[経済原則] 原油急騰: 製造業・運輸業に不利・エネルギーコスト上昇")
+        if relevant:
+            sections.append("[必須知識] 本日の市場に関連する経済原則\n" + "\n".join(relevant))
+
+    # =====================================================
     # [制約] 利用可能なデータ一覧（架空補完防止）
     # =====================================================
     sections.append(

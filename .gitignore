@@ -51,6 +51,7 @@ EXIT:*
 # エージェント生成ファイル
 workspace/
 knowledge/
+!knowledge/economics/
 daily_report.md
 failure_gen_report.md
 repair_log.md
