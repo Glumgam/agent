@@ -429,7 +429,7 @@ def _should_generate_finance_article() -> tuple:
         return False, "週末"
     # 時間帯チェック
     after_close = (16 <= hour <= 23)
-    before_open = (6 <= hour < 8) or (hour == 8 and minute <= 30)
+    before_open = (6 <= hour <= 7) or (hour == 8 and minute <= 30)
     if after_close:
         return True, "大引け後（終値データ）"
     elif before_open:
@@ -664,7 +664,26 @@ if __name__ == "__main__":
                         help="サイクル間隔（分）")
     parser.add_argument("--full-test", action="store_true",
                         help="全カテゴリテストを実行（低速）")
+    parser.add_argument("--force-finance", action="store_true",
+                        help="時間帯チェックをスキップして即座に投資記事を生成する")
+    parser.add_argument("--force-topic", type=str, default="",
+                        help="--force-financeと組み合わせてトピックを指定する")
     args = parser.parse_args()
+
+    # 強制生成モード
+    if args.force_finance:
+        import sys, subprocess
+        from datetime import datetime as _dt
+        today = _dt.now().strftime("%Y年%m月%d日")
+        topic = args.force_topic or f"本日の日本株市況まとめ（{today}）"
+        print(f"⚡ 強制生成モード: {topic}")
+        result = subprocess.run(
+            [PYTHON, "monetization_runner.py", "--genre", "finance_news",
+             "--topic", topic],
+            cwd=AGENT_ROOT,
+            timeout=3600,
+        )
+        sys.exit(result.returncode)
 
     CONFIG["max_hours"]       = 876000 if args.forever else args.hours  # 876000h ≈ 100年
     CONFIG["cycle_interval"]  = args.interval
