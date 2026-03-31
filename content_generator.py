@@ -839,7 +839,7 @@ def generate_article(
     if is_finance:
         if variant == "zenn":
             template   = ZENN_FINANCE_TEMPLATE
-            min_length = 1500
+            min_length = 1200  # Zenn版は概要版（1200〜1800文字目標）
         else:
             template   = HATENA_FINANCE_TEMPLATE
             min_length = 2000  # Ollama出力量に合わせて調整（4000 → 2000）
