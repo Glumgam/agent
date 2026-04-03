@@ -44,9 +44,30 @@ TARGET_REGIONS = [
     "東京", "横浜", "川崎", "千葉", "埼玉",
     "名古屋", "浜松", "豊田",
     "大阪", "京都", "神戸",
-    "広島", "山口", "周南", "下松", "光市",
-    "福岡", "北九州", "熊本",
+    "広島", "福岡", "北九州", "熊本",
     "那覇",
+]
+
+# 全国地方紙RSSソース（地域バランスを考慮）
+LOCAL_NEWS_SOURCES = [
+    # 北海道・東北
+    {"name": "北海道新聞",   "url": "https://www.hokkaido-np.co.jp/rss/index.html",     "region": "北海道"},
+    {"name": "河北新報",     "url": "https://kahoku.news/feed/",                         "region": "東北"},
+    # 関東
+    {"name": "東京新聞",     "url": "https://www.tokyo-np.co.jp/rss/all.xml",            "region": "関東"},
+    {"name": "神奈川新聞",   "url": "https://www.kanaloco.jp/feed/",                     "region": "関東"},
+    # 中部
+    {"name": "中日新聞",     "url": "https://www.chunichi.co.jp/rss/list/national.xml",  "region": "中部"},
+    {"name": "信濃毎日新聞", "url": "https://www.shinmai.co.jp/rss/news.xml",            "region": "中部"},
+    # 近畿
+    {"name": "京都新聞",     "url": "https://www.kyoto-np.co.jp/rss/news.xml",           "region": "近畿"},
+    {"name": "神戸新聞",     "url": "https://www.kobe-np.co.jp/rss/news.xml",            "region": "近畿"},
+    # 中国・四国
+    {"name": "中国新聞",     "url": "https://www.chugoku-np.co.jp/rss/",                 "region": "中国"},
+    {"name": "愛媛新聞",     "url": "https://www.ehime-np.co.jp/rss/news.xml",           "region": "四国"},
+    # 九州・沖縄
+    {"name": "西日本新聞",   "url": "https://www.nishinippon.co.jp/rss/nnp/all.xml",     "region": "九州"},
+    {"name": "沖縄タイムス", "url": "https://www.okinawatimes.co.jp/rss/articles.xml",   "region": "沖縄"},
 ]
 
 
@@ -274,26 +295,47 @@ def collect_registered_sources(max_per_source: int = 10) -> list:
 # メイン収集関数
 # -------------------------------------------------------
 
-def collect_local_news() -> list:
+def collect_local_news(max_per_source: int = 5) -> list:
     """
-    全ローカルニュースを収集して返す。
+    全国地方紙 + 号外NET + Google News からニュースを収集して返す。
     収集順:
-      1. 登録済みサイト（knowledge/local_sources.json）
+      1. 全国地方紙RSS（LOCAL_NEWS_SOURCES）
       2. 号外NET（都道府県別）
       3. Google News（地域×キーワード）
     重複は URL 基準で除去する。
     """
     all_items = []
+    success   = 0
     print("  🗾 ローカルニュース収集中...")
 
-    # 1. 登録済みサイト
-    try:
-        registered = collect_registered_sources()
-        all_items.extend(registered)
-    except Exception as e:
-        print(f"  ⚠️ 登録済みサイト収集失敗: {e}")
+    # 1. 全国地方紙RSS
+    for source in LOCAL_NEWS_SOURCES:
+        try:
+            feed  = feedparser.parse(source["url"])
+            items = []
+            for entry in feed.entries[:max_per_source]:
+                title = entry.get("title", "").strip()
+                if not title:
+                    continue
+                items.append({
+                    "title":     title,
+                    "url":       entry.get("link", ""),
+                    "source":    source["name"],
+                    "region":    source["region"],
+                    "published": entry.get("published", ""),
+                    "genre":     "local",
+                })
+            all_items.extend(items)
+            if items:
+                success += 1
+                print(f"  ✅ {source['name']}（{source['region']}）: {len(items)}件")
+            else:
+                print(f"  ⚠️ {source['name']}: 0件")
+        except Exception as e:
+            print(f"  ⚠️ {source['name']} スキップ: {e}")
+        time.sleep(0.3)
 
-    # 2. 号外NET
+    # 2. 号外NET（全国）
     try:
         gogai = collect_gogai_net_all()
         all_items.extend(gogai)
@@ -316,7 +358,8 @@ def collect_local_news() -> list:
             seen.add(key)
             unique.append(item)
 
-    print(f"  🗾 ローカルニュース合計: {len(unique)}件")
+    print(f"  🗾 ローカルニュース合計: {len(unique)}件"
+          f"（地方紙{success}/{len(LOCAL_NEWS_SOURCES)}ソース成功）")
     return unique
 
 

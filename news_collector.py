@@ -73,19 +73,15 @@ RSS_SOURCES = {
         {"name": "法務省",          "url": "https://www.moj.go.jp/rss/topics.xml",                           "credibility": "high"},
         {"name": "裁判所",          "url": "https://www.courts.go.jp/rss/index.xml",                         "credibility": "high"},
     ],
-    # 地方紙・地域ニュース（法務・行政処分の補完）
+    # 地方紙・地域ニュース（local_news_collector.py が主担当）
     "local": [
-        # 山口県
-        {"name": "周南地域ニュース",       "url": "https://www.shinshunan.co.jp/news/shunan/rss.xml",        "credibility": "medium"},
-        {"name": "周南・下松・光ニュース", "url": "https://shunan-kudamatsu-hikari.goguynet.jp/feed/",       "credibility": "medium"},
-        # 全国地方紙
-        {"name": "北海道新聞",      "url": "https://www.hokkaido-np.co.jp/rss/news.xml",                    "credibility": "high"},
-        {"name": "河北新報",        "url": "https://kahoku.news/feed/",                                      "credibility": "high"},
-        {"name": "中日新聞",        "url": "https://www.chunichi.co.jp/rss/list/economics.xml",              "credibility": "high"},
-        {"name": "西日本新聞",      "url": "https://www.nishinippon.co.jp/rss/economy.xml",                  "credibility": "high"},
-        {"name": "南日本新聞",      "url": "https://373news.com/feed/",                                      "credibility": "medium"},
-        {"name": "琉球新報",        "url": "https://ryukyushimpo.jp/rss/index.xml",                          "credibility": "high"},
-        {"name": "NHK社会",         "url": "https://www3.nhk.or.jp/rss/news/cat5.xml",                      "credibility": "high"},
+        {"name": "北海道新聞",  "url": "https://www.hokkaido-np.co.jp/rss/news.xml",       "credibility": "high"},
+        {"name": "河北新報",    "url": "https://kahoku.news/feed/",                         "credibility": "high"},
+        {"name": "中日新聞",    "url": "https://www.chunichi.co.jp/rss/list/economics.xml", "credibility": "high"},
+        {"name": "西日本新聞",  "url": "https://www.nishinippon.co.jp/rss/economy.xml",    "credibility": "high"},
+        {"name": "南日本新聞",  "url": "https://373news.com/feed/",                         "credibility": "medium"},
+        {"name": "琉球新報",    "url": "https://ryukyushimpo.jp/rss/index.xml",             "credibility": "high"},
+        {"name": "NHK社会",     "url": "https://www3.nhk.or.jp/rss/news/cat5.xml",         "credibility": "high"},
     ],
     "general": [
         {"name": "NHK総合",         "url": "https://www3.nhk.or.jp/rss/news/cat0.xml",                       "credibility": "high"},

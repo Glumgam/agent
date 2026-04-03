@@ -166,6 +166,36 @@ COMPANY_JOB_QUERIES = {
     "任天堂":         "任天堂 採用 ゲーム",
 }
 
+# 日次輪番用: 日経225構成企業（セクター別）
+NIKKEI225_COMPANIES = {
+    "自動車・輸送機": ["トヨタ自動車", "ホンダ", "日産自動車", "スズキ", "デンソー"],
+    "電機・精密":     ["ソニーグループ", "パナソニック", "キヤノン", "日立製作所", "三菱電機"],
+    "IT・通信":       ["富士通", "NTT", "KDDI", "ソフトバンク", "NEC"],
+    "金融":           ["三菱UFJ", "三井住友FG", "みずほFG", "野村HD", "MS&ADホールディングス"],
+    "商社":           ["三菱商事", "三井物産", "伊藤忠商事", "住友商事", "丸紅"],
+    "小売・サービス": ["イオン", "セブン&アイ", "ファーストリテイリング", "楽天グループ", "任天堂"],
+}
+
+
+def get_todays_companies() -> list:
+    """
+    日次でローテーションする監視企業リストを返す。
+    年の経過日数を元に2セクターを選び、各セクターから1社を抽出。
+    常時監視枠（時価総額上位）を末尾に追加する。
+    """
+    from datetime import datetime
+    day     = datetime.now().timetuple().tm_yday
+    sectors = list(NIKKEI225_COMPANIES.keys())
+    s1      = sectors[day % len(sectors)]
+    s2      = sectors[(day + 2) % len(sectors)]
+    result  = []
+    for s in [s1, s2]:
+        companies = NIKKEI225_COMPANIES[s]
+        result.append(companies[(day // len(sectors)) % len(companies)])
+    # 常時監視枠（時価総額上位）
+    result.extend(["トヨタ自動車", "ソニーグループ"])
+    return list(dict.fromkeys(result))  # 順序保持で重複除去
+
 
 def _count_tech_keywords(items: list) -> dict:
     """記事リストから技術キーワード出現数を集計する"""
@@ -204,7 +234,7 @@ def _detect_strategy_signal(items: list) -> str:
 def fetch_company_job_data(companies: list = None) -> dict:
     """
     企業別採用動向をGoogle Newsから取得して分析する。
-    companies: 調査対象企業名リスト（Noneの場合はデフォルト8社）
+    companies: 調査対象企業名リスト（Noneの場合は日次輪番リストを使用）
     """
     print("  🏢 企業別採用動向収集中...")
     query_map = {}
@@ -212,7 +242,9 @@ def fetch_company_job_data(companies: list = None) -> dict:
         for c in companies:
             query_map[c] = f"{c} 採用"
     else:
-        query_map = COMPANY_JOB_QUERIES
+        # 日次輪番リスト（毎日異なる企業を監視）
+        for c in get_todays_companies():
+            query_map[c] = COMPANY_JOB_QUERIES.get(c, f"{c} 採用")
 
     results = {}
     for company, query in list(query_map.items())[:8]:  # 最大8社

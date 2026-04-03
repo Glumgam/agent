@@ -396,6 +396,29 @@ def collect_finance_data() -> dict:
         data["macro"]      = {}
         data["macro_text"] = ""
 
+    # 先物データ収集
+    print("  📊 先物データ収集中...")
+    FUTURES_SYMBOLS = {
+        "日経225先物(大阪)": "^N225F",
+        "CME日経先物":       "NIY=F",
+        "TOPIX先物":         "TOPIXF.T",
+    }
+    futures = {}
+    for name, symbol in FUTURES_SYMBOLS.items():
+        try:
+            url  = (f"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}"
+                    f"?range=1d&interval=1m")
+            resp = requests.get(url, headers=HEADERS, timeout=10)
+            meta = resp.json()["chart"]["result"][0]["meta"]
+            price   = meta.get("regularMarketPrice", 0)
+            prev    = meta.get("previousClose", 1) or 1
+            chg_pct = round((price - prev) / prev * 100, 2)
+            futures[name] = {"price": price, "change_pct": chg_pct}
+            print(f"  ✅ {name}: {price} ({chg_pct:+.2f}%)")
+        except Exception as e:
+            print(f"  ⚠️ {name} 取得失敗: {e}")
+    data["futures"] = futures
+
     # 求人データ収集（ランキング上位企業の採用動向）
     try:
         from job_analyzer import collect_job_data, format_jobs_for_article
@@ -564,6 +587,18 @@ def compress_finance_context(data: dict) -> str:
         f"値上がり上位: {' / '.join(up_top3)}\n"
         f"値下がり上位: {' / '.join(down_top3)}"
     )
+
+    # =====================================================
+    # 1.5 [重要:先物] 日経先物（朝の記事で特に重要）
+    # =====================================================
+    futures = data.get("futures", {})
+    if futures:
+        lines = [
+            f"{k}: {v['price']} ({v['change_pct']:+.2f}%)"
+            for k, v in futures.items() if v.get("price")
+        ]
+        if lines:
+            sections.append("[重要:先物] 本日の日経先物\n" + "\n".join(lines))
 
     # =====================================================
     # 2. [重要:企業影響] マクロ環境（数値のみ）
