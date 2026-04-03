@@ -548,22 +548,58 @@ def _remove_chinese_chars(text: str) -> str:
     return text.strip()
 
 
-def _quality_check_v2(content: str, min_chars: int = 1500, require_code: bool = True) -> tuple:
-    """品質チェック + 中国語文字検出 + f-string未展開検出"""
-    # 文字数チェック（variantによって閾値が異なる）
-    if not content or len(content) < min_chars:
-        return False, f"文字数不足: {len(content) if content else 0}文字（最低{min_chars}文字）"
-    passed, reason = _quality_check(content)
-    if not passed and reason.startswith("文字数不足"):
-        # min_chars で既にチェック済みなので 1500 固定チェックはスキップ
-        passed = True
-        reason = "OK"
-    if not passed and not require_code and "コードブロックなし" in reason:
-        # 投資記事等コード不要なジャンルはコードブロックチェックをスキップ
-        passed = True
-        reason = "OK"
-    if not passed:
-        return passed, reason
+def _quality_check_v2(content: str, min_chars: int = 1500, require_code: bool = True,
+                      genre_id: str = "") -> tuple:
+    """品質チェック + 中国語文字検出 + f-string未展開検出
+
+    finance_news は文字数ではなく情報密度でチェックする。
+    技術記事は従来通り文字数・コードブロックでチェックする。
+    """
+    if not content:
+        return False, "空のコンテンツ"
+
+    # LLM拒否パターン（最優先）
+    head = content[:200]
+    for pattern in _REJECTION_PATTERNS:
+        if pattern in head:
+            return False, f"LLM拒否パターン検出: 「{pattern}」"
+
+    # タイトル行チェック（共通）
+    first_line = next((l for l in content.split("\n") if l.strip()), "")
+    if not first_line.startswith("# "):
+        return False, f"タイトル行なし（最初の行が '# 記事タイトル' 形式でない）: {first_line[:50]!r}"
+
+    if genre_id == "finance_news":
+        # --- 投資記事: 情報密度チェック ---
+        issues = []
+        # 必須セクション
+        for section in ("市場概況", "まとめ"):
+            if section not in content:
+                issues.append(f"必須セクションなし:「{section}」")
+        # 日経平均の数値（3〜6万円台）
+        if not re.search(r'[3-6][0-9],[0-9]{3}\.[0-9]+', content):
+            issues.append("日経平均の数値が見つかりません")
+        # 免責事項
+        if "免責事項" not in content:
+            issues.append("免責事項なし")
+        # 極端に短い場合のみNG
+        if len(content) < 800:
+            issues.append(f"内容が極端に少ない: {len(content)}文字")
+        if issues:
+            return False, " / ".join(issues)
+    else:
+        # --- 技術記事: 従来の文字数チェック ---
+        if len(content) < min_chars:
+            return False, f"文字数不足: {len(content)}文字（最低{min_chars}文字）"
+        passed, reason = _quality_check(content)
+        if not passed and reason.startswith("文字数不足"):
+            passed = True
+            reason = "OK"
+        if not passed and not require_code and "コードブロックなし" in reason:
+            passed = True
+            reason = "OK"
+        if not passed:
+            return passed, reason
     found = [p for p in _ZH_DETECT_PATTERNS if p in content]
     if found:
         return False, f"中国語文字が混入: {found}"
@@ -948,14 +984,15 @@ def generate_article(
         content = _gen(prompt)
         # 中国語文字を除去（置換リストで対応済みの文字を日本語化）
         content = _remove_chinese_chars(content)
-        passed, reason = _quality_check_v2(content, min_chars=min_length, require_code=not is_finance)
+        passed, reason = _quality_check_v2(content, min_chars=min_length,
+                                           require_code=not is_finance, genre_id=genre_id)
         if not passed:
             if attempt < max_retries - 1:
                 print(f"  ⚠️ 品質不足: {reason} → リトライ {attempt + 1}/{max_retries - 1}")
                 if is_finance:
                     retry_req = (
-                        f"必ず{min_length}文字以上・見出し(##)7個以上（はてな）または4個以上（Zenn）"
-                        "・免責事項・まとめセクションを含めてください。"
+                        "必須セクション（市場概況・まとめ・免責事項）を含めてください。"
+                        "日経平均の数値を必ず記載してください。"
                         "コードブロックは不要です。提供データを最大限活用してください。"
                     )
                 else:

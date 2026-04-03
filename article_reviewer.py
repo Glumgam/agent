@@ -153,7 +153,18 @@ FEEDBACK: [最も重要な改善点を1文で。なければ「良好」]
         except Exception:
             return {"score": 7, "issues": [], "passed": True, "feedback": "レビュースキップ"}
 
-    return _parse_review(response)
+    result = _parse_review(response)
+
+    # 投資記事: 水増し表現の後処理ペナルティ（LLMスコアに加算）
+    if genre_id == "finance_news":
+        filler_count = content.count("可能性があります") + content.count("と見られます")
+        if filler_count > 5:
+            result["score"] = max(0, result["score"] - 1)
+            result["issues"].append(f"根拠なき推測表現が多い（{filler_count}回）")
+            if result["score"] < 7:
+                result["passed"] = False
+
+    return result
 
 
 def _parse_review(response: str) -> dict:
