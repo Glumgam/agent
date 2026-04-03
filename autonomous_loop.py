@@ -143,23 +143,9 @@ def run_autonomous_loop():
         # --- PERIODIC CHECK END ---
 
         # --- CONTENT GENERATION START ---
-        # Phase 1.7: コンテンツ自動生成（24サイクルに1回 ≈ 約1日1回）
+        # Phase 1.7: 技術記事生成（投資記事安定化まで一時停止）
         if cycle_num % 24 == 0:
-            _log(f"\n[Phase 1.7] コンテンツ自動生成")
-            content_result = _run_content_generation()
-            if content_result.get("path"):
-                _log(f"  📝 記事生成: {content_result['path']}")
-                # 自動投稿
-                pub_result = _run_zenn_publish()
-                if pub_result.get("success"):
-                    _log(f"  🚀 Zenn投稿: {pub_result.get('slug', '完了')}")
-                else:
-                    _log(f"  ℹ️  Zenn投稿スキップ")
-            else:
-                _log(f"  ℹ️  コンテンツ生成スキップ")
-            # X投稿（有料プランが必要なため無効化）
-            # x_result = _run_x_post()
-            _log(f"  ℹ️ X投稿: 無効化中（有料プランが必要）")
+            _log(f"\n[Phase 1.7] 技術記事生成: 一時停止中（投資記事優先）")
 
         # 投資系記事（時間帯ベース制御）
         if cycle_num % 8 == 0:

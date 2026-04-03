@@ -4,20 +4,20 @@
       "status": "active",
       "zenn": "granking",
       "hatena": "granking.hatenablog.com",
-      "note": "投資記事。品質チェック・ファクトチェック・整合性チェック済み"
+      "note": "投資記事。本番稼働中"
     },
     "tech": {
-      "status": "local_only",
+      "status": "suspended",
       "zenn": null,
       "hatena": null,
-      "note": "技術記事。品質洗練中のためローカル保存のみ"
+      "note": "技術記事。投資記事安定化後に再開予定"
     },
     "general": {
-      "status": "local_only",
+      "status": "suspended",
       "zenn": null,
       "hatena": null,
       "note": "一般記事。将来的に別ブログへ投稿予定"
     }
   },
-  "updated": "2026-03-28"
+  "updated": "2026-04-04"
 }
