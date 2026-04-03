@@ -689,16 +689,41 @@ _STYLE_NORMALIZE_PATTERNS = [
 def _normalize_style(content: str) -> str:
     """文体を統一する後処理（ですます体への統一・機械的表現の除去）"""
     result = content
+
+    # 括弧付き「未公表」系を完全削除（パターンリストに含まれているが念のため）
+    result = re.sub(r'（詳細は未公表）', '', result)
+    result = re.sub(r'（関連は未確認）', '', result)
+
+    # 機械的表現の置換
     for pattern, replacement in _STYLE_NORMALIZE_PATTERNS:
         result = re.sub(pattern, replacement, result)
-    # 「背景は未公表」の出現回数を最大3回に制限（値動きセクション以外の除去）
-    count = result.count('背景は未公表')
-    if count > 3:
-        # 後ろから余剰分を削除
-        for _ in range(count - 3):
-            pos = result.rfind('背景は未公表')
-            result = result[:pos] + result[pos + len('背景は未公表'):]
-    return result
+
+    # 「背景は未公表」: 値上がり・値下がり・ランキングセクション内のみ許可（最大6回）、それ以外は削除
+    lines = result.split('\n')
+    in_ranking_section = False
+    bg_count = 0
+    new_lines = []
+    for line in lines:
+        if re.search(r'値上がり|値下がり|ランキング', line):
+            in_ranking_section = True
+        elif line.startswith('## ') and in_ranking_section:
+            in_ranking_section = False
+
+        if '背景は未公表' in line:
+            if in_ranking_section and bg_count < 6:
+                bg_count += 1
+                new_lines.append(line)
+            elif in_ranking_section:
+                # 上限超過分はそのまま保持（削除しない）
+                new_lines.append(line)
+            else:
+                # ランキング外は削除
+                line = re.sub(r'\s*背景は未公表', '', line)
+                new_lines.append(line)
+        else:
+            new_lines.append(line)
+
+    return '\n'.join(new_lines)
 
 
 _SPECULATIVE_PATTERNS = [

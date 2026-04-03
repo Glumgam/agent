@@ -48,26 +48,19 @@ TARGET_REGIONS = [
     "那覇",
 ]
 
-# 全国地方紙RSSソース（地域バランスを考慮）
+# 全国ニュースRSSソース（地方紙RSSは廃止済みのためNHK・大手メディアで代替）
 LOCAL_NEWS_SOURCES = [
-    # 北海道・東北
-    {"name": "北海道新聞",   "url": "https://www.hokkaido-np.co.jp/rss/index.html",     "region": "北海道"},
-    {"name": "河北新報",     "url": "https://kahoku.news/feed/",                         "region": "東北"},
-    # 関東
-    {"name": "東京新聞",     "url": "https://www.tokyo-np.co.jp/rss/all.xml",            "region": "関東"},
-    {"name": "神奈川新聞",   "url": "https://www.kanaloco.jp/feed/",                     "region": "関東"},
-    # 中部
-    {"name": "中日新聞",     "url": "https://www.chunichi.co.jp/rss/list/national.xml",  "region": "中部"},
-    {"name": "信濃毎日新聞", "url": "https://www.shinmai.co.jp/rss/news.xml",            "region": "中部"},
-    # 近畿
-    {"name": "京都新聞",     "url": "https://www.kyoto-np.co.jp/rss/news.xml",           "region": "近畿"},
-    {"name": "神戸新聞",     "url": "https://www.kobe-np.co.jp/rss/news.xml",            "region": "近畿"},
-    # 中国・四国
-    {"name": "中国新聞",     "url": "https://www.chugoku-np.co.jp/rss/",                 "region": "中国"},
-    {"name": "愛媛新聞",     "url": "https://www.ehime-np.co.jp/rss/news.xml",           "region": "四国"},
-    # 九州・沖縄
-    {"name": "西日本新聞",   "url": "https://www.nishinippon.co.jp/rss/nnp/all.xml",     "region": "九州"},
-    {"name": "沖縄タイムス", "url": "https://www.okinawatimes.co.jp/rss/articles.xml",   "region": "沖縄"},
+    # NHK（カテゴリ別・地域事件に強い）
+    {"name": "NHK社会",     "url": "https://www.nhk.or.jp/rss/news/cat3.xml",               "region": "全国"},
+    {"name": "NHK経済",     "url": "https://www.nhk.or.jp/rss/news/cat5.xml",               "region": "全国"},
+    {"name": "NHK地域",     "url": "https://www.nhk.or.jp/rss/news/cat6.xml",               "region": "全国"},
+    # 大手紙
+    {"name": "朝日新聞",    "url": "https://www.asahi.com/rss/asahi/newsheadlines.rdf",     "region": "全国"},
+    {"name": "毎日新聞",    "url": "https://mainichi.jp/rss/etc/mainichi-flash.rss",        "region": "全国"},
+    # 通信社・ポータル
+    {"name": "時事通信",    "url": "https://www.jiji.com/rss/ranking.rdf",                  "region": "全国"},
+    {"name": "Yahoo国内",   "url": "https://news.yahoo.co.jp/rss/topics/domestic.xml",      "region": "全国"},
+    {"name": "Yahoo経済",   "url": "https://news.yahoo.co.jp/rss/topics/business.xml",      "region": "全国"},
 ]
 
 
