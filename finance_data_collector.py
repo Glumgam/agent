@@ -339,6 +339,71 @@ def _format_news_for_article(news_list: list) -> str:
 
 
 # =====================================================
+# ADR・市場騰落
+# =====================================================
+
+# ADRシンボル → 日本企業名
+_ADR_SYMBOLS = {
+    "TM":    "トヨタ自動車",
+    "SONY":  "ソニーグループ",
+    "HMC":   "ホンダ",
+    "NTDOY": "任天堂",
+    "MUFG":  "三菱UFJ",
+    "PCRFY": "パナソニック",
+    "FANUY": "ファナック",
+}
+
+
+def collect_adr_data() -> dict:
+    """
+    主要日本企業のADR（米国市場での株価）を収集する。
+    朝の記事で前日の米国での日本株動向として活用。
+    """
+    results = {}
+    for symbol, name in _ADR_SYMBOLS.items():
+        try:
+            url  = (f"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}"
+                    f"?range=1d&interval=1d")
+            resp = requests.get(url, headers=HEADERS, timeout=10)
+            meta = resp.json()["chart"]["result"][0]["meta"]
+            price   = meta.get("regularMarketPrice", 0)
+            # regularMarketChangePercent を優先、なければ手計算
+            chg_pct_raw = meta.get("regularMarketChangePercent")
+            if chg_pct_raw is not None:
+                chg_pct = round(chg_pct_raw, 2)
+            else:
+                chg     = meta.get("regularMarketChange", 0) or 0
+                prev    = meta.get("previousClose") or meta.get("chartPreviousClose")
+                chg_pct = round(chg / prev * 100, 2) if prev else 0
+            if price > 0:
+                results[name] = {"symbol": symbol, "price": price, "change_pct": chg_pct}
+                print(f"  ✅ ADR {name}({symbol}): ${price} ({chg_pct:+.2f}%)")
+        except Exception as e:
+            print(f"  ⚠️ ADR {symbol} 取得失敗: {e}")
+    return results
+
+
+def collect_market_breadth() -> dict:
+    """
+    市場の騰落状況（値上がり・値下がり銘柄数概数）を取得する。
+    騰落レシオの代替として活用。
+    """
+    breadth = {}
+    try:
+        url  = ("https://query1.finance.yahoo.com/v1/finance/screener/predefined/saved"
+                "?formatted=false&lang=ja&region=JP&scrIds=day_gainers&count=1")
+        resp = requests.get(url, headers=HEADERS, timeout=10)
+        result = resp.json().get("finance", {}).get("result", [{}])[0]
+        total  = result.get("total", 0)
+        if total:
+            breadth["値上がり概数"] = total
+            print(f"  ✅ 市場騰落: 値上がり概数 {total}銘柄")
+    except Exception as e:
+        print(f"  ⚠️ 騰落データ取得失敗: {e}")
+    return breadth
+
+
+# =====================================================
 # データ保存
 # =====================================================
 def collect_finance_data() -> dict:
@@ -418,6 +483,14 @@ def collect_finance_data() -> dict:
         except Exception as e:
             print(f"  ⚠️ {name} 取得失敗: {e}")
     data["futures"] = futures
+
+    # ADRデータ収集（朝の時間帯のみ）
+    from datetime import datetime as _dt
+    if 4 <= _dt.now().hour <= 10:
+        print("  🇺🇸 ADRデータ収集中...")
+        data["adr"] = collect_adr_data()
+    else:
+        data["adr"] = {}
 
     # 求人データ収集（ランキング上位企業の採用動向）
     try:
@@ -599,6 +672,22 @@ def compress_finance_context(data: dict) -> str:
         ]
         if lines:
             sections.append("[重要:先物] 本日の日経先物\n" + "\n".join(lines))
+
+    # =====================================================
+    # 1.6 [重要:ADR] 前日の米国市場での日本株動向（朝の記事で重要）
+    # =====================================================
+    adr = data.get("adr", {})
+    if adr:
+        notable = {k: v for k, v in adr.items()
+                   if abs(v.get("change_pct", 0)) >= 1.0}
+        if notable:
+            lines = [
+                f"{k}: {v['change_pct']:+.2f}%"
+                for k, v in sorted(notable.items(),
+                                   key=lambda x: x[1]["change_pct"],
+                                   reverse=True)
+            ]
+            sections.append("[重要:ADR] 前日の米国市場での日本株動向\n" + "\n".join(lines))
 
     # =====================================================
     # 2. [重要:企業影響] マクロ環境（数値のみ）
