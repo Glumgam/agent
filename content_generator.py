@@ -1094,6 +1094,16 @@ def generate_article(
             started = _start_jp4()
             if started:
                 content = _gen_jp4(prompt)
+                # llm-jp-4はタイトル行の前にプリアンブル/思考テキストを出力することがある。
+                # 最初の「# 」行を探してそれ以降のみを使用する。
+                if content:
+                    _lines = content.split("\n")
+                    _h1_idx = next(
+                        (i for i, l in enumerate(_lines) if l.startswith("# ")), None
+                    )
+                    if _h1_idx is not None and _h1_idx > 0:
+                        print(f"  ✂️ プリアンブル除去: {_h1_idx}行スキップ")
+                        content = "\n".join(_lines[_h1_idx:])
                 # 生成→正規化→レビューをllm-jp-4で連続実行（Ollama停止中に完結）
                 content = _remove_chinese_chars(content)
                 if content:

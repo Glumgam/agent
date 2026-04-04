@@ -21,7 +21,7 @@ HEADERS    = {"User-Agent": "Mozilla/5.0 (compatible; research-bot/1.0)"}
 
 # LLM分類フラグ: Falseにするとルールベースのみ（高速・タイムアウトなし）
 # Trueにするとqwen2.5-coder:14bで分類（精度向上・低速）
-USE_LLM_CLASSIFY = False
+USE_LLM_CLASSIFY = True
 
 
 # =====================================================
