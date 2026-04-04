@@ -485,7 +485,7 @@ def unload_model(model: str = None):
         pass
 
 
-def ask_plain(prompt: str, retries: int = 3, timeout: int = 600) -> str:
+def ask_plain(prompt: str, retries: int = 3, timeout: int = 1200) -> str:
     """
     Plain-text generation for articles / planning.
     _call_ollama を経由しないことで _clean_llm_output（コードブロック除去・
@@ -517,7 +517,7 @@ def ask_plain(prompt: str, retries: int = 3, timeout: int = 600) -> str:
                     },
                     "keep_alive": 120,
                 },
-                timeout=timeout,
+                timeout=(10, timeout),
             )
             resp.raise_for_status()
             return resp.json()["message"]["content"].strip()
