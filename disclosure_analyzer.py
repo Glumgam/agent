@@ -19,6 +19,10 @@ from datetime import datetime
 AGENT_ROOT = Path(__file__).parent
 HEADERS    = {"User-Agent": "Mozilla/5.0 (compatible; research-bot/1.0)"}
 
+# LLM分類フラグ: Falseにするとルールベースのみ（高速・タイムアウトなし）
+# Trueにするとqwen2.5-coder:14bで分類（精度向上・低速）
+USE_LLM_CLASSIFY = False
+
 
 # =====================================================
 # ルールベース分類
@@ -94,8 +98,12 @@ def classify_disclosure(title: str, summary: str) -> str:
     if rule_result != "unknown":
         return rule_result
 
-    # ルールで判断できない場合はLLMを使用
-    return classify_by_llm(text)
+    # USE_LLM_CLASSIFY=True の場合のみLLMで補助分類
+    if USE_LLM_CLASSIFY:
+        return classify_by_llm(text)
+
+    # ルール未判定はneutralとして扱う（LLM呼び出しなし）
+    return "neutral"
 
 
 # =====================================================
@@ -241,16 +249,17 @@ def analyze_today_disclosures() -> dict:
 
         results[category if category in ("positive", "negative", "neutral") else "neutral"].append(d)
 
-        # 関連企業が含まれる場合は深掘り対象に追加（LLM分析は上位3件まで）
+        # 関連企業が含まれる場合は深掘り対象に追加（USE_LLM_CLASSIFY=Trueの場合のみLLM分析）
         if (any(kw in text for kw in ["提携", "共同", "合意", "契約"])
                 and len(results["notable"]) < 3):
             partners = extract_partner_companies(text)
             if partners:
                 d["partners"] = partners
-                d["partner_analysis"] = [
-                    analyze_partner_company(p)
-                    for p in partners[:1]  # 最大1社まで深掘り（速度優先）
-                ]
+                if USE_LLM_CLASSIFY:
+                    d["partner_analysis"] = [
+                        analyze_partner_company(p)
+                        for p in partners[:1]  # 最大1社まで深掘り
+                    ]
                 results["notable"].append(d)
 
     # 保存
