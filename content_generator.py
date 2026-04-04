@@ -690,6 +690,58 @@ def _normalize_style(content: str) -> str:
     """文体を統一する後処理（ですます体への統一・機械的表現の除去）"""
     result = content
 
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    # ⓪ タイトル行正規化（llm-jp-4プリアンブル・異形式対応）
+    # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    _lines = result.split('\n')
+
+    # (a) 先頭のプリアンブル行をスキップ
+    _skip_patterns = [
+        r'^（ここ',
+        r'^\.\.\.',
+        r'^We need',
+        r'^The\s+user',
+        r'^以下の条件',
+        r'^\*\*質問',
+        r'^\*\*実装',
+        r'^---\s*$',
+        r'^【質問】',
+        r'^Theuser',
+    ]
+    while _lines and any(
+        re.match(p, _lines[0].strip()) for p in _skip_patterns
+    ):
+        _lines.pop(0)
+
+    # (b) 最初の非空行がタイトル異形式なら # 形式に正規化
+    if _lines:
+        _first = _lines[0].strip()
+        _replaced = False
+
+        # **記事タイトル:** XXX  /  **タイトル**: XXX  /  #**タイトル**:XXX
+        _m = re.match(
+            r'^\*{0,2}#?\s*(?:記事タイトル|タイトル)[：:]\s*\*{0,2}\s*(.+)',
+            _first
+        )
+        if _m:
+            _lines[0] = f"# {_m.group(1).strip('*').strip()}"
+            _replaced = True
+
+        # **# XXX**  /  **#XXX**
+        if not _replaced:
+            _m2 = re.match(r'^\*+#\s*(.+?)\**$', _first)
+            if _m2:
+                _lines[0] = f"# {_m2.group(1).strip()}"
+                _replaced = True
+
+        # **XXX** （太字のみ・タイトルっぽい長さ）
+        if not _replaced:
+            _m3 = re.match(r'^\*\*(.{5,50})\*\*\s*$', _first)
+            if _m3 and '：' not in _m3.group(1) and ':' not in _m3.group(1):
+                _lines[0] = f"# {_m3.group(1).strip()}"
+
+    result = '\n'.join(_lines)
+
     # ① 括弧内の「未公表」「未確認」系を完全削除（全角・半角両対応）
     result = re.sub(r'[（(][^）)]*未公表[^）)]*[）)]', '', result)
     result = re.sub(r'[（(][^）)]*未確認[^）)]*[）)]', '', result)
