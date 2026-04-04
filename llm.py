@@ -626,7 +626,11 @@ def start_llm_jp4() -> bool:
         capture_output=True,
     )
     time.sleep(2)
-    subprocess.run(["pkill", "-9", "-f", "ollama"], capture_output=True)
+    # 全Ollamaプロセス・前回のllama-serverを強制終了
+    subprocess.run(["pkill", "-9", "-f", "ollama runner"], capture_output=True)
+    subprocess.run(["pkill", "-9", "-f", "ollama serve"],  capture_output=True)
+    subprocess.run(["pkill", "-9", "-f", "Ollama"],        capture_output=True)
+    subprocess.run(["pkill", "-9", "-f", "llama-server"],  capture_output=True)
     time.sleep(5)  # メモリ解放を待つ
 
     # llama.cppサーバー起動
