@@ -11,7 +11,7 @@ import os
 # -------------------------
 
 OLLAMA_URL = "http://localhost:11434/api/chat"
-PLANNER_MODEL = "qwen3:14b"
+PLANNER_MODEL = "qwen2.5-coder:14b"
 CODER_MODEL   = "qwen3:14b"
 
 
@@ -508,7 +508,7 @@ def ask_plain(prompt: str, retries: int = 3, timeout: int = 1200) -> str:
                 "http://localhost:11434/api/chat",
                 json={
                     "model":    PLANNER_MODEL,
-                    "messages": [{"role": "user", "content": f"/no_think {prompt}"}],
+                    "messages": [{"role": "user", "content": prompt}],
                     "stream":   False,
                     "options": {
                         "temperature": 0.7,
