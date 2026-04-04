@@ -2,21 +2,15 @@
   "publish_policy": {
     "finance": {
       "status": "active",
-      "zenn": "granking",
+      "platforms": ["hatena"],
       "hatena": "granking.hatenablog.com",
-      "note": "投資記事。本番稼働中"
+      "note": "はてな単独運用。Zennは停止。"
     },
     "tech": {
-      "status": "suspended",
-      "zenn": null,
-      "hatena": null,
-      "note": "技術記事。投資記事安定化後に再開予定"
+      "status": "suspended"
     },
     "general": {
-      "status": "suspended",
-      "zenn": null,
-      "hatena": null,
-      "note": "一般記事。将来的に別ブログへ投稿予定"
+      "status": "suspended"
     }
   },
   "updated": "2026-04-04"
