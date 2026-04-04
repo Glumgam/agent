@@ -75,8 +75,8 @@ def classify_by_llm(text: str) -> str:
 回答（1単語のみ）:"""
 
     try:
-        # 分類は短文生成なので30秒で十分。ハングを防ぐためリトライは1回のみ。
-        result = ask_plain(prompt, retries=1, timeout=30).strip().lower()
+        # qwen3:14b はthinking modeで遅いため120秒に延長
+        result = ask_plain(prompt, retries=1, timeout=120).strip().lower()
     except Exception:
         return "unknown"
 
@@ -241,14 +241,15 @@ def analyze_today_disclosures() -> dict:
 
         results[category if category in ("positive", "negative", "neutral") else "neutral"].append(d)
 
-        # 関連企業が含まれる場合は深掘り対象に追加
-        if any(kw in text for kw in ["提携", "共同", "合意", "契約"]):
+        # 関連企業が含まれる場合は深掘り対象に追加（LLM分析は上位3件まで）
+        if (any(kw in text for kw in ["提携", "共同", "合意", "契約"])
+                and len(results["notable"]) < 3):
             partners = extract_partner_companies(text)
             if partners:
                 d["partners"] = partners
                 d["partner_analysis"] = [
                     analyze_partner_company(p)
-                    for p in partners[:2]  # 最大2社まで深掘り
+                    for p in partners[:1]  # 最大1社まで深掘り（速度優先）
                 ]
                 results["notable"].append(d)
 
