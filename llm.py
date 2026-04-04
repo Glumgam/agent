@@ -619,10 +619,12 @@ def start_llm_jp4() -> bool:
     """llama.cppサーバーをllm-jp-4で起動する。Ollamaを先に停止する。"""
     global _llama_server_proc
 
-    # Ollama停止
+    # Ollama確実停止（SIGTERM → SIGKILL の2段階）
     print("  🔄 Ollama停止中...")
-    subprocess.run(["pkill", "-f", "ollama serve"], capture_output=True)
-    time.sleep(3)
+    subprocess.run(["pkill", "-f", "ollama"], capture_output=True)
+    time.sleep(2)
+    subprocess.run(["pkill", "-9", "-f", "ollama serve"], capture_output=True)
+    time.sleep(5)  # メモリ解放を待つ
 
     # llama.cppサーバー起動
     print("  🚀 llm-jp-4 起動中...")
@@ -642,8 +644,8 @@ def start_llm_jp4() -> bool:
         stderr=subprocess.DEVNULL,
     )
 
-    # ヘルスチェック（最大30秒待機）
-    for _ in range(30):
+    # ヘルスチェック（最大60秒待機）
+    for _ in range(60):
         try:
             r = requests.get(
                 f"http://127.0.0.1:{LLAMA_SERVER_PORT}/health", timeout=1
@@ -722,12 +724,15 @@ def ask_finance(prompt: str, retries: int = 3) -> str:
     """
     import time
 
-    # 言語強制: systemプロンプトで中国語・韓国語を禁止
+    # 言語強制: systemプロンプトで中国語・韓国語を禁止 + 免責事項の挿入を義務付け
     _system = (
         "You must respond in Japanese only. "
         "Do not use Chinese characters (简体字/繁體字), Korean, "
         "or any language other than Japanese. "
-        "Do not output your thinking process."
+        "Do not output your thinking process. "
+        "記事の末尾に必ず以下の免責事項を追加してください: "
+        "「※本記事は情報提供を目的としており、投資の推奨・勧誘を行うものではありません。"
+        "投資に関する最終判断はご自身の責任でお願いいたします。」"
     )
 
     unload_model(CODER_MODEL)
