@@ -6,16 +6,16 @@
     "last_updated": "2026-03-20T20:59:09.864632"
   },
   "ollama_docs": {
-    "version": "0.19.0-92f6db73",
+    "version": "0.19.0-54e75767",
     "source": "https://github.com/ollama/ollama/blob/main/README.md",
     "chunks": 37,
-    "last_updated": "2026-03-30T14:01:57.776301"
+    "last_updated": "2026-04-01T03:13:19.897195"
   },
   "python_official": {
-    "version": "3.13-1f9391e5",
+    "version": "3.13-676874b0",
     "source": "https://docs.python.org/ja/3/library/functions.html",
     "chunks": 72,
-    "last_updated": "2026-03-29T22:06:12.051176"
+    "last_updated": "2026-03-31T19:39:52.925711"
   },
   "pip_docs": {
     "version": "stable-d506118a",

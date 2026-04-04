@@ -74,7 +74,12 @@ def classify_by_llm(text: str) -> str:
 
 回答（1単語のみ）:"""
 
-    result = ask_plain(prompt).strip().lower()
+    try:
+        # 分類は短文生成なので30秒で十分。ハングを防ぐためリトライは1回のみ。
+        result = ask_plain(prompt, retries=1, timeout=30).strip().lower()
+    except Exception:
+        return "unknown"
+
     if result in ("positive", "negative", "neutral", "unknown"):
         return result
     return "unknown"

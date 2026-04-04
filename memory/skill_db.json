@@ -73,8 +73,8 @@
     "coding": {
       "name": "coding",
       "task_example": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
-      "success_count": 656,
-      "last_used": "2026-03-30T09:23:27.802519+00:00",
+      "success_count": 689,
+      "last_used": "2026-03-31T19:50:26.454022+00:00",
       "tools_used": [
         "create_file",
         "run",
@@ -136,8 +136,8 @@
     "bug_fix": {
       "name": "bug_fix",
       "task_example": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
-      "success_count": 453,
-      "last_used": "2026-03-30T09:34:44.676900+00:00",
+      "success_count": 486,
+      "last_used": "2026-03-31T21:04:26.125323+00:00",
       "tools_used": [
         "run",
         "done",
@@ -173,8 +173,8 @@
     "testing": {
       "name": "testing",
       "task_example": "calculator.pyにadd/subtract関数を実装し、test_calculator.pyでunittestを書いて全テスト通過させよ",
-      "success_count": 431,
-      "last_used": "2026-03-30T09:47:19.398429+00:00",
+      "success_count": 452,
+      "last_used": "2026-03-31T21:16:09.813047+00:00",
       "tools_used": [
         "done",
         "run",
@@ -1248,6 +1248,42 @@
         "manager"
       ],
       "summary": "Deep Research により獲得。分野: スキル発展"
+    },
+    "tool_opencv_reconstruct_3d": {
+      "name": "tool_opencv_reconstruct_3d",
+      "task_example": "[深掘り獲得] 3D幾何と外観の再構築に必要な画像処理機能を提供します。 (from: AI 論文)",
+      "success_count": 1,
+      "last_used": "2026-03-30T21:37:19.487644+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [
+        "opencv-python"
+      ],
+      "keywords": [
+        "AI 論文",
+        "tool",
+        "opencv",
+        "reconstruct",
+        "3d"
+      ],
+      "summary": "Deep Research により獲得。分野: AI 論文"
+    },
+    "tool_autoresearch": {
+      "name": "tool_autoresearch",
+      "task_example": "[深掘り獲得] AIエージェントで単一のGPUを使用したnanoチャットトレーニングを自動的に実行する (from: Python 技術トレンド)",
+      "success_count": 1,
+      "last_used": "2026-03-31T18:15:05.151014+00:00",
+      "tools_used": [
+        "evolved_tool"
+      ],
+      "key_imports": [],
+      "keywords": [
+        "Python 技術トレンド",
+        "tool",
+        "autoresearch"
+      ],
+      "summary": "Deep Research により獲得。分野: Python 技術トレンド"
     }
   }
 }

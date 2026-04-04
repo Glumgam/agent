@@ -7569,5 +7569,192 @@
   {
     "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
     "steps": []
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))\n\n[RETRY HINT] バグ修正後、再度コードを保存し、ターミナルやコマンドプロンプトを開き、`buggy.py`ファイルを実行して結果が`7`であることを確認する。",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": []
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "run",
+      "run",
+      "run",
+      "_self_improve",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": []
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": []
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))\n\n[RETRY HINT] バグ修正後、必ず `buggy.py` を実行して結果が `7` であることを確認してください。また、コードの保存と実行にはターミナルやコマンドプロンプトを使用してください。",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))\n\n[RETRY HINT] コードの修正後、必ず `python buggy.py` を実行して出力を確認すること。期待する出力は `7` であることを再確認してください。",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "edit_file",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+    "steps": [
+      "create_file",
+      "create_file",
+      "run",
+      "edit_file",
+      "edit_file",
+      "run"
+    ]
+  },
+  {
+    "task": "1から20までのFizzBuzzをfizzbuzz.pyに実装して実行せよ",
+    "steps": [
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "create_file",
+      "run"
+    ]
+  },
+  {
+    "task": "以下のバグありコードをbuggy.pyに書き、自分で修正して実行せよ:\ndef add(a, b):\n    return a - b  # バグあり\nprint(add(3, 4))",
+    "steps": [
+      "edit_file",
+      "edit_file",
+      "edit_file",
+      "edit_file",
+      "edit_file",
+      "run"
+    ]
   }
 ]

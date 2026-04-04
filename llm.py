@@ -479,12 +479,13 @@ def unload_model(model: str = None):
         pass
 
 
-def ask_plain(prompt: str, retries: int = 3) -> str:
+def ask_plain(prompt: str, retries: int = 3, timeout: int = 600) -> str:
     """
     Plain-text generation for articles / planning.
     _call_ollama を経由しないことで _clean_llm_output（コードブロック除去・
     JSON切り取り）を回避する。num_predict=8192 で生成トークン上限を拡張。
     タイムアウト時はモデルアンロード後にリトライする。
+    timeout: HTTP タイムアウト秒（デフォルト600。分類など短文生成は30など短縮可）
     """
     import time
 
@@ -510,7 +511,7 @@ def ask_plain(prompt: str, retries: int = 3) -> str:
                     },
                     "keep_alive": 120,
                 },
-                timeout=600,
+                timeout=timeout,
             )
             resp.raise_for_status()
             return resp.json().get("response", "").strip()
