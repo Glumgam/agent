@@ -508,12 +508,12 @@ def ask_plain(prompt: str, retries: int = 3, timeout: int = 1200) -> str:
                 "http://localhost:11434/api/chat",
                 json={
                     "model":    PLANNER_MODEL,
-                    "messages": [{"role": "user", "content": prompt}],
+                    "messages": [{"role": "user", "content": f"/no_think {prompt}"}],
                     "stream":   False,
                     "options": {
                         "temperature": 0.7,
-                        "num_ctx":     16384,
-                        "num_predict": 8192,
+                        "num_ctx":     4096,
+                        "num_predict": 1024,
                     },
                     "keep_alive": 120,
                 },
@@ -749,8 +749,8 @@ def ask_finance(prompt: str, retries: int = 3) -> str:
                     "stream":   False,
                     "options": {
                         "temperature": 0.5,
-                        "num_ctx":     16384,
-                        "num_predict": 8192,
+                        "num_ctx":     4096,
+                        "num_predict": 1024,
                     },
                     "keep_alive": 60,
                 },
