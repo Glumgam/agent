@@ -679,13 +679,14 @@ def stop_llm_jp4():
     print("  ✅ Ollama起動完了")
 
 
-def ask_finance_llmjp4(prompt: str) -> str:
-    """llm-jp-4（llama.cppサーバー）で投資記事を生成する。"""
-    system_msg = (
-        "あなたは日本語の投資記事を書く専門家です。"
-        "ですます体で、事実のみを記述してください。"
-        "中国語・韓国語は使用禁止です。"
-    )
+def ask_finance_llmjp4(prompt: str, system_msg: str = "") -> str:
+    """llm-jp-4（llama.cppサーバー）でテキスト生成する。"""
+    if not system_msg:
+        system_msg = (
+            "あなたは日本語の投資記事を書く専門家です。"
+            "ですます体で、事実のみを記述してください。"
+            "中国語・韓国語は使用禁止です。"
+        )
     try:
         response = requests.post(
             f"http://127.0.0.1:{LLAMA_SERVER_PORT}/v1/chat/completions",

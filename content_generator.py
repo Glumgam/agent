@@ -1089,11 +1089,25 @@ def generate_article(
             _model_label = _PM
         print(f"  🧠 生成中 ({_model_label})"
               f"{' 再試行 ' + str(attempt) if attempt > 0 else ''}...")
+        _llmjp4_review = None  # このattemptでのllm-jp-4レビュー結果
         if is_finance and USE_LLM_JP4:
             started = _start_jp4()
             if started:
                 content = _gen_jp4(prompt)
-                _stop_jp4()  # レビュー前にOllamaを戻す
+                # 生成→正規化→レビューをllm-jp-4で連続実行（Ollama停止中に完結）
+                content = _remove_chinese_chars(content)
+                if content:
+                    content = _normalize_stock_expressions(content)
+                    content = _normalize_style(content)
+                from article_reviewer import review_article as _rev_jp4
+                _llmjp4_review = _rev_jp4(
+                    content, topic, genre_id=genre_id, use_llmjp4=True
+                )
+                print(f"  📊 品質スコア(llm-jp-4): {_llmjp4_review['score']}/10 "
+                      f"({'✅ pass' if _llmjp4_review['passed'] else '❌ fail'})")
+                if _llmjp4_review["issues"]:
+                    print(f"  ⚠️ 問題点: {', '.join(_llmjp4_review['issues'][:3])}")
+                _stop_jp4()  # レビュー完了後にOllama再起動
             else:
                 # フォールバック: qwen3:14b (Ollama)
                 print("  ⚠️ llm-jp-4起動失敗 → qwen3:14bにフォールバック")
@@ -1102,8 +1116,8 @@ def generate_article(
             content = _gen(prompt)
         # 中国語文字を除去（置換リストで対応済みの文字を日本語化）
         content = _remove_chinese_chars(content)
-        # finance記事: 品質チェック前に文体・表現を正規化（LLM生成直後に毎回適用）
-        if is_finance and content:
+        # finance記事: 品質チェック前に文体・表現を正規化（llm-jp-4パスでは既に適用済み）
+        if is_finance and content and _llmjp4_review is None:
             content = _normalize_stock_expressions(content)
             content = _normalize_style(content)
         passed, reason = _quality_check_v2(content, min_chars=min_length,
@@ -1135,12 +1149,16 @@ def generate_article(
                 return {"error": f"品質基準未達: {reason}"}
 
         # --- QUALITY REVIEW START ---
-        from article_reviewer import review_article
-        review = review_article(content, topic, genre_id=genre_id)
-        print(f"  📊 品質スコア: {review['score']}/10 "
-              f"({'✅ pass' if review['passed'] else '❌ fail'})")
-        if review["issues"]:
-            print(f"  ⚠️ 問題点: {', '.join(review['issues'][:3])}")
+        if _llmjp4_review is not None:
+            # llm-jp-4での生成直後にレビュー済み → 結果を再利用
+            review = _llmjp4_review
+        else:
+            from article_reviewer import review_article
+            review = review_article(content, topic, genre_id=genre_id)
+            print(f"  📊 品質スコア: {review['score']}/10 "
+                  f"({'✅ pass' if review['passed'] else '❌ fail'})")
+            if review["issues"]:
+                print(f"  ⚠️ 問題点: {', '.join(review['issues'][:3])}")
         review_score    = review["score"]
         review_passed   = review["passed"]
         review_feedback = review["feedback"]

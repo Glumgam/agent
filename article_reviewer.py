@@ -13,10 +13,12 @@ from pathlib import Path
 AGENT_ROOT = Path(__file__).parent
 
 
-def review_article(content: str, topic: str, genre_id: str = "") -> dict:
+def review_article(content: str, topic: str, genre_id: str = "",
+                   use_llmjp4: bool = False) -> dict:
     """
     記事品質をレビューする。
     genre_id="finance_news" の場合は投資記事用プロンプトを使用。
+    use_llmjp4=True の場合はllama.cppサーバー（llm-jp-4）を使用。
     Returns:
         {
             "score": int (0-10),
@@ -143,15 +145,28 @@ VERDICT: [scoreが7以上なら「pass」、6以下なら「fail」]
 FEEDBACK: [最も重要な改善点を1文で。なければ「良好」]
 """
 
-    print(f"  🔍 品質レビュー中 (qwen3.5:9b)...")
-    try:
-        response = ask_thinking(prompt, label="REVIEW")
-    except Exception as e:
-        print(f"  ⚠️ qwen3.5失敗: {e} → qwen2.5にフォールバック")
+    if use_llmjp4:
+        from llm import ask_finance_llmjp4 as _ask_rev
+        _reviewer_system = (
+            "あなたは日本語の金融記事レビュアーです。"
+            "指定されたフォーマット（SCORE/ISSUES/VERDICT/FEEDBACK）のみで回答してください。"
+        )
+        print(f"  🔍 品質レビュー中 (llm-jp-4)...")
         try:
-            response = ask_plain(prompt)
-        except Exception:
+            response = _ask_rev(prompt, system_msg=_reviewer_system)
+        except Exception as e:
+            print(f"  ⚠️ llm-jp-4レビュー失敗: {e}")
             return {"score": 7, "issues": [], "passed": True, "feedback": "レビュースキップ"}
+    else:
+        print(f"  🔍 品質レビュー中 (qwen3.5:9b)...")
+        try:
+            response = ask_thinking(prompt, label="REVIEW")
+        except Exception as e:
+            print(f"  ⚠️ qwen3.5失敗: {e} → qwen2.5にフォールバック")
+            try:
+                response = ask_plain(prompt)
+            except Exception:
+                return {"score": 7, "issues": [], "passed": True, "feedback": "レビュースキップ"}
 
     result = _parse_review(response)
 
