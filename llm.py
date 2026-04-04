@@ -619,11 +619,14 @@ def start_llm_jp4() -> bool:
     """llama.cppサーバーをllm-jp-4で起動する。Ollamaを先に停止する。"""
     global _llama_server_proc
 
-    # Ollama確実停止（SIGTERM → SIGKILL の2段階）
+    # Ollamaアプリを確実停止（macOSメニューバーアプリの自動再起動を防ぐ）
     print("  🔄 Ollama停止中...")
-    subprocess.run(["pkill", "-f", "ollama"], capture_output=True)
+    subprocess.run(
+        ["osascript", "-e", 'quit app "Ollama"'],
+        capture_output=True,
+    )
     time.sleep(2)
-    subprocess.run(["pkill", "-9", "-f", "ollama serve"], capture_output=True)
+    subprocess.run(["pkill", "-9", "-f", "ollama"], capture_output=True)
     time.sleep(5)  # メモリ解放を待つ
 
     # llama.cppサーバー起動
@@ -672,14 +675,14 @@ def stop_llm_jp4():
         _llama_server_proc = None
         time.sleep(2)
 
-    # Ollama再起動
+    # OllamaアプリをGUIアプリとして再起動（メニューバー常駐モード）
     print("  🚀 Ollama再起動中...")
     subprocess.Popen(
-        [_OLLAMA_BIN, "serve"],
+        ["open", "-a", "Ollama"],
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
     )
-    time.sleep(3)
+    time.sleep(5)
     print("  ✅ Ollama起動完了")
 
 
