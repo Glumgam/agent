@@ -765,6 +765,59 @@ def _remove_speculative_expressions(content: str) -> str:
     return content
 
 
+# 後処理（_normalize_style）で解決できる問題キーワード — LLM修正不要
+_LOCAL_FIX_SKIP_KEYWORDS = [
+    "背景は未公表", "文体", "ですます", "寄与しました",
+    "確認されました", "詳細は未公表", "普通体",
+]
+
+
+def _local_fix(content: str, issues: list, finance_data: dict) -> str:
+    """
+    全文再生成せず、指摘箇所のみを修正する（Level 2修正）。
+
+    - まず後処理（_normalize_style）で解決を試みる
+    - 残った問題のみLLMによる局所修正を行う
+    - LLM出力が短すぎる場合は元の内容を保持
+    """
+    if not issues:
+        return content
+
+    # Step1: 後処理で解決できるものを適用
+    content = _normalize_style(content)
+
+    # Step2: 後処理で解決できない問題を抽出
+    llm_fix_needed = [
+        issue for issue in issues
+        if not any(skip in issue for skip in _LOCAL_FIX_SKIP_KEYWORDS)
+    ]
+    if not llm_fix_needed:
+        return content  # 後処理だけで解決済み
+
+    # Step3: LLMによる局所修正（ask_financeを使用・短タイムアウト）
+    from llm import ask_finance as _ask_fix
+    issues_text = "\n".join(f"- {i}" for i in llm_fix_needed)
+    fix_prompt = (
+        "以下の記事の特定箇所のみを修正してください。\n"
+        "記事全体を書き直す必要はありません。\n\n"
+        f"【修正が必要な箇所】\n{issues_text}\n\n"
+        "【修正ルール】\n"
+        "- 指摘された箇所のみを最小限修正する\n"
+        "- 他の部分は一切変更しない\n"
+        "- ですます体を維持する\n\n"
+        f"【記事】\n{content}\n\n"
+        "修正後の記事全文を出力してください:"
+    )
+    try:
+        fixed = _ask_fix(fix_prompt)
+        if fixed and len(fixed) > len(content) * 0.5:
+            return _normalize_style(fixed)
+    except Exception as e:
+        print(f"  ⚠️ 局所修正失敗（元の記事を使用）: {e}")
+
+    return content
+
+
 def _final_clean(content: str, topic: str, genre_id: str) -> str:
     """
     スコアに関わらず必ず適用する最終クリーニング。
@@ -1076,17 +1129,46 @@ def generate_article(
         is_last_attempt = (attempt == max_retries - 1)
         if review_score < PASS_SCORE:
             if not is_last_attempt:
-                # 1〜2回目: レビュー指摘をプロンプトに追加して再生成
-                issues_text = "\n".join(review.get("issues", []))
-                if issues_text:
-                    prompt += (
-                        f"\n\n【前回の品質指摘（必ず修正すること）】\n"
-                        f"{issues_text}\n"
-                        "上記の問題を修正して、より高品質な記事を書き直してください。"
-                    )
-                print(f"  ⚠️ 品質不足（score={review_score} < {PASS_SCORE}）"
-                      f"→ 再生成 {attempt + 1}/{max_retries}")
-                continue
+                # Level 2: 局所修正で解決できるか試みる（全文再生成の前に）
+                review_issues = review.get("issues", [])
+                if is_finance and review_issues:
+                    print(f"  🔧 局所修正を試行中（score={review_score}）...")
+                    fixed = _local_fix(content, review_issues,
+                                       _finance_data_for_check or {})
+                    from article_reviewer import review_article as _re_review
+                    re_result = _re_review(fixed, topic, genre_id=genre_id)
+                    if re_result["score"] >= PASS_SCORE:
+                        print(f"  ✅ 局所修正で解決"
+                              f"（score {review_score}→{re_result['score']}）")
+                        content       = fixed
+                        review_score  = re_result["score"]
+                        review_passed = re_result["passed"]
+                        review_feedback = re_result["feedback"]
+                        # レビュー通過 → ファクトチェックへ進む（continueしない）
+                    else:
+                        # Level 3: 局所修正では解決できず → 全文再生成
+                        issues_text = "\n".join(review_issues)
+                        if issues_text:
+                            prompt += (
+                                f"\n\n【前回の品質指摘（必ず修正すること）】\n"
+                                f"{issues_text}\n"
+                                "上記の問題を修正して、より高品質な記事を書き直してください。"
+                            )
+                        print(f"  🔄 全文再生成（局所修正でも score={re_result['score']}"
+                              f" < {PASS_SCORE}）→ attempt {attempt + 1}/{max_retries}")
+                        continue
+                else:
+                    # 非finance or 指摘なし: 従来通り全文再生成
+                    issues_text = "\n".join(review_issues)
+                    if issues_text:
+                        prompt += (
+                            f"\n\n【前回の品質指摘（必ず修正すること）】\n"
+                            f"{issues_text}\n"
+                            "上記の問題を修正して、より高品質な記事を書き直してください。"
+                        )
+                    print(f"  ⚠️ 品質不足（score={review_score} < {PASS_SCORE}）"
+                          f"→ 再生成 {attempt + 1}/{max_retries}")
+                    continue
             else:
                 # 最終試行: ACCEPT_SCORE以上なら保存、未満なら破棄
                 if review_score >= ACCEPT_SCORE:
@@ -1112,15 +1194,29 @@ def generate_article(
                     fc_issues   = fc_result["issues"] + fc_result["warnings"]
                     issues_text = "\n".join(f"- {i}" for i in fc_issues)
                     if attempt < max_retries - 1:
-                        print(f"  ❌ ファクトチェック失敗 → 修正指示付きで再生成")
-                        prompt += (
-                            f"\n\n【ファクトチェック指摘事項 - 必ず修正すること】\n"
-                            f"{issues_text}\n"
-                            "上記の問題を修正してください。特に:\n"
-                            "- 「と考えられます」→「背景は未公表」に変更\n"
-                            "- 曖昧表現を削除して事実のみを記載\n"
-                        )
-                        continue  # 再生成
+                        # Level 2: 局所修正で解決できるか試みる
+                        print(f"  🔧 ファクトチェック失敗 → 局所修正を試行中...")
+                        fixed_fc = _local_fix(content, fc_issues,
+                                              _finance_data_for_check or {})
+                        from fact_checker import fact_check as _re_fc
+                        fc_re = _re_fc(fixed_fc, _finance_data_for_check,
+                                       variant=variant)
+                        if fc_re["passed"] and not fc_re["warnings"]:
+                            print(f"  ✅ 局所修正でファクトチェック解決（再生成不要）")
+                            content = fixed_fc
+                            _fc_result = fc_re
+                            # continueせず次のチェックへ
+                        else:
+                            # Level 3: 全文再生成
+                            print(f"  ❌ ファクトチェック失敗 → 修正指示付きで再生成")
+                            prompt += (
+                                f"\n\n【ファクトチェック指摘事項 - 必ず修正すること】\n"
+                                f"{issues_text}\n"
+                                "上記の問題を修正してください。特に:\n"
+                                "- 「と考えられます」→「背景は未公表」に変更\n"
+                                "- 曖昧表現を削除して事実のみを記載\n"
+                            )
+                            continue  # 再生成
                     else:
                         # 最終試行は警告のみ・保存続行
                         print(f"  ⚠️ ファクトチェック警告（最終試行のため保存続行）")
