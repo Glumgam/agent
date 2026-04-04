@@ -1067,12 +1067,20 @@ def generate_article(
 
     # 記事生成（品質チェック + レビュー付きリトライあり）
     from llm import ask_plain
+    # llm-jp-4 (llama.cpp) 使用フラグ — Falseにするとqwen3:14b(Ollama)に戻す
+    USE_LLM_JP4 = True
     content = ""
     review_score    = 0
     review_passed   = True
     review_feedback = "レビューなし"
     for attempt in range(max_retries):
-        if is_finance:
+        if is_finance and USE_LLM_JP4:
+            from llm import (start_llm_jp4 as _start_jp4,
+                             stop_llm_jp4  as _stop_jp4,
+                             ask_finance_llmjp4 as _gen_jp4,
+                             ask_finance        as _gen_fallback)
+            _model_label = "llm-jp-4 (llama.cpp)"
+        elif is_finance:
             from llm import ask_finance as _gen
             _model_label = "qwen3:14b・投資記事専用"
         else:
@@ -1081,7 +1089,17 @@ def generate_article(
             _model_label = _PM
         print(f"  🧠 生成中 ({_model_label})"
               f"{' 再試行 ' + str(attempt) if attempt > 0 else ''}...")
-        content = _gen(prompt)
+        if is_finance and USE_LLM_JP4:
+            started = _start_jp4()
+            if started:
+                content = _gen_jp4(prompt)
+                _stop_jp4()  # レビュー前にOllamaを戻す
+            else:
+                # フォールバック: qwen3:14b (Ollama)
+                print("  ⚠️ llm-jp-4起動失敗 → qwen3:14bにフォールバック")
+                content = _gen_fallback(prompt)
+        else:
+            content = _gen(prompt)
         # 中国語文字を除去（置換リストで対応済みの文字を日本語化）
         content = _remove_chinese_chars(content)
         # finance記事: 品質チェック前に文体・表現を正規化（LLM生成直後に毎回適用）

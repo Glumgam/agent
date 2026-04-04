@@ -1,6 +1,9 @@
 import requests
 import json
 import re
+import subprocess
+import time
+import os
 
 
 # -------------------------
@@ -583,6 +586,129 @@ def ask_thinking(prompt: str, label: str = "THINKING") -> str:
         print(f"  ⚠️ thinking model失敗 ({e}) → 通常モデルにフォールバック")
         return ask_plain(prompt)
 # --- DUAL MODEL END ---
+
+
+# -------------------------
+# LLM-JP-4 (llama.cpp server)
+# -------------------------
+
+LLAMA_CPP_BIN    = os.path.expanduser("~/llama.cpp/build/bin/llama-server")
+LLM_JP4_MODEL    = (
+    "/Volumes/ESD-EHA/Ollama/models/blobs/"
+    "sha256-71db039fff933c395fefe5cdbc10f1ba1dce677e5772eacf64f61b287d9b440b"
+)
+LLAMA_SERVER_PORT = 8080
+
+# ollama バイナリのフルパス（PATH未設定環境対応）
+_OLLAMA_BIN = next(
+    (p for p in [
+        "/opt/homebrew/Cellar/ollama/0.18.0/bin/ollama",
+        "/Applications/Ollama.app/Contents/Resources/ollama",
+        "/usr/local/bin/ollama",
+        "/opt/homebrew/bin/ollama",
+    ] if os.path.exists(p)),
+    "ollama",  # フォールバック: PATHに任せる
+)
+
+_llama_server_proc = None
+
+
+def start_llm_jp4() -> bool:
+    """llama.cppサーバーをllm-jp-4で起動する。Ollamaを先に停止する。"""
+    global _llama_server_proc
+
+    # Ollama停止
+    print("  🔄 Ollama停止中...")
+    subprocess.run(["pkill", "-f", "ollama serve"], capture_output=True)
+    time.sleep(3)
+
+    # llama.cppサーバー起動
+    print("  🚀 llm-jp-4 起動中...")
+    _llama_server_proc = subprocess.Popen(
+        [
+            LLAMA_CPP_BIN,
+            "-m", LLM_JP4_MODEL,
+            "--port", str(LLAMA_SERVER_PORT),
+            "--ctx-size", "4096",
+            "--n-predict", "2048",
+            "--host", "127.0.0.1",
+            "--chat-template", "chatml",
+            "--no-mmap",
+            "-ngl", "99",
+        ],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+
+    # ヘルスチェック（最大30秒待機）
+    for _ in range(30):
+        try:
+            r = requests.get(
+                f"http://127.0.0.1:{LLAMA_SERVER_PORT}/health", timeout=1
+            )
+            if r.status_code == 200:
+                print("  ✅ llm-jp-4 起動完了")
+                return True
+        except Exception:
+            pass
+        time.sleep(1)
+
+    print("  ❌ llm-jp-4 起動失敗（タイムアウト）")
+    return False
+
+
+def stop_llm_jp4():
+    """llama.cppサーバーを停止してOllamaを再起動する。"""
+    global _llama_server_proc
+
+    if _llama_server_proc:
+        print("  🔄 llm-jp-4 停止中...")
+        _llama_server_proc.terminate()
+        _llama_server_proc.wait()
+        _llama_server_proc = None
+        time.sleep(2)
+
+    # Ollama再起動
+    print("  🚀 Ollama再起動中...")
+    subprocess.Popen(
+        [_OLLAMA_BIN, "serve"],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    time.sleep(3)
+    print("  ✅ Ollama起動完了")
+
+
+def ask_finance_llmjp4(prompt: str) -> str:
+    """llm-jp-4（llama.cppサーバー）で投資記事を生成する。"""
+    system_msg = (
+        "あなたは日本語の投資記事を書く専門家です。"
+        "ですます体で、事実のみを記述してください。"
+        "中国語・韓国語は使用禁止です。"
+    )
+    try:
+        response = requests.post(
+            f"http://127.0.0.1:{LLAMA_SERVER_PORT}/v1/chat/completions",
+            json={
+                "model": "llm-jp-4",
+                "messages": [
+                    {"role": "system", "content": system_msg},
+                    {"role": "user",   "content": prompt},
+                ],
+                "max_tokens": 2048,
+                "temperature": 0.7,
+            },
+            timeout=300,
+        )
+        response.raise_for_status()
+        text = response.json()["choices"][0]["message"]["content"]
+        # 特殊トークン・重複出力を除去
+        text = re.sub(r"<\|im_(end|start)\|>.*", "", text, flags=re.DOTALL)
+        text = re.sub(r"<\|[^|]+\|>", "", text)  # 残存特殊トークン
+        return text.strip()
+    except Exception as e:
+        print(f"  ❌ llm-jp-4生成失敗: {e}")
+        return ""
 
 
 def ask_finance(prompt: str, retries: int = 3) -> str:
