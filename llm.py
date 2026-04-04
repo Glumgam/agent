@@ -10,9 +10,9 @@ import os
 # SETTINGS
 # -------------------------
 
-OLLAMA_URL = "http://localhost:11434/api/generate"
-PLANNER_MODEL = "qwen2.5-coder:14b"
-CODER_MODEL   = "qwen2.5-coder:14b"
+OLLAMA_URL = "http://localhost:11434/api/chat"
+PLANNER_MODEL = "qwen3:14b"
+CODER_MODEL   = "qwen3:14b"
 
 
 # -------------------------
@@ -340,11 +340,14 @@ _RETRY_WAITS = [2, 4, 8]  # 指数バックオフ (秒)
 def _call_ollama(model: str, prompt: str, system: str = "", label: str = "AGENT") -> str:
     import time
 
-    full_prompt = f"{system}\n\nUSER TASK CONTEXT:\n{prompt}" if system else prompt
+    messages = []
+    if system:
+        messages.append({"role": "system", "content": system})
+    messages.append({"role": "user", "content": prompt})
 
     payload = {
         "model": model,
-        "prompt": full_prompt,
+        "messages": messages,
         "stream": False,
         "options": {
             "temperature": 0.1,
@@ -368,7 +371,7 @@ def _call_ollama(model: str, prompt: str, system: str = "", label: str = "AGENT"
             )
             resp.raise_for_status()
             data = resp.json()
-            return _clean_llm_output(data.get("response", ""))
+            return _clean_llm_output(data["message"]["content"])
 
         except (requests.exceptions.ConnectionError, requests.exceptions.Timeout) as e:
             last_error = str(e)
@@ -473,8 +476,8 @@ def unload_model(model: str = None):
         return
     try:
         requests.post(
-            "http://localhost:11434/api/generate",
-            json={"model": target, "keep_alive": 0},
+            "http://localhost:11434/api/chat",
+            json={"model": target, "messages": [], "keep_alive": 0},
             timeout=10,
         )
         print(f"  🗑️ アンロード: {target}")
@@ -502,11 +505,11 @@ def ask_plain(prompt: str, retries: int = 3, timeout: int = 600) -> str:
             time.sleep(wait)
         try:
             resp = requests.post(
-                "http://localhost:11434/api/generate",
+                "http://localhost:11434/api/chat",
                 json={
-                    "model":  PLANNER_MODEL,
-                    "prompt": prompt,
-                    "stream": False,
+                    "model":    PLANNER_MODEL,
+                    "messages": [{"role": "user", "content": prompt}],
+                    "stream":   False,
                     "options": {
                         "temperature": 0.7,
                         "num_ctx":     16384,
@@ -517,7 +520,7 @@ def ask_plain(prompt: str, retries: int = 3, timeout: int = 600) -> str:
                 timeout=timeout,
             )
             resp.raise_for_status()
-            return resp.json().get("response", "").strip()
+            return resp.json()["message"]["content"].strip()
         except requests.exceptions.Timeout:
             print(f"  ⚠️ Ollamaタイムアウト (試行 {attempt+1}/{retries})")
             try:
@@ -556,9 +559,9 @@ def ask_thinking(prompt: str, label: str = "THINKING") -> str:
     _time.sleep(2)
 
     payload = {
-        "model": THINKING_MODEL,
-        "prompt": prompt,
-        "stream": False,
+        "model":    THINKING_MODEL,
+        "messages": [{"role": "user", "content": prompt}],
+        "stream":   False,
         "options": {
             "temperature": 0.6,
             "num_ctx":     8192,
@@ -575,8 +578,7 @@ def ask_thinking(prompt: str, label: str = "THINKING") -> str:
         data = resp.json()
         elapsed = _time.time() - t0
         print(f"done ({elapsed:.1f}s)")
-        # response フィールド優先、なければ thinking フィールドを使う
-        result = data.get("response", "").strip() or data.get("thinking", "").strip()
+        result = data["message"]["content"].strip()
         clean = re.sub(r"<think>.*?</think>", "", result, flags=re.DOTALL)
         return clean.strip() or result.strip()
     except requests.exceptions.Timeout:
@@ -720,13 +722,12 @@ def ask_finance(prompt: str, retries: int = 3) -> str:
     """
     import time
 
-    # 言語強制: 中国語・韓国語を禁止し、思考プロセスを出力させない
-    enforced_prompt = (
+    # 言語強制: systemプロンプトで中国語・韓国語を禁止
+    _system = (
         "You must respond in Japanese only. "
         "Do not use Chinese characters (简体字/繁體字), Korean, "
         "or any language other than Japanese. "
-        "Do not output your thinking process.\n\n"
-        + prompt
+        "Do not output your thinking process."
     )
 
     unload_model(CODER_MODEL)
@@ -738,11 +739,14 @@ def ask_finance(prompt: str, retries: int = 3) -> str:
                 print(f"  ⏳ Ollama待機中 ({wait}秒)...")
                 time.sleep(wait)
             response = requests.post(
-                OLLAMA_URL,
+                "http://localhost:11434/api/chat",
                 json={
-                    "model":  THINKING_MODEL,  # qwen3:14b
-                    "prompt": enforced_prompt,
-                    "stream": False,
+                    "model":    THINKING_MODEL,  # qwen3:14b
+                    "messages": [
+                        {"role": "system", "content": _system},
+                        {"role": "user",   "content": prompt},
+                    ],
+                    "stream":   False,
                     "options": {
                         "temperature": 0.5,
                         "num_ctx":     16384,
@@ -753,7 +757,7 @@ def ask_finance(prompt: str, retries: int = 3) -> str:
                 timeout=600,
             )
             response.raise_for_status()
-            raw = response.json().get("response", "")
+            raw = response.json()["message"]["content"]
             # <think>...</think> タグを除去
             clean = re.sub(r"<think>.*?</think>", "", raw, flags=re.DOTALL)
             return clean.strip() or raw.strip()
