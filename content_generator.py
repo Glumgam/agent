@@ -690,40 +690,62 @@ def _normalize_style(content: str) -> str:
     """文体を統一する後処理（ですます体への統一・機械的表現の除去）"""
     result = content
 
-    # 括弧付き「未公表」系を完全削除（パターンリストに含まれているが念のため）
-    result = re.sub(r'（詳細は未公表）', '', result)
-    result = re.sub(r'（関連は未確認）', '', result)
+    # ① 括弧内の「未公表」「未確認」系を完全削除（全角・半角両対応）
+    result = re.sub(r'[（(][^）)]*未公表[^）)]*[）)]', '', result)
+    result = re.sub(r'[（(][^）)]*未確認[^）)]*[）)]', '', result)
 
-    # 機械的表現の置換
-    for pattern, replacement in _STYLE_NORMALIZE_PATTERNS:
-        result = re.sub(pattern, replacement, result)
-
-    # 「背景は未公表」: 値上がり・値下がり・ランキングセクション内のみ許可（最大6回）、それ以外は削除
+    # ② ランキングセクション外の「背景は未公表」を削除
+    in_ranking = False
     lines = result.split('\n')
-    in_ranking_section = False
-    bg_count = 0
-    new_lines = []
+    cleaned = []
     for line in lines:
-        if re.search(r'値上がり|値下がり|ランキング', line):
-            in_ranking_section = True
-        elif line.startswith('## ') and in_ranking_section:
-            in_ranking_section = False
+        if re.search(r'値上がり|値下がり|ランキング解説', line):
+            in_ranking = True
+        elif line.startswith('## ') and in_ranking:
+            in_ranking = False
 
-        if '背景は未公表' in line:
-            if in_ranking_section and bg_count < 6:
-                bg_count += 1
-                new_lines.append(line)
-            elif in_ranking_section:
-                # 上限超過分はそのまま保持（削除しない）
-                new_lines.append(line)
-            else:
-                # ランキング外は削除
-                line = re.sub(r'\s*背景は未公表', '', line)
-                new_lines.append(line)
-        else:
-            new_lines.append(line)
+        if '背景は未公表' in line and not in_ranking:
+            # 箇条書き形式「- 背景は未公表〜。」も丸ごと除去
+            line = re.sub(r'\s*[-・]\s*背景は未公表[^。\n]*[。、]?', '', line)
+            # 文中・文末の「背景は未公表〜。」（「です。」「と見られます。」等の後続も含む）を除去
+            line = re.sub(r'背景は未公表[^。\n]*[。、]?', '', line)
+        cleaned.append(line)
+    result = '\n'.join(cleaned)
 
-    return '\n'.join(new_lines)
+    # ③ 機械的表現の置換（_STYLE_NORMALIZE_PATTERNSを内包）
+    replacements = [
+        # 括弧付き未公表（①で取りこぼした場合の保険）
+        (r'（詳細は未公表）', ''),
+        (r'（背景は未公表）', ''),
+        (r'（関連は未確認）', ''),
+        # 機械的表現
+        (r'ことを意味します', 'ことを示しています'),
+        (r'ことを意味し、', 'ことを示しており、'),
+        (r'に寄与しました', 'に影響しました'),
+        (r'に寄与した', 'に影響した'),
+        (r'が確認されました', 'が報告されています'),
+        (r'が確認され', 'が報告され'),
+        # 普通体→ですます体
+        (r'となった。', 'となりました。'),
+        (r'進んだ。', '進みました。'),
+        (r'下落した。', '下落しました。'),
+        (r'上昇した。', '上昇しました。'),
+        (r'影響した。', '影響しました。'),
+        (r'広がった。', '広がりました。'),
+        (r'続いた。', '続きました。'),
+        (r'強まった。', '強まりました。'),
+        (r'弱まった。', '弱まりました。'),
+        (r'高まった。', '高まりました。'),
+        (r'低下した。', '低下しました。'),
+        (r'上回った。', '上回りました。'),
+        (r'下回った。', '下回りました。'),
+        (r'見られた。', '見られました。'),
+        (r'(?<!り)なった。', 'なりました。'),
+    ]
+    for pat, rep in replacements:
+        result = re.sub(pat, rep, result)
+
+    return result
 
 
 _SPECULATIVE_PATTERNS = [
@@ -1009,6 +1031,10 @@ def generate_article(
         content = _gen(prompt)
         # 中国語文字を除去（置換リストで対応済みの文字を日本語化）
         content = _remove_chinese_chars(content)
+        # finance記事: 品質チェック前に文体・表現を正規化（LLM生成直後に毎回適用）
+        if is_finance and content:
+            content = _normalize_stock_expressions(content)
+            content = _normalize_style(content)
         passed, reason = _quality_check_v2(content, min_chars=min_length,
                                            require_code=not is_finance, genre_id=genre_id)
         if not passed:
