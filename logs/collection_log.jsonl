@@ -74,3 +74,35 @@
 {"timestamp": "2026-04-01T04:34:56.492428", "topic_id": "security", "source": "news", "query": "cybersecurity 2026-04", "item_count": 1, "urls": [], "acquired": []}
 {"timestamp": "2026-04-01T05:07:34.003529", "topic_id": "gadget", "source": "hackernews", "query": "latest gadget 2026-04", "item_count": 1, "urls": [], "acquired": []}
 {"timestamp": "2026-04-01T05:07:34.498742", "topic_id": "gadget", "source": "news", "query": "latest gadget 2026-04", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-04-04T16:11:12.792691", "topic_id": "python_tech", "source": "github", "query": "Python new library 2026-04", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-04-04T16:11:12.945091", "topic_id": "python_tech", "source": "github", "query": "Python tool framework 2026", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-04-04T16:11:13.083665", "topic_id": "python_tech", "source": "github", "query": "Python tips 2026-04", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-04-04T16:11:13.230603", "topic_id": "python_tech", "source": "github", "query": "Python best practices 2026", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-04-04T16:11:13.352931", "topic_id": "python_tech", "source": "pypi", "query": "Python new library 2026-04", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-04-04T16:11:13.448292", "topic_id": "python_tech", "source": "pypi", "query": "Python tool framework 2026", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-04-04T16:11:13.531247", "topic_id": "python_tech", "source": "pypi", "query": "Python tips 2026-04", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-04-04T16:11:13.625197", "topic_id": "python_tech", "source": "pypi", "query": "Python best practices 2026", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-04-04T16:11:21.324896", "topic_id": "ai_news", "source": "news", "query": "AI LLM agent 2026", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-04-04T16:11:22.302181", "topic_id": "ai_news", "source": "news", "query": "Claude GPT Gemini update 2026-04", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-04-04T16:11:26.688540", "topic_id": "ai_news", "source": "hackernews", "query": "AI LLM agent 2026", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-04-04T16:11:31.017073", "topic_id": "ai_news", "source": "hackernews", "query": "Claude GPT Gemini update 2026-04", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-04-04T16:11:32.776923", "topic_id": "arxiv_ai", "source": "arxiv", "query": "LLM tool use agent", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-04-04T16:11:33.325043", "topic_id": "arxiv_ai", "source": "arxiv", "query": "autonomous AI learning", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-04-04T16:11:38.753993", "topic_id": "security", "source": "hackernews", "query": "cybersecurity 2026-04", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-04-04T16:11:43.075150", "topic_id": "security", "source": "hackernews", "query": "vulnerability security tool 2026", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-04-04T16:11:43.667560", "topic_id": "security", "source": "news", "query": "cybersecurity 2026-04", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-04-04T16:11:44.304678", "topic_id": "security", "source": "news", "query": "vulnerability security tool 2026", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-04-04T16:11:49.868153", "topic_id": "gadget", "source": "hackernews", "query": "latest gadget 2026-04", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-04-04T16:11:54.267749", "topic_id": "gadget", "source": "hackernews", "query": "Apple Google tech 2026", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-04-04T16:11:54.807879", "topic_id": "gadget", "source": "news", "query": "latest gadget 2026-04", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-04-04T16:11:55.496994", "topic_id": "gadget", "source": "news", "query": "Apple Google tech 2026", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-04-04T16:11:57.468075", "topic_id": "finance", "source": "news", "query": "日本株 最新", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-04-04T16:11:58.180159", "topic_id": "finance", "source": "news", "query": "economic news 2026-04", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-04-04T16:11:58.719979", "topic_id": "finance", "source": "reddit", "query": "日本株 最新", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-04-04T16:11:59.867680", "topic_id": "finance", "source": "reddit", "query": "economic news 2026-04", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-04-04T16:12:01.588153", "topic_id": "science", "source": "arxiv", "query": "science breakthrough 2026-04", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-04-04T16:12:02.303469", "topic_id": "science", "source": "arxiv", "query": "physics biology research", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-04-04T16:12:02.712651", "topic_id": "science", "source": "news", "query": "science breakthrough 2026-04", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-04-04T16:12:03.431861", "topic_id": "science", "source": "news", "query": "physics biology research", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-04-04T16:12:05.284959", "topic_id": "food", "source": "news", "query": "ラーメン 新店 2026", "item_count": 1, "urls": [], "acquired": []}
+{"timestamp": "2026-04-04T16:12:06.079108", "topic_id": "food", "source": "news", "query": "グルメ おすすめ", "item_count": 1, "urls": [], "acquired": []}
