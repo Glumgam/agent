@@ -576,8 +576,8 @@ def _quality_check_v2(content: str, min_chars: int = 1500, require_code: bool = 
         for section in ("市場概況", "まとめ"):
             if section not in content:
                 issues.append(f"必須セクションなし:「{section}」")
-        # 日経平均の数値（3〜6万円台）
-        if not re.search(r'[3-6][0-9],[0-9]{3}\.[0-9]+', content):
+        # 日経平均の数値（3〜6万円台、小数なし形式も許可）
+        if not re.search(r'[3-6][0-9],[0-9]{3}(?:\.[0-9]+)?', content):
             issues.append("日経平均の数値が見つかりません")
         # 免責事項
         if "免責事項" not in content:
@@ -1306,6 +1306,9 @@ def generate_article(
                         # 修正後に短くなっていたら元を使う
                         if len(_fixed) >= len(content):
                             content = _fixed
+                        # 局所修正後に免責事項・タイトルが失われることがあるため再適用
+                        if is_finance:
+                            content = _rule_based_fix(content)
                         _passed2, _reason2 = _quality_check_v2(
                             content, min_chars=min_length,
                             require_code=not is_finance, genre_id=genre_id
