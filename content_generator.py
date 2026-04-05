@@ -1265,7 +1265,8 @@ def generate_article(
                 content = _gen_fallback(prompt)
                 _jp4_fallback_used = True
         else:
-            content = _gen(prompt)
+            # tech記事は3000文字以上必要なためnum_predict=6000
+            content = _gen(prompt, max_tokens=6000)
         # 中国語文字を除去（置換リストで対応済みの文字を日本語化）
         content = _remove_chinese_chars(content)
         # finance記事: 品質チェック前に文体・表現を正規化（llm-jp-4パスでは既に適用済み）

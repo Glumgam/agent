@@ -485,7 +485,7 @@ def unload_model(model: str = None):
         pass
 
 
-def ask_plain(prompt: str, retries: int = 3, timeout: int = 1200) -> str:
+def ask_plain(prompt: str, retries: int = 3, timeout: int = 1200, max_tokens: int = 1024) -> str:
     """
     Plain-text generation for articles / planning.
     _call_ollama を経由しないことで _clean_llm_output（コードブロック除去・
@@ -512,8 +512,8 @@ def ask_plain(prompt: str, retries: int = 3, timeout: int = 1200) -> str:
                     "stream":   False,
                     "options": {
                         "temperature": 0.7,
-                        "num_ctx":     4096,
-                        "num_predict": 1024,
+                        "num_ctx":     max(4096, max_tokens + 512),
+                        "num_predict": max_tokens,
                     },
                     "keep_alive": 120,
                 },
