@@ -466,7 +466,7 @@ def _quality_check(content: str) -> tuple:
         return False, f"見出し不足: {heading_count}個（最低3個）"
     if "```python" not in content and "```bash" not in content:
         return False, "コードブロックなし（最低1個必要）"
-    if "## まとめ" not in content:
+    if not re.search(r'^##\s+.*まとめ', content, re.MULTILINE):
         return False, "まとめセクションなし"
     return True, "OK"
 # --- QUALITY FILTER END ---
@@ -1507,9 +1507,10 @@ def generate_article(
                         f'<figure><img src="{img_url}" alt="{label}"'
                         f' style="max-width:100%;" /></figure>\n\n'
                     )
-                # "## まとめ" の直前に挿入
-                if "## まとめ" in content:
-                    content = content.replace("## まとめ", chart_section + "## まとめ", 1)
+                # "## まとめ" の直前に挿入（バリエーション対応）
+                _m = re.search(r'^(##\s+.*まとめ.*)', content, re.MULTILINE)
+                if _m:
+                    content = content.replace(_m.group(1), chart_section + _m.group(1), 1)
                 else:
                     content += chart_section
                 print(f"  📊 チャートセクション埋め込み完了（{len(charts)}枚）")
