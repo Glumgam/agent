@@ -845,8 +845,8 @@ def ask_finance(prompt: str, retries: int = 3) -> str:
                     "stream":   False,
                     "options": {
                         "temperature": 0.5,
-                        "num_ctx":     4096,
-                        "num_predict": 1024,
+                        "num_ctx":     8192,   # 4096→8192: 長い投資記事プロンプトに対応
+                        "num_predict": 3000,   # 1024→3000: 2500文字以上の記事を生成
                     },
                     "keep_alive": 60,
                 },

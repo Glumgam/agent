@@ -1282,16 +1282,23 @@ def generate_article(
             else:
                 if is_finance and USE_LLM_JP4:
                     # llm-jp-4パス: 再生成せずqwen3:14bで局所修正を試みる
-                    print(f"  🔧 品質未達({reason}) → qwen3:14bで局所修正中...")
-                    content = _local_fix(content, [reason], _finance_data_for_check or {})
-                    _passed2, _reason2 = _quality_check_v2(
-                        content, min_chars=min_length,
-                        require_code=not is_finance, genre_id=genre_id
-                    )
-                    if _passed2:
-                        print(f"  ✅ 局所修正で品質基準クリア")
+                    # ただし「内容が極端に少ない」場合は局所修正で解決できないためスキップ
+                    if "極端に少ない" in reason or "内容が少ない" in reason:
+                        print(f"  ⚠️ コンテンツ不足({reason}) → 局所修正不可・保存続行")
                     else:
-                        print(f"  ⚠️ 局所修正後も未達({_reason2}) → 下書きとして保存続行")
+                        print(f"  🔧 品質未達({reason}) → qwen3:14bで局所修正中...")
+                        _fixed = _local_fix(content, [reason], _finance_data_for_check or {})
+                        # 修正後に短くなっていたら元を使う
+                        if len(_fixed) >= len(content):
+                            content = _fixed
+                        _passed2, _reason2 = _quality_check_v2(
+                            content, min_chars=min_length,
+                            require_code=not is_finance, genre_id=genre_id
+                        )
+                        if _passed2:
+                            print(f"  ✅ 局所修正で品質基準クリア")
+                        else:
+                            print(f"  ⚠️ 局所修正後も未達({_reason2}) → 下書きとして保存続行")
                 else:
                     print(f"  ❌ 品質基準未達: {reason}")
                     return {"error": f"品質基準未達: {reason}"}
