@@ -12,8 +12,46 @@ research_agent の収集結果をもとに
 import json
 import argparse
 import random
+import signal
+import subprocess
+import sys
+import time
 from pathlib import Path
 from datetime import datetime, date
+
+
+def _cleanup_on_exit(signum=None, frame=None):
+    """Ctrl+C / SIGTERM 時にLLMプロセスをクリーンアップしてOllamaを再起動する。"""
+    print("\n🛑 クリーンアップ中...")
+    subprocess.run(["pkill", "-9", "-f", "llama-server"],  capture_output=True)
+    subprocess.run(["pkill", "-9", "-f", "ollama runner"], capture_output=True)
+    subprocess.run(
+        ["osascript", "-e", 'quit app "Ollama"'], capture_output=True
+    )
+    time.sleep(2)
+    subprocess.Popen(["open", "-a", "Ollama"])
+    print("✅ クリーンアップ完了")
+    sys.exit(0)
+
+
+signal.signal(signal.SIGINT,  _cleanup_on_exit)
+signal.signal(signal.SIGTERM, _cleanup_on_exit)
+
+
+def _check_memory() -> int:
+    """利用可能メモリ(MB)を表示して返す。4GB未満なら警告。"""
+    result = subprocess.run(["vm_stat"], capture_output=True, text=True)
+    free_pages = 0
+    for line in result.stdout.split("\n"):
+        if "Pages free" in line:
+            free_pages += int(line.split(":")[1].strip().rstrip("."))
+        elif "Pages inactive" in line:
+            free_pages += int(line.split(":")[1].strip().rstrip("."))
+    free_mb = free_pages * 4096 // 1024 // 1024
+    print(f"  💾 利用可能メモリ: {free_mb}MB")
+    if free_mb < 4000:
+        print("  ⚠️ メモリ不足の可能性。llm-jp-4が起動できない場合はqwen3:14bで代替します")
+    return free_mb
 
 AGENT_ROOT   = Path(__file__).parent
 TOPICS_CACHE = AGENT_ROOT / "memory" / "content_topics_cache.json"
@@ -134,6 +172,7 @@ def run_finance_news(topic: str, max_restart: int = 2) -> dict:
     - はてな版のみ生成・品質未達時は情報再収集して再スタート
     - 再スタートはウィンドウ内なら継続（最大 MAX_RESTART 回）
     """
+    _check_memory()
     from datetime import datetime as _dt
     from content_generator import generate_article
     from finance_data_collector import collect_finance_data, compress_finance_context

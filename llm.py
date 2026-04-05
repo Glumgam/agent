@@ -690,6 +690,49 @@ def stop_llm_jp4():
     print("  ✅ Ollama起動完了")
 
 
+def _strip_thinking_residue(text: str) -> str:
+    """thinkingモデルの思考残骸・プロンプト残骸を除去する。"""
+    # <think>...</think> タグを除去
+    text = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL)
+
+    lines = text.strip().split("\n")
+
+    # 先頭から英語・プロンプト残骸行をスキップ
+    _skip = [
+        r"^We\s+need",
+        r"^The\s+user",
+        r"^Theuser",
+        r"^I\s+need",
+        r"^Let\s+me",
+        r"^First\b",
+        r"^以下の条件",
+        r"^必ず最初",
+        r"^\.\.\.",
+        r"^---+$",
+        r"^\s*$",
+    ]
+    while lines:
+        if any(re.match(p, lines[0].strip(), re.IGNORECASE) for p in _skip):
+            lines.pop(0)
+        else:
+            break
+
+    # タイトル行を # 形式に正規化
+    if lines:
+        _first = lines[0].strip()
+        _m = re.match(
+            r"^\*{0,2}#?\s*(?:記事タイトル|タイトル)[：:]\s*\*{0,2}\s*(.+)", _first
+        )
+        if _m:
+            lines[0] = f"# {_m.group(1).strip('* ').strip()}"
+        else:
+            _m2 = re.match(r"^\*+#\s*(.+?)\**$", _first)
+            if _m2:
+                lines[0] = f"# {_m2.group(1).strip()}"
+
+    return "\n".join(lines).strip()
+
+
 def ask_finance_llmjp4(prompt: str, system_msg: str = "") -> str:
     """llm-jp-4（llama.cppサーバー）でテキスト生成する。"""
     if not system_msg:
@@ -717,7 +760,9 @@ def ask_finance_llmjp4(prompt: str, system_msg: str = "") -> str:
         # 特殊トークン・重複出力を除去
         text = re.sub(r"<\|im_(end|start)\|>.*", "", text, flags=re.DOTALL)
         text = re.sub(r"<\|[^|]+\|>", "", text)  # 残存特殊トークン
-        return text.strip()
+        # thinking残骸・プロンプト残骸を除去してタイトル行を正規化
+        text = _strip_thinking_residue(text)
+        return text
     except Exception as e:
         print(f"  ❌ llm-jp-4生成失敗: {e}")
         return ""
