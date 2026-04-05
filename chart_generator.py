@@ -24,15 +24,23 @@ _JP_FONT_CANDIDATES = [
 
 def _setup_font():
     """日本語フォントを設定する"""
+    import os
+    os.environ.setdefault("MPLBACKEND", "Agg")
     try:
         import matplotlib
         import matplotlib.font_manager as fm
+        import warnings
         for fpath in _JP_FONT_CANDIDATES:
-            if Path(fpath).exists():
-                fm.fontManager.addfont(fpath)
-                prop = fm.FontProperties(fname=fpath)
-                matplotlib.rcParams["font.family"] = prop.get_name()
-                return
+            try:
+                if Path(fpath).exists():
+                    with warnings.catch_warnings():
+                        warnings.simplefilter("ignore")
+                        fm.fontManager.addfont(fpath)
+                    prop = fm.FontProperties(fname=fpath)
+                    matplotlib.rcParams["font.family"] = prop.get_name()
+                    return
+            except (UnicodeDecodeError, OSError, Exception):
+                continue
     except Exception:
         pass
 
