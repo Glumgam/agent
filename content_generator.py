@@ -1189,6 +1189,7 @@ def generate_article(
             started = _start_jp4()
             if started:
                 content = _gen_jp4(prompt)
+                _raw_jp4 = content  # 後処理で空になったときの復元用バックアップ
                 # llm-jp-4はタイトル行の前にプリアンブル/思考テキストを出力することがある。
                 # 最初の「# 」行を探してそれ以降のみを使用する。
                 if content:
@@ -1204,6 +1205,12 @@ def generate_article(
                 if content:
                     content = _normalize_stock_expressions(content)
                     content = _normalize_style(content)
+                # 後処理でcontentが空になった場合はRAW出力を復元して再度normalize
+                if not content and _raw_jp4:
+                    print(f"  ⚠️ 後処理でコンテンツが空になりました → RAW出力で復元")
+                    content = _normalize_style(_raw_jp4)
+                    if not content:
+                        content = _raw_jp4
                 # 下書き保存（品質チェック前に必ず保存）
                 if content:
                     _draft_path = _save_draft(content, genre_id, topic, variant)
@@ -1420,16 +1427,18 @@ def generate_article(
         content = _add_footer(content, topic)
 
     # 導線文を注入（Zenn→はてな誘導 / はてな→Zenn逆リンク）
+    # finance_news はZenn停止中のためupsellをスキップ
     try:
-        from upsell_generator import inject_upsell_into_article
-        content = inject_upsell_into_article(
-            content=content,
-            topic=topic,
-            genre_id=genre_id,
-            variant=variant,
-            hatena_url="",   # publisher_linker.py が後で更新
-            zenn_url="",
-        )
+        if not is_finance:
+            from upsell_generator import inject_upsell_into_article
+            content = inject_upsell_into_article(
+                content=content,
+                topic=topic,
+                genre_id=genre_id,
+                variant=variant,
+                hatena_url="",   # publisher_linker.py が後で更新
+                zenn_url="",
+            )
     except Exception as e:
         print(f"  ⚠️ 導線文注入スキップ: {e}")
 
