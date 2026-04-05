@@ -1206,9 +1206,11 @@ def generate_article(
                 _raw_jp4 = content  # 後処理で空になったときの復元用バックアップ
                 print(f"  📏 llm-jp-4生成: {len(content) if content else 0}文字")
 
-                # llm-jp-4が空 or 極端に短い場合はqwen3:14bにフォールバック
-                if not content or len(content) < 200:
-                    print(f"  ⚠️ llm-jp-4が短すぎる出力({len(content) if content else 0}文字)"
+                # llm-jp-4が空 or 短い場合はqwen3:14bにフォールバック
+                # finance記事は最低1500文字必要なためしきい値を高めに設定
+                _jp4_min = 1500 if is_finance else 200
+                if not content or len(content) < _jp4_min:
+                    print(f"  ⚠️ llm-jp-4が短すぎる出力({len(content) if content else 0}文字 < {_jp4_min}文字)"
                           " → qwen3:14bにフォールバック（Ollama再起動後に生成）")
                     _stop_jp4()
                     content = _gen_fallback(prompt)
