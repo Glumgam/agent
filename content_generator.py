@@ -800,6 +800,45 @@ def _normalize_style(content: str) -> str:
     return result
 
 
+def _rule_based_fix(content: str) -> str:
+    """LLM不要のルールベース修正（タイトル正規化・免責事項補完）。
+    _normalize_style()が対応しない 【】形式タイトルと免責事項の自動補完を行う。
+    """
+    lines = content.split('\n')
+
+    if lines:
+        first = lines[0].strip()
+        # 【記事タイトル】XXX → # XXX
+        m = re.match(r'^【(?:記事タイトル|タイトル)】\s*(.+)', first)
+        if m:
+            lines[0] = f"# {m.group(1).strip()}"
+        else:
+            # **記事タイトル:** XXX → # XXX（_normalize_styleの補完）
+            m2 = re.match(r'^\*{0,2}(?:記事タイトル|タイトル)[：:]\s*\*{0,2}\s*(.+)', first)
+            if m2:
+                lines[0] = f"# {m2.group(1).strip('* ').strip()}"
+
+        # 先頭が # で始まらない場合、本文中の最初の # 行を先頭に移動
+        if lines and not lines[0].startswith('# '):
+            for i, line in enumerate(lines[1:], 1):
+                if line.startswith('# '):
+                    lines = [lines[i]] + lines[:i] + lines[i + 1:]
+                    break
+
+    content = '\n'.join(lines)
+
+    # 免責事項が含まれていない場合は末尾に追加
+    _disclaimer = (
+        "※本記事は情報提供を目的としており、"
+        "投資の推奨・勧誘を行うものではありません。"
+        "投資に関する最終判断はご自身の責任でお願いいたします。"
+    )
+    if "免責事項" not in content and _disclaimer[:10] not in content:
+        content += f"\n\n## 免責事項\n\n{_disclaimer}"
+
+    return content.strip()
+
+
 _SPECULATIVE_PATTERNS = [
     (r'業績の改善が期待される企業や、特定の要因が背景にある銘柄も見られ', '一部銘柄では個別の値動きが見られ'),
     (r'業績の改善が期待される企業が目立ちました', '個別に値上がりした銘柄も見られました'),
@@ -1121,6 +1160,10 @@ def generate_article(
     from llm import ask_plain
     # llm-jp-4 (llama.cpp) 使用フラグ — Falseにするとqwen3:14b(Ollama)に戻す
     USE_LLM_JP4 = True
+    if is_finance and USE_LLM_JP4:
+        # llm-jp-4パス: 1回生成 → 下書き保存 → ルールベース修正 → 局所修正
+        # 再生成ループは使わない（モデル起動コストが高いため）
+        max_retries = 1
     content = ""
     review_score    = 0
     review_passed   = True
@@ -1161,6 +1204,12 @@ def generate_article(
                 if content:
                     content = _normalize_stock_expressions(content)
                     content = _normalize_style(content)
+                # 下書き保存（品質チェック前に必ず保存）
+                if content:
+                    _draft_path = _save_draft(content, genre_id, topic, variant)
+                    print(f"  💾 下書き保存: {_draft_path.name}")
+                    # ルールベース修正（LLM不要: タイトル・免責事項を自動補完）
+                    content = _rule_based_fix(content)
                 from article_reviewer import review_article as _rev_jp4
                 _llmjp4_review = _rev_jp4(
                     content, topic, genre_id=genre_id, use_llmjp4=True
@@ -1207,8 +1256,21 @@ def generate_article(
                 )
                 continue
             else:
-                print(f"  ❌ 品質基準未達: {reason}")
-                return {"error": f"品質基準未達: {reason}"}
+                if is_finance and USE_LLM_JP4:
+                    # llm-jp-4パス: 再生成せずqwen3:14bで局所修正を試みる
+                    print(f"  🔧 品質未達({reason}) → qwen3:14bで局所修正中...")
+                    content = _local_fix(content, [reason], _finance_data_for_check or {})
+                    _passed2, _reason2 = _quality_check_v2(
+                        content, min_chars=min_length,
+                        require_code=not is_finance, genre_id=genre_id
+                    )
+                    if _passed2:
+                        print(f"  ✅ 局所修正で品質基準クリア")
+                    else:
+                        print(f"  ⚠️ 局所修正後も未達({_reason2}) → 下書きとして保存続行")
+                else:
+                    print(f"  ❌ 品質基準未達: {reason}")
+                    return {"error": f"品質基準未達: {reason}"}
 
         # --- QUALITY REVIEW START ---
         if _llmjp4_review is not None:
@@ -1510,6 +1572,26 @@ def generate_article(
         pass
 
     return result
+
+
+def _save_draft(
+    content: str,
+    genre_id: str,
+    topic: str,
+    variant: str = "hatena",
+) -> Path:
+    """品質チェック前に下書きをファイルに保存する。
+    content/finance/drafts/ 以下に保存し、最終版とは別管理する。
+    """
+    draft_dir = get_content_dir(genre_id).parent / "drafts"
+    draft_dir.mkdir(parents=True, exist_ok=True)
+    date_str = datetime.now().strftime("%Y%m%d_%H%M%S")
+    slug     = re.sub(r"[^\w\s-]", "", topic.lower())
+    slug     = re.sub(r"\s+", "_", slug.strip())[:30] or "draft"
+    suffix   = "_zenn" if variant == "zenn" else "_hatena"
+    path     = draft_dir / f"{date_str}_{slug}{suffix}_draft.md"
+    path.write_text(content, encoding="utf-8")
+    return path
 
 
 def _save_article(

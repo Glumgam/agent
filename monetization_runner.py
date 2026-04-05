@@ -187,7 +187,7 @@ def run_finance_news(topic: str, max_restart: int = 2) -> dict:
             return True
         return False
 
-    MAX_RESTART = 10   # 無限ループ防止の上限
+    MAX_RESTART = max_restart  # generate_article が内部修正するため再起動は最小限
     finance_dir = AGENT_ROOT / "content" / "finance"
 
     for restart in range(MAX_RESTART + 1):
