@@ -1330,11 +1330,13 @@ def generate_article(
                           f"→ 再生成 {attempt + 1}/{max_retries}")
                     continue
             else:
-                # 最終試行: ACCEPT_SCORE以上なら保存、未満なら破棄
-                if review_score >= ACCEPT_SCORE:
+                # 最終試行
+                if is_finance and USE_LLM_JP4:
+                    # llm-jp-4パス: スコアに関わらず保存（再生成コスト大・下書きは確保済み）
+                    print(f"  ⚠️ llm-jp-4最終試行: score={review_score} → 保存続行")
+                elif review_score >= ACCEPT_SCORE:
                     print(f"  ⚠️ 最終試行: score={review_score}"
                           f"（目標{PASS_SCORE}未達だが{ACCEPT_SCORE}以上のため保存）")
-                    # 保存続行（breakせずここを抜ける）
                 else:
                     print(f"  ❌ 品質基準未達（最終試行）: score={review_score} < {ACCEPT_SCORE}")
                     return {
