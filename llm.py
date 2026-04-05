@@ -699,18 +699,31 @@ def _strip_thinking_residue(text: str) -> str:
 
     lines = text.strip().split("\n")
 
-    # 先頭から英語・プロンプト残骸行をスキップ
+    # 先頭から英語・日本語プロンプト残骸行をスキップ
     _skip = [
+        # 英語思考テキスト
         r"^We\s+need",
         r"^The\s+user",
         r"^Theuser",
         r"^I\s+need",
         r"^Let\s+me",
         r"^First\b",
+        r"^Below\s+is",
+        r"^Here\s+is",
+        r"^Sure\b",
+        # 日本語プロンプト残骸
+        r"^以下の要件",
         r"^以下の条件",
         r"^必ず最初",
+        r"^記事を執筆",
+        r"^次の条件",
+        r"^下記の",
+        r"^※.*免責",
+        r"^⚠.*免責",
+        # 記号・空行
         r"^\.\.\.",
         r"^---+$",
+        r"^```",
         r"^\s*$",
     ]
     while lines:
@@ -731,6 +744,13 @@ def _strip_thinking_residue(text: str) -> str:
             _m2 = re.match(r"^\*+#\s*(.+?)\**$", _first)
             if _m2:
                 lines[0] = f"# {_m2.group(1).strip()}"
+
+    # 先頭が # で始まらない場合、本文中の最初の # 行を先頭に移動
+    if lines and not lines[0].startswith("# "):
+        for i, line in enumerate(lines):
+            if line.startswith("# "):
+                lines = [lines[i]] + lines[:i] + lines[i + 1:]
+                break
 
     result = "\n".join(lines).strip()
 
