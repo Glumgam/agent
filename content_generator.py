@@ -700,7 +700,11 @@ def _normalize_style(content: str) -> str:
         r'^（ここ',
         r'^\.\.\.',
         r'^We need',
+        r'^We have',
+        r'^We (are|will|can|should)',
         r'^The\s+user',
+        r'^The\s+following',
+        r'^Here\s+(is|are|we)',
         r'^以下の条件',
         r'^\*\*質問',
         r'^\*\*実装',
@@ -827,14 +831,23 @@ def _rule_based_fix(content: str) -> str:
 
     content = '\n'.join(lines)
 
-    # 免責事項が含まれていない場合は末尾に追加
+    # 免責事項の補完（見出し「免責事項」が必須）
     _disclaimer = (
         "※本記事は情報提供を目的としており、"
         "投資の推奨・勧誘を行うものではありません。"
         "投資に関する最終判断はご自身の責任でお願いいたします。"
     )
-    if "免責事項" not in content and _disclaimer[:10] not in content:
-        content += f"\n\n## 免責事項\n\n{_disclaimer}"
+    if "免責事項" not in content:
+        if _disclaimer[:10] in content:
+            # 免責文章はあるが見出しがない → 見出しを前に挿入
+            content = content.replace(
+                _disclaimer[:10],
+                f"## 免責事項\n\n{_disclaimer[:10]}",
+                1,
+            )
+        else:
+            # 免責事項が全くない → 末尾に追加
+            content += f"\n\n## 免責事項\n\n{_disclaimer}"
 
     return content.strip()
 
@@ -1185,6 +1198,7 @@ def generate_article(
         print(f"  🧠 生成中 ({_model_label})"
               f"{' 再試行 ' + str(attempt) if attempt > 0 else ''}...")
         _llmjp4_review = None  # このattemptでのllm-jp-4レビュー結果
+        _jp4_fallback_used = False  # フォールバック(qwen3:14b)を使ったかどうか
         if is_finance and USE_LLM_JP4:
             started = _start_jp4()
             if started:
@@ -1199,10 +1213,7 @@ def generate_article(
                     _stop_jp4()
                     content = _gen_fallback(prompt)
                     _raw_jp4 = content
-                    # フォールバック時はllm-jp-4レビューをスキップ
-                    _llmjp4_review = {"score": 0, "passed": False,
-                                      "issues": ["llm-jp-4空出力によりフォールバック"],
-                                      "feedback": "llm-jp-4が空を返したためqwen3:14bで生成"}
+                    _jp4_fallback_used = True  # Ollamaレビューを使う
                 else:
                     # llm-jp-4はタイトル行の前にプリアンブル/思考テキストを出力することがある。
                     # 最初の「# 」行を探してそれ以降のみを使用する。
@@ -1232,21 +1243,25 @@ def generate_article(
                     print(f"  💾 下書き保存: {_draft_path.name}")
                     # ルールベース修正（LLM不要: タイトル・免責事項を自動補完）
                     content = _rule_based_fix(content)
-                # llm-jp-4フォールバック未発生の場合のみllm-jp-4でレビュー
+                # レビュー: フォールバック未発生ならllm-jp-4、発生済みならOllama
                 if _llmjp4_review is None:
                     from article_reviewer import review_article as _rev_jp4
+                    _use_jp4_review = not _jp4_fallback_used
+                    _label = "llm-jp-4" if _use_jp4_review else "Ollama"
                     _llmjp4_review = _rev_jp4(
-                        content, topic, genre_id=genre_id, use_llmjp4=True
+                        content, topic, genre_id=genre_id, use_llmjp4=_use_jp4_review
                     )
-                    print(f"  📊 品質スコア(llm-jp-4): {_llmjp4_review['score']}/10 "
+                    print(f"  📊 品質スコア({_label}): {_llmjp4_review['score']}/10 "
                           f"({'✅ pass' if _llmjp4_review['passed'] else '❌ fail'})")
                     if _llmjp4_review["issues"]:
                         print(f"  ⚠️ 問題点: {', '.join(_llmjp4_review['issues'][:3])}")
-                    _stop_jp4()  # レビュー完了後にOllama再起動
+                    if _use_jp4_review:
+                        _stop_jp4()  # llm-jp-4レビュー完了後にOllama再起動
             else:
                 # フォールバック: qwen3:14b (Ollama)
                 print("  ⚠️ llm-jp-4起動失敗 → qwen3:14bにフォールバック")
                 content = _gen_fallback(prompt)
+                _jp4_fallback_used = True
         else:
             content = _gen(prompt)
         # 中国語文字を除去（置換リストで対応済みの文字を日本語化）
