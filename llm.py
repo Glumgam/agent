@@ -765,12 +765,19 @@ def ask_finance_llmjp4(prompt: str, system_msg: str = "") -> str:
         )
         response.raise_for_status()
         text = response.json()["choices"][0]["message"]["content"]
-        # <|im_end|> / <|im_start|> 以降をインデックスで切り捨て（最優先）
-        for _tok in ("<|im_end|>", "<|im_start|>"):
-            if _tok in text:
-                text = text[:text.index(_tok)]
-        # 残存特殊トークンを除去
-        text = re.sub(r"<\|[^|]+\|>", "", text)
+        # 特殊トークンが最初に出現する位置で切り捨て（スラッシュ付きバリアントも対応）
+        _cut_tokens = [
+            "<|im_end|>", "</|im_end|>",
+            "<|im_start|>", "</|im_start|>",
+        ]
+        _cut_pos = len(text)
+        for _tok in _cut_tokens:
+            _pos = text.find(_tok)
+            if _pos != -1 and _pos < _cut_pos:
+                _cut_pos = _pos
+        text = text[:_cut_pos]
+        # 残存特殊トークンを除去（<|...|> 形式）
+        text = re.sub(r"</?\\?\|[^|]+\|>", "", text)
         text = text.strip()
         # thinking残骸・プロンプト残骸を除去してタイトル行を正規化
         text = _strip_thinking_residue(text)
