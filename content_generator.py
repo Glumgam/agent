@@ -1169,6 +1169,20 @@ def generate_article(
     if extra_prompt:
         prompt += extra_prompt
 
+    # 学習済みルールをプロンプト先頭に注入（自己改善ループの蓄積結果を活用）
+    from prompt_improver import (
+        load_rules as _pi_load_rules,
+        get_prompt_prefix as _pi_get_prefix,
+        analyze_failure as _pi_analyze,
+        apply_fix as _pi_apply_fix,
+        record_failure as _pi_record,
+        save_rules as _pi_save,
+    )
+    _pi_rules = _pi_load_rules()
+    _pi_prefix = _pi_get_prefix(_pi_rules)
+    if _pi_prefix:
+        prompt = _pi_prefix + "\n\n" + prompt
+
     # 記事生成（品質チェック + レビュー付きリトライあり）
     from llm import ask_plain
     # llm-jp-4 (llama.cpp) 使用フラグ — Falseにするとqwen3:14b(Ollama)に戻す
@@ -1278,24 +1292,34 @@ def generate_article(
         if not passed:
             if attempt < max_retries - 1:
                 print(f"  ⚠️ 品質不足: {reason} → リトライ {attempt + 1}/{max_retries - 1}")
-                if is_finance:
-                    retry_req = (
-                        "必須セクション（市場概況・まとめ・免責事項）を含めてください。"
-                        "日経平均の数値を必ず記載してください。"
-                        "コードブロックは不要です。提供データを最大限活用してください。"
-                    )
+                # 自己改善: 失敗原因を分析してプロンプトを修正
+                _analysis = _pi_analyze(content, [reason])
+                print(f"  🔍 原因分析: {_analysis['cause']}")
+                print(f"  💡 仮説: {_analysis['hypothesis']}")
+                if _analysis["fix"]:
+                    _pi_record(_pi_rules, reason, _analysis["fix"])
+                    _pi_save(_pi_rules)
+                    prompt = _pi_apply_fix(prompt, _analysis["fix"])
+                    print(f"  🔧 プロンプト自動修正: {_analysis['fix'][:60]}...")
                 else:
-                    retry_req = (
-                        f"必ず{min_length}文字以上・見出し(##)3個以上"
-                        "・コード例(```python)1個以上・まとめセクションを含めてください。"
+                    # フォールバック: ジャンル固定のリトライ指示
+                    if is_finance:
+                        _fallback_req = (
+                            "必須セクション（市場概況・まとめ・免責事項）を含めてください。"
+                            "日経平均の数値を必ず記載してください。"
+                        )
+                    else:
+                        _fallback_req = (
+                            f"必ず{min_length}文字以上・見出し(##)3個以上"
+                            "・コード例(```python)1個以上・まとめセクションを含めてください。"
+                        )
+                    prompt = (
+                        prompt
+                        + f"\n\n【重要・再試行{attempt + 1}回目】\n"
+                        + f"前回の出力が品質基準を満たしませんでした。理由: {reason}\n"
+                        + _fallback_req
+                        + "\n必ず日本語で書いてください。中国語（简体字）は絶対に使わないこと。"
                     )
-                prompt = (
-                    prompt
-                    + f"\n\n【重要・再試行{attempt + 1}回目】\n"
-                    + f"前回の出力が品質基準を満たしませんでした。理由: {reason}\n"
-                    + retry_req
-                    + "\n必ず日本語で書いてください。中国語（简体字）は絶対に使わないこと。"
-                )
                 continue
             else:
                 if is_finance and USE_LLM_JP4:
