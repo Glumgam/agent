@@ -790,14 +790,21 @@ def _strip_thinking_residue(text: str) -> str:
     return result
 
 
+_LLMJP4_DEFAULT_SYSTEM = """\
+あなたは日本語専門の投資記事ライターです。
+
+【絶対ルール】
+- 出力は必ず日本語のみ。英語・中国語・韓国語は一切使わない。
+- 思考過程・メモ・注釈・プロンプトの繰り返しは出力しない。
+- 記事本文のみを出力する。
+- 最初の行は必ず「# 」で始まるMarkdownタイトル行にする。
+- ですます体で統一する。
+"""
+
+
 def ask_finance_llmjp4(prompt: str, system_msg: str = "") -> str:
     """llm-jp-4（llama.cppサーバー）でテキスト生成する。"""
-    if not system_msg:
-        system_msg = (
-            "あなたは日本語の投資記事を書く専門家です。"
-            "ですます体で、事実のみを記述してください。"
-            "中国語・韓国語は使用禁止です。"
-        )
+    system_msg = system_msg if system_msg else _LLMJP4_DEFAULT_SYSTEM
     try:
         response = requests.post(
             f"http://127.0.0.1:{LLAMA_SERVER_PORT}/v1/chat/completions",
