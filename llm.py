@@ -692,6 +692,8 @@ def stop_llm_jp4():
 
 def _strip_thinking_residue(text: str) -> str:
     """thinkingモデルの思考残骸・プロンプト残骸を除去する。"""
+    original = text  # 除去しすぎた場合のバックアップ
+
     # <think>...</think> タグを除去
     text = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL)
 
@@ -730,7 +732,13 @@ def _strip_thinking_residue(text: str) -> str:
             if _m2:
                 lines[0] = f"# {_m2.group(1).strip()}"
 
-    return "\n".join(lines).strip()
+    result = "\n".join(lines).strip()
+
+    # 除去しすぎてコンテンツが消えた場合はオリジナルを返す
+    if len(result) < 100 and len(original) > 100:
+        return original
+
+    return result
 
 
 def ask_finance_llmjp4(prompt: str, system_msg: str = "") -> str:
@@ -757,9 +765,13 @@ def ask_finance_llmjp4(prompt: str, system_msg: str = "") -> str:
         )
         response.raise_for_status()
         text = response.json()["choices"][0]["message"]["content"]
-        # 特殊トークン・重複出力を除去
-        text = re.sub(r"<\|im_(end|start)\|>.*", "", text, flags=re.DOTALL)
-        text = re.sub(r"<\|[^|]+\|>", "", text)  # 残存特殊トークン
+        # <|im_end|> / <|im_start|> 以降をインデックスで切り捨て（最優先）
+        for _tok in ("<|im_end|>", "<|im_start|>"):
+            if _tok in text:
+                text = text[:text.index(_tok)]
+        # 残存特殊トークンを除去
+        text = re.sub(r"<\|[^|]+\|>", "", text)
+        text = text.strip()
         # thinking残骸・プロンプト残骸を除去してタイトル行を正規化
         text = _strip_thinking_residue(text)
         return text
