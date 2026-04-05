@@ -1190,9 +1190,22 @@ def generate_article(
             if started:
                 content = _gen_jp4(prompt)
                 _raw_jp4 = content  # 後処理で空になったときの復元用バックアップ
-                # llm-jp-4はタイトル行の前にプリアンブル/思考テキストを出力することがある。
-                # 最初の「# 」行を探してそれ以降のみを使用する。
-                if content:
+                print(f"  📏 llm-jp-4生成: {len(content) if content else 0}文字")
+
+                # llm-jp-4が空 or 極端に短い場合はqwen3:14bにフォールバック
+                if not content or len(content) < 200:
+                    print(f"  ⚠️ llm-jp-4が短すぎる出力({len(content) if content else 0}文字)"
+                          " → qwen3:14bにフォールバック（Ollama再起動後に生成）")
+                    _stop_jp4()
+                    content = _gen_fallback(prompt)
+                    _raw_jp4 = content
+                    # フォールバック時はllm-jp-4レビューをスキップ
+                    _llmjp4_review = {"score": 0, "passed": False,
+                                      "issues": ["llm-jp-4空出力によりフォールバック"],
+                                      "feedback": "llm-jp-4が空を返したためqwen3:14bで生成"}
+                else:
+                    # llm-jp-4はタイトル行の前にプリアンブル/思考テキストを出力することがある。
+                    # 最初の「# 」行を探してそれ以降のみを使用する。
                     _lines = content.split("\n")
                     _h1_idx = next(
                         (i for i, l in enumerate(_lines) if l.startswith("# ")), None
@@ -1200,8 +1213,10 @@ def generate_article(
                     if _h1_idx is not None and _h1_idx > 0:
                         print(f"  ✂️ プリアンブル除去: {_h1_idx}行スキップ")
                         content = "\n".join(_lines[_h1_idx:])
-                # 生成→正規化→レビューをllm-jp-4で連続実行（Ollama停止中に完結）
-                content = _remove_chinese_chars(content)
+
+                if content:
+                    # 生成→正規化→レビューをllm-jp-4で連続実行（Ollama停止中に完結）
+                    content = _remove_chinese_chars(content)
                 if content:
                     content = _normalize_stock_expressions(content)
                     content = _normalize_style(content)
@@ -1217,15 +1232,17 @@ def generate_article(
                     print(f"  💾 下書き保存: {_draft_path.name}")
                     # ルールベース修正（LLM不要: タイトル・免責事項を自動補完）
                     content = _rule_based_fix(content)
-                from article_reviewer import review_article as _rev_jp4
-                _llmjp4_review = _rev_jp4(
-                    content, topic, genre_id=genre_id, use_llmjp4=True
-                )
-                print(f"  📊 品質スコア(llm-jp-4): {_llmjp4_review['score']}/10 "
-                      f"({'✅ pass' if _llmjp4_review['passed'] else '❌ fail'})")
-                if _llmjp4_review["issues"]:
-                    print(f"  ⚠️ 問題点: {', '.join(_llmjp4_review['issues'][:3])}")
-                _stop_jp4()  # レビュー完了後にOllama再起動
+                # llm-jp-4フォールバック未発生の場合のみllm-jp-4でレビュー
+                if _llmjp4_review is None:
+                    from article_reviewer import review_article as _rev_jp4
+                    _llmjp4_review = _rev_jp4(
+                        content, topic, genre_id=genre_id, use_llmjp4=True
+                    )
+                    print(f"  📊 品質スコア(llm-jp-4): {_llmjp4_review['score']}/10 "
+                          f"({'✅ pass' if _llmjp4_review['passed'] else '❌ fail'})")
+                    if _llmjp4_review["issues"]:
+                        print(f"  ⚠️ 問題点: {', '.join(_llmjp4_review['issues'][:3])}")
+                    _stop_jp4()  # レビュー完了後にOllama再起動
             else:
                 # フォールバック: qwen3:14b (Ollama)
                 print("  ⚠️ llm-jp-4起動失敗 → qwen3:14bにフォールバック")
