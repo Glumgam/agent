@@ -701,16 +701,30 @@ def _strip_thinking_residue(text: str) -> str:
 
     # 先頭から英語・日本語プロンプト残骸行をスキップ
     _skip = [
-        # 英語思考テキスト
+        # 英語思考テキスト（単語境界）
         r"^We\s+need",
+        r"^We\s+have",
+        r"^We\s+(are|will|can|should)\b",
         r"^The\s+user",
         r"^Theuser",
+        r"^The\s+following",
         r"^I\s+need",
+        r"^I\s+will\b",
+        r"^I\s+'ll\b",
         r"^Let\s+me",
         r"^First\b",
         r"^Below\s+is",
-        r"^Here\s+is",
+        r"^Here\s+(is|are)\b",
         r"^Sure\b",
+        r"^OK\b",
+        r"^Okay\b",
+        r"^Alright\b",
+        r"^Now\b",
+        r"^So\b",
+        r"^Thus\b",
+        r"^Therefore\b",
+        r"^\(Note:",
+        r"^Note\b",
         # 日本語プロンプト残骸
         r"^以下の要件",
         r"^以下の条件",
@@ -718,6 +732,7 @@ def _strip_thinking_residue(text: str) -> str:
         r"^記事を執筆",
         r"^次の条件",
         r"^下記の",
+        r"^注意\b",
         r"^※.*免責",
         r"^⚠.*免責",
         # 記号・空行
@@ -731,6 +746,20 @@ def _strip_thinking_residue(text: str) -> str:
             lines.pop(0)
         else:
             break
+
+    # # で始まる行か日本語を含む行が見つかるまで英語行を丸ごと除去
+    # （thinking残骸の英語段落ブロック対策）
+    _has_japanese = lambda s: any('\u3040' <= c <= '\u9fff' for c in s)
+    _start_idx = 0
+    for _i, _line in enumerate(lines):
+        stripped = _line.strip()
+        if stripped.startswith("# ") or (_has_japanese(stripped) and len(stripped) > 10):
+            _start_idx = _i
+            break
+    else:
+        _start_idx = 0  # 日本語行が見つからない場合は先頭のまま
+    if _start_idx > 0:
+        lines = lines[_start_idx:]
 
     # タイトル行を # 形式に正規化
     if lines:
