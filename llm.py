@@ -640,7 +640,7 @@ def start_llm_jp4() -> bool:
             LLAMA_CPP_BIN,
             "-m", LLM_JP4_MODEL,
             "--port", str(LLAMA_SERVER_PORT),
-            "--ctx-size", "4096",
+            "--ctx-size", "8192",
             "--n-predict", "2048",
             "--host", "127.0.0.1",
             "--chat-template", "chatml",
