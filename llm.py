@@ -803,16 +803,20 @@ _LLMJP4_DEFAULT_SYSTEM = """\
 
 
 def ask_finance_llmjp4(prompt: str, system_msg: str = "") -> str:
-    """llm-jp-4（llama.cppサーバー）でテキスト生成する。"""
-    system_msg = system_msg if system_msg else _LLMJP4_DEFAULT_SYSTEM
+    """llm-jp-4で記事生成。システムプロンプトは使わずuserのみ。
+    system_msgが指定された場合はpromptの先頭に追記する。
+    （llm-jp-4はsystemロールがあると出力を拒否するため）
+    """
+    # system_msgをuserプロンプトの先頭に統合（systemロールは使わない）
+    _sys = system_msg if system_msg else _LLMJP4_DEFAULT_SYSTEM
+    full_prompt = _sys + "\n\n" + prompt
     try:
         response = requests.post(
             f"http://127.0.0.1:{LLAMA_SERVER_PORT}/v1/chat/completions",
             json={
                 "model": "llm-jp-4",
                 "messages": [
-                    {"role": "system", "content": system_msg},
-                    {"role": "user",   "content": prompt},
+                    {"role": "user", "content": full_prompt},
                 ],
                 "max_tokens": 2048,
                 "temperature": 0.7,
