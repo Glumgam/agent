@@ -691,99 +691,36 @@ def stop_llm_jp4():
 
 
 def _strip_thinking_residue(text: str) -> str:
-    """thinkingモデルの思考残骸・プロンプト残骸を除去する。"""
-    original = text  # 除去しすぎた場合のバックアップ
+    """thinkingモデルの思考残骸・プロンプト残骸を除去する。
+    # タイトル行が見つかるまで全行をスキップする方式。
+    """
+    original = text
 
     # <think>...</think> タグを除去
     text = re.sub(r"<think>.*?</think>", "", text, flags=re.DOTALL)
 
     lines = text.strip().split("\n")
 
-    # 先頭から英語・日本語プロンプト残骸行をスキップ
-    _skip = [
-        # 英語思考テキスト（単語境界）
-        r"^We\s+need",
-        r"^We\s+have",
-        r"^We\s+(are|will|can|should)\b",
-        r"^The\s+user",
-        r"^Theuser",
-        r"^The\s+following",
-        r"^I\s+need",
-        r"^I\s+will\b",
-        r"^I\s+'ll\b",
-        r"^Let\s+me",
-        r"^First\b",
-        r"^Below\s+is",
-        r"^Here\s+(is|are)\b",
-        r"^Sure\b",
-        r"^OK\b",
-        r"^Okay\b",
-        r"^Alright\b",
-        r"^Now\b",
-        r"^So\b",
-        r"^Thus\b",
-        r"^Therefore\b",
-        r"^\(Note:",
-        r"^Note\b",
-        # 日本語プロンプト残骸
-        r"^以下の要件",
-        r"^以下の条件",
-        r"^必ず最初",
-        r"^記事を執筆",
-        r"^次の条件",
-        r"^下記の",
-        r"^注意\b",
-        r"^※.*免責",
-        r"^⚠.*免責",
-        # 記号・空行
-        r"^\.\.\.",
-        r"^---+$",
-        r"^```",
-        r"^\s*$",
-    ]
-    while lines:
-        if any(re.match(p, lines[0].strip(), re.IGNORECASE) for p in _skip):
-            lines.pop(0)
-        else:
+    # # で始まる行、または日本語10文字以上の行が見つかるまで全行をスキップ
+    start_idx = 0
+    for i, line in enumerate(lines):
+        stripped = line.strip()
+        if stripped.startswith("# "):
+            start_idx = i
             break
-
-    # # で始まる行か日本語を含む行が見つかるまで英語行を丸ごと除去
-    # （thinking残骸の英語段落ブロック対策）
-    _has_japanese = lambda s: any('\u3040' <= c <= '\u9fff' for c in s)
-    _start_idx = 0
-    for _i, _line in enumerate(lines):
-        stripped = _line.strip()
-        if stripped.startswith("# ") or (_has_japanese(stripped) and len(stripped) > 10):
-            _start_idx = _i
+        japanese_chars = sum(1 for c in stripped if "\u3040" <= c <= "\u9fff")
+        if japanese_chars >= 10 and len(stripped) > 15:
+            start_idx = i
             break
     else:
-        _start_idx = 0  # 日本語行が見つからない場合は先頭のまま
-    if _start_idx > 0:
-        lines = lines[_start_idx:]
+        # # も日本語行も見つからない場合は元のテキストを返す
+        return original
 
-    # タイトル行を # 形式に正規化
-    if lines:
-        _first = lines[0].strip()
-        _m = re.match(
-            r"^\*{0,2}#?\s*(?:記事タイトル|タイトル)[：:]\s*\*{0,2}\s*(.+)", _first
-        )
-        if _m:
-            lines[0] = f"# {_m.group(1).strip('* ').strip()}"
-        else:
-            _m2 = re.match(r"^\*+#\s*(.+?)\**$", _first)
-            if _m2:
-                lines[0] = f"# {_m2.group(1).strip()}"
-
-    # 先頭が # で始まらない場合、本文中の最初の # 行を先頭に移動
-    if lines and not lines[0].startswith("# "):
-        for i, line in enumerate(lines):
-            if line.startswith("# "):
-                lines = [lines[i]] + lines[:i] + lines[i + 1:]
-                break
+    lines = lines[start_idx:]
 
     result = "\n".join(lines).strip()
 
-    # 除去しすぎてコンテンツが消えた場合はオリジナルを返す
+    # 除去しすぎた場合は元に戻す
     if len(result) < 100 and len(original) > 100:
         return original
 
