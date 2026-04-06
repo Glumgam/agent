@@ -784,6 +784,44 @@ def ask_finance_llmjp4(prompt: str, system_msg: str = "") -> str:
         return ""
 
 
+def check_japanese_with_llmjp4(content: str) -> dict:
+    """
+    llm-jp-4で記事が日本語で書かれているかチェックする。
+    llama.cppサーバーが起動中の場合のみ使用。
+
+    Returns:
+        {"is_japanese": bool, "english_ratio": float, "verdict": str}
+    """
+    try:
+        sample = content[:500]  # 先頭500文字をサンプリング
+        response = requests.post(
+            f"http://127.0.0.1:{LLAMA_SERVER_PORT}/v1/chat/completions",
+            json={
+                "model": "llm-jp-4",
+                "messages": [{"role": "user", "content": (
+                    "以下のテキストは日本語で書かれていますか？\n"
+                    "「はい」か「いいえ」と、英語の割合（%）を答えてください。\n\n"
+                    f"テキスト:\n{sample}\n\n"
+                    "回答形式: はい/いいえ, 英語割合XX%"
+                )}],
+                "max_tokens": 50,
+                "temperature": 0.0,
+            },
+            timeout=30,
+        )
+        verdict = response.json()["choices"][0]["message"]["content"].strip()
+        is_japanese = "はい" in verdict
+        m = re.search(r"(\d+)%", verdict)
+        english_ratio = int(m.group(1)) / 100 if m else 0.5
+        return {"is_japanese": is_japanese, "english_ratio": english_ratio, "verdict": verdict}
+    except Exception:
+        # チェック失敗時は文字ベースで判定
+        japanese_chars = sum(1 for c in content if "\u3040" <= c <= "\u9fff")
+        ratio = japanese_chars / max(len(content), 1)
+        return {"is_japanese": ratio > 0.3, "english_ratio": 1 - ratio,
+                "verdict": f"fallback: ratio={ratio:.2f}"}
+
+
 def ask_finance(prompt: str, retries: int = 3) -> str:
     """
     投資記事生成専用。qwen3:14bを使用。

@@ -1245,6 +1245,17 @@ def generate_article(
                 if content:
                     # 生成→正規化→レビューをllm-jp-4で連続実行（Ollama停止中に完結）
                     content = _remove_chinese_chars(content)
+                # llm-jp-4で日本語チェック（サーバー起動中のみ）
+                if content:
+                    from llm import check_japanese_with_llmjp4 as _check_jp
+                    _lang = _check_jp(content)
+                    print(f"  🌐 言語チェック: {'✅ 日本語' if _lang['is_japanese'] else '❌ 英語混入'} ({_lang['verdict']})")
+                    if not _lang["is_japanese"]:
+                        print("  ⚠️ 英語混入検出 → 日本語で再生成")
+                        _jp_prompt = "日本語のみで以下の記事を書き直してください。最初の行を「# 」で始めてください。\n\n" + content[:200]
+                        _rewritten = _gen_jp4(_jp_prompt)
+                        if _rewritten and len(_rewritten) > 200:
+                            content = _rewritten
                 if content:
                     content = _normalize_stock_expressions(content)
                     content = _normalize_style(content)
