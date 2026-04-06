@@ -1176,6 +1176,7 @@ def generate_article(
         analyze_failure as _pi_analyze,
         apply_fix as _pi_apply_fix,
         record_failure as _pi_record,
+        record_success as _pi_record_success,
         save_rules as _pi_save,
     )
     _pi_rules = _pi_load_rules()
@@ -1297,7 +1298,7 @@ def generate_article(
                 print(f"  🔍 原因分析: {_analysis['cause']}")
                 print(f"  💡 仮説: {_analysis['hypothesis']}")
                 if _analysis["fix"]:
-                    _pi_record(_pi_rules, reason, _analysis["fix"])
+                    _pi_record(_pi_rules, reason, _analysis["fix"], category=_analysis.get("category", "unknown"))
                     _pi_save(_pi_rules)
                     prompt = _pi_apply_fix(prompt, _analysis["fix"])
                     print(f"  🔧 プロンプト自動修正: {_analysis['fix'][:60]}...")
@@ -1599,6 +1600,13 @@ def generate_article(
         except Exception as e:
             print(f"  ⚠️ 重複登録スキップ: {e}")
     # --- DEDUP REGISTER END ---
+
+    # 成功パターンを記録（自己改善ループ）
+    try:
+        _pi_record_success(_pi_rules, content, review_score)
+        _pi_save(_pi_rules)
+    except Exception:
+        pass
 
     # 有料記事適性チェック・フッター注入（はてな版のみ）
     paid_suitable = False
