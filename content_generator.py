@@ -1510,11 +1510,12 @@ def generate_article(
                 reason = dup_result.get("reason", "")
                 print(f"  ⏭️ 既存記事の方が高品質のためスキップ: {reason}")
                 path.unlink(missing_ok=True)
+                # 品質は十分だが既存記事が上位のためスキップ → 成功扱い（再起動不要）
                 return {
                     "path":   None,
                     "score":  review_score,
-                    "passed": False,
-                    "reason": f"品質比較スキップ: {reason}",
+                    "passed": True,
+                    "reason": f"品質比較スキップ（既存記事保持）: {reason}",
                 }
         except Exception as e:
             print(f"  ⚠️ 重複登録スキップ: {e}")

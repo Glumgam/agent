@@ -12,6 +12,7 @@
 
 import re
 import json
+import subprocess
 import requests
 from pathlib import Path
 from datetime import datetime
@@ -21,7 +22,28 @@ HEADERS    = {"User-Agent": "Mozilla/5.0 (compatible; research-bot/1.0)"}
 
 # LLM分類フラグ: Falseにするとルールベースのみ（高速・タイムアウトなし）
 # Trueにするとqwen2.5-coder:14bで分類（精度向上・低速）
-USE_LLM_CLASSIFY = True
+# RAM不足時は自動でFalseに切り替え（Ollamaクラッシュ防止）
+def _available_ram_mb() -> int:
+    """利用可能RAM(MB)を取得する（vm_stat使用）"""
+    try:
+        out = subprocess.check_output(["vm_stat"], text=True, timeout=3)
+        free = inactive = 0
+        for line in out.splitlines():
+            m = re.match(r'Pages (free|inactive):\s+(\d+)', line.strip())
+            if m:
+                pages = int(m.group(2))
+                if m.group(1) == "free":
+                    free = pages
+                else:
+                    inactive = pages
+        return (free + inactive) * 4096 // 1024 // 1024
+    except Exception:
+        return 9999  # 取得失敗時は制限なし
+
+_RAM_MB = _available_ram_mb()
+USE_LLM_CLASSIFY = _RAM_MB >= 2000  # 2GB未満はルールベースのみ（qwen2.5-coder:14b読込に必要）
+if not USE_LLM_CLASSIFY:
+    print(f"  ℹ️ 適時開示: RAM不足({_RAM_MB}MB)のためルールベース分類のみ使用")
 
 
 # =====================================================

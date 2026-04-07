@@ -611,7 +611,7 @@ def ask_finance(prompt: str, max_tokens: int = 4000, retries: int = 3) -> str:
         "投資に関する最終判断はご自身の責任でお願いいたします。」"
     )
 
-    unload_model(CODER_MODEL)
+    unload_model(PLANNER_MODEL)  # qwen2.5-coder:14bをアンロードしてqwen3:14b用にVRAM確保
     time.sleep(2)
     for attempt in range(retries):
         try:
