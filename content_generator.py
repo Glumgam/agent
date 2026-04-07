@@ -1186,24 +1186,12 @@ def generate_article(
 
     # 記事生成（品質チェック + レビュー付きリトライあり）
     from llm import ask_plain
-    # llm-jp-4 (llama.cpp) 使用フラグ — Falseにするとqwen3:14b(Ollama)に戻す
-    USE_LLM_JP4 = True
-    if is_finance and USE_LLM_JP4:
-        # llm-jp-4パス: 1回生成 → 下書き保存 → ルールベース修正 → 局所修正
-        # 再生成ループは使わない（モデル起動コストが高いため）
-        max_retries = 1
     content = ""
     review_score    = 0
     review_passed   = True
     review_feedback = "レビューなし"
     for attempt in range(max_retries):
-        if is_finance and USE_LLM_JP4:
-            from llm import (start_llm_jp4 as _start_jp4,
-                             stop_llm_jp4  as _stop_jp4,
-                             ask_finance_llmjp4 as _gen_jp4,
-                             ask_finance        as _gen_fallback)
-            _model_label = "llm-jp-4 (llama.cpp)"
-        elif is_finance:
+        if is_finance:
             from llm import ask_finance as _gen
             _model_label = "qwen3:14b・投資記事専用"
         else:
@@ -1212,91 +1200,12 @@ def generate_article(
             _model_label = _PM
         print(f"  🧠 生成中 ({_model_label})"
               f"{' 再試行 ' + str(attempt) if attempt > 0 else ''}...")
-        _llmjp4_review = None  # このattemptでのllm-jp-4レビュー結果
-        _jp4_fallback_used = False  # フォールバック(qwen3:14b)を使ったかどうか
-        if is_finance and USE_LLM_JP4:
-            started = _start_jp4()
-            if started:
-                content = _gen_jp4(prompt)
-                _raw_jp4 = content  # 後処理で空になったときの復元用バックアップ
-                print(f"  📏 llm-jp-4生成: {len(content) if content else 0}文字")
-
-                # llm-jp-4が空 or 短い場合はqwen3:14bにフォールバック
-                # finance記事は最低1500文字必要なためしきい値を高めに設定
-                _jp4_min = 1500 if is_finance else 200
-                if not content or len(content) < _jp4_min:
-                    print(f"  ⚠️ llm-jp-4が短すぎる出力({len(content) if content else 0}文字 < {_jp4_min}文字)"
-                          " → qwen3:14bにフォールバック（Ollama再起動後に生成）")
-                    _stop_jp4()
-                    content = _gen_fallback(prompt)
-                    _raw_jp4 = content
-                    _jp4_fallback_used = True  # Ollamaレビューを使う
-                else:
-                    # llm-jp-4はタイトル行の前にプリアンブル/思考テキストを出力することがある。
-                    # 最初の「# 」行を探してそれ以降のみを使用する。
-                    _lines = content.split("\n")
-                    _h1_idx = next(
-                        (i for i, l in enumerate(_lines) if l.startswith("# ")), None
-                    )
-                    if _h1_idx is not None and _h1_idx > 0:
-                        print(f"  ✂️ プリアンブル除去: {_h1_idx}行スキップ")
-                        content = "\n".join(_lines[_h1_idx:])
-
-                if content:
-                    # 生成→正規化→レビューをllm-jp-4で連続実行（Ollama停止中に完結）
-                    content = _remove_chinese_chars(content)
-                # llm-jp-4で日本語チェック（サーバー起動中のみ）
-                if content:
-                    from llm import check_japanese_with_llmjp4 as _check_jp
-                    _lang = _check_jp(content)
-                    print(f"  🌐 言語チェック: {'✅ 日本語' if _lang['is_japanese'] else '❌ 英語混入'} ({_lang['verdict']})")
-                    if not _lang["is_japanese"]:
-                        print("  ⚠️ 英語混入検出 → 日本語で再生成")
-                        _jp_prompt = "日本語のみで以下の記事を書き直してください。最初の行を「# 」で始めてください。\n\n" + content[:200]
-                        _rewritten = _gen_jp4(_jp_prompt)
-                        if _rewritten and len(_rewritten) > 200:
-                            content = _rewritten
-                if content:
-                    content = _normalize_stock_expressions(content)
-                    content = _normalize_style(content)
-                # 後処理でcontentが空になった場合はRAW出力を復元して再度normalize
-                if not content and _raw_jp4:
-                    print(f"  ⚠️ 後処理でコンテンツが空になりました → RAW出力で復元")
-                    content = _normalize_style(_raw_jp4)
-                    if not content:
-                        content = _raw_jp4
-                # 下書き保存（品質チェック前に必ず保存）
-                if content:
-                    _draft_path = _save_draft(content, genre_id, topic, variant)
-                    print(f"  💾 下書き保存: {_draft_path.name}")
-                    # ルールベース修正（LLM不要: タイトル・免責事項を自動補完）
-                    content = _rule_based_fix(content)
-                # レビュー: フォールバック未発生ならllm-jp-4、発生済みならOllama
-                if _llmjp4_review is None:
-                    from article_reviewer import review_article as _rev_jp4
-                    _use_jp4_review = not _jp4_fallback_used
-                    _label = "llm-jp-4" if _use_jp4_review else "Ollama"
-                    _llmjp4_review = _rev_jp4(
-                        content, topic, genre_id=genre_id, use_llmjp4=_use_jp4_review
-                    )
-                    print(f"  📊 品質スコア({_label}): {_llmjp4_review['score']}/10 "
-                          f"({'✅ pass' if _llmjp4_review['passed'] else '❌ fail'})")
-                    if _llmjp4_review["issues"]:
-                        print(f"  ⚠️ 問題点: {', '.join(_llmjp4_review['issues'][:3])}")
-                    if _use_jp4_review:
-                        _stop_jp4()  # llm-jp-4レビュー完了後にOllama再起動
-            else:
-                # フォールバック: qwen3:14b (Ollama)
-                print("  ⚠️ llm-jp-4起動失敗 → qwen3:14bにフォールバック")
-                content = _gen_fallback(prompt)
-                _jp4_fallback_used = True
-        else:
-            # tech記事は3000文字以上必要なためnum_predict=6000
-            content = _gen(prompt, max_tokens=6000)
+        # finance/tech 共通: 3000文字以上必要なためmax_tokens=6000
+        content = _gen(prompt, max_tokens=6000)
         # 中国語文字を除去（置換リストで対応済みの文字を日本語化）
         content = _remove_chinese_chars(content)
-        # finance記事: 品質チェック前に文体・表現を正規化（llm-jp-4パスでは既に適用済み）
-        if is_finance and content and _llmjp4_review is None:
+        # finance記事: 品質チェック前に文体・表現を正規化
+        if is_finance and content:
             content = _normalize_stock_expressions(content)
             content = _normalize_style(content)
         passed, reason = _quality_check_v2(content, min_chars=min_length,
@@ -1334,8 +1243,8 @@ def generate_article(
                     )
                 continue
             else:
-                if is_finance and USE_LLM_JP4:
-                    # llm-jp-4パス: 再生成せずqwen3:14bで局所修正を試みる
+                if is_finance:
+                    # finance記事: 再生成せずqwen3:14bで局所修正を試みる
                     # ただし「内容が極端に少ない」場合は局所修正で解決できないためスキップ
                     if "極端に少ない" in reason or "内容が少ない" in reason:
                         print(f"  ⚠️ コンテンツ不足({reason}) → 局所修正不可・保存続行")
@@ -1361,16 +1270,12 @@ def generate_article(
                     return {"error": f"品質基準未達: {reason}"}
 
         # --- QUALITY REVIEW START ---
-        if _llmjp4_review is not None:
-            # llm-jp-4での生成直後にレビュー済み → 結果を再利用
-            review = _llmjp4_review
-        else:
-            from article_reviewer import review_article
-            review = review_article(content, topic, genre_id=genre_id)
-            print(f"  📊 品質スコア: {review['score']}/10 "
-                  f"({'✅ pass' if review['passed'] else '❌ fail'})")
-            if review["issues"]:
-                print(f"  ⚠️ 問題点: {', '.join(review['issues'][:3])}")
+        from article_reviewer import review_article
+        review = review_article(content, topic, genre_id=genre_id)
+        print(f"  📊 品質スコア: {review['score']}/10 "
+              f"({'✅ pass' if review['passed'] else '❌ fail'})")
+        if review["issues"]:
+            print(f"  ⚠️ 問題点: {', '.join(review['issues'][:3])}")
         review_score    = review["score"]
         review_passed   = review["passed"]
         review_feedback = review["feedback"]
@@ -1419,10 +1324,7 @@ def generate_article(
                     continue
             else:
                 # 最終試行
-                if is_finance and USE_LLM_JP4:
-                    # llm-jp-4パス: スコアに関わらず保存（再生成コスト大・下書きは確保済み）
-                    print(f"  ⚠️ llm-jp-4最終試行: score={review_score} → 保存続行")
-                elif review_score >= ACCEPT_SCORE:
+                if review_score >= ACCEPT_SCORE:
                     print(f"  ⚠️ 最終試行: score={review_score}"
                           f"（目標{PASS_SCORE}未達だが{ACCEPT_SCORE}以上のため保存）")
                 else:
