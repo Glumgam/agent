@@ -692,7 +692,8 @@ def stop_llm_jp4():
 
 def _strip_thinking_residue(text: str) -> str:
     """thinkingモデルの思考残骸・プロンプト残骸を除去する。
-    # タイトル行が見つかるまで全行をスキップする方式。
+    最初に出現する「# 」タイトル行を基準にそれより前を全て除去する。
+    thinking残骸中に日本語が混じる場合でも正しく動作する。
     """
     original = text
 
@@ -701,26 +702,34 @@ def _strip_thinking_residue(text: str) -> str:
 
     lines = text.strip().split("\n")
 
-    # # で始まる行、または日本語10文字以上の行が見つかるまで全行をスキップ
-    start_idx = 0
+    # 戦略1: 最初に出現する「# 」で始まる行（タイトル行）を探す
+    title_idx = None
     for i, line in enumerate(lines):
-        stripped = line.strip()
-        if stripped.startswith("# "):
-            start_idx = i
+        if line.strip().startswith("# ") and len(line.strip()) > 3:
+            title_idx = i
             break
-        japanese_chars = sum(1 for c in stripped if "\u3040" <= c <= "\u9fff")
-        if japanese_chars >= 10 and len(stripped) > 15:
-            start_idx = i
-            break
-    else:
-        # # も日本語行も見つからない場合は元のテキストを返す
-        return original
 
-    lines = lines[start_idx:]
+    if title_idx is not None:
+        result = "\n".join(lines[title_idx:]).strip()
+        if len(result) >= 100:
+            return result
 
-    result = "\n".join(lines).strip()
+    # 戦略2: # タイトルが見つからない場合、日本語密度が最も高いブロックの開始点を探す
+    best_start = 0
+    best_score = 0
+    window = 10  # 10行ウィンドウ
+    for i in range(len(lines)):
+        chunk = "\n".join(lines[i:i + window])
+        jp_count = sum(
+            1 for c in chunk
+            if "\u3040" <= c <= "\u9fff" or "\u4e00" <= c <= "\u9fff"
+        )
+        if jp_count > best_score:
+            best_score = jp_count
+            best_start = i
 
-    # 除去しすぎた場合は元に戻す
+    result = "\n".join(lines[best_start:]).strip()
+
     if len(result) < 100 and len(original) > 100:
         return original
 
