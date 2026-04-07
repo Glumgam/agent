@@ -1342,8 +1342,14 @@ def generate_article(
             try:
                 from fact_checker import fact_check
                 fc_result = fact_check(content, _finance_data_for_check, variant=variant)
-                if not fc_result["passed"] or fc_result["warnings"]:
-                    fc_issues   = fc_result["issues"] + fc_result["warnings"]
+                # warningsのみの場合は再生成不要（軽微な表現の指摘）
+                # issuesがある場合のみ修正・再生成を試みる
+                if fc_result["warnings"]:
+                    for w in fc_result["warnings"]:
+                        print(f"  ⚠️ ファクトチェック警告: {w}")
+                if not fc_result["passed"]:
+                    # issues（重大問題）がある場合のみ修正・再生成
+                    fc_issues   = fc_result["issues"]
                     issues_text = "\n".join(f"- {i}" for i in fc_issues)
                     if attempt < max_retries - 1:
                         # Level 2: 局所修正で解決できるか試みる
@@ -1353,7 +1359,7 @@ def generate_article(
                         from fact_checker import fact_check as _re_fc
                         fc_re = _re_fc(fixed_fc, _finance_data_for_check,
                                        variant=variant)
-                        if fc_re["passed"] and not fc_re["warnings"]:
+                        if fc_re["passed"]:
                             print(f"  ✅ 局所修正でファクトチェック解決（再生成不要）")
                             content = fixed_fc
                             _fc_result = fc_re
@@ -1370,12 +1376,12 @@ def generate_article(
                             )
                             continue  # 再生成
                     else:
-                        # 最終試行は警告のみ・保存続行
-                        print(f"  ⚠️ ファクトチェック警告（最終試行のため保存続行）")
-                        _fc_result = fc_result  # ループ外で result 定義後に代入
+                        # 最終試行は保存続行
+                        print(f"  ⚠️ ファクトチェック失敗（最終試行のため保存続行）")
+                        _fc_result = fc_result
                 else:
                     print(f"  ✅ ファクトチェック: 問題なし")
-                    _fc_result = fc_result  # ループ外で result 定義後に代入
+                    _fc_result = fc_result
             except Exception as e:
                 print(f"  ⚠️ ファクトチェックスキップ: {e}")
         # --- FACT CHECK END ---
