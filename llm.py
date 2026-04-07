@@ -590,11 +590,12 @@ def ask_thinking(prompt: str, label: str = "THINKING") -> str:
 # --- DUAL MODEL END ---
 
 
-def ask_finance(prompt: str, retries: int = 3) -> str:
+def ask_finance(prompt: str, max_tokens: int = 4000, retries: int = 3) -> str:
     """
     投資記事生成専用。qwen3:14bを使用。
     qwen2.5-coder:14bは中国語混入・架空補完が多いため
     汎用モデルのqwen3:14bを使用する。
+    max_tokens: 生成トークン上限（Ollamaのnum_predictに渡す）
     """
     import time
 
@@ -628,8 +629,8 @@ def ask_finance(prompt: str, retries: int = 3) -> str:
                     "stream":   False,
                     "options": {
                         "temperature": 0.5,
-                        "num_ctx":     8192,   # 4096→8192: 長い投資記事プロンプトに対応
-                        "num_predict": 3000,   # 1024→3000: 2500文字以上の記事を生成
+                        "num_ctx":     max(8192, max_tokens + 512),
+                        "num_predict": max_tokens,
                     },
                     "keep_alive": 60,
                 },
