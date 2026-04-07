@@ -102,9 +102,10 @@ def check_vix_consistency(content: str, finance_data: dict) -> list:
                 f"VIX説明の矛盾: 実際はVIX {vix_chg:+.1f}%（下落）なのに上昇と記述"
             )
 
-    # VIXが実際に上昇しているのに「不安感低下」と書いている場合
+    # VIXが実際に上昇しているのに「不安感低下」「VIX低下」と書いている場合
+    # ※「リスクオン」はVIXの方向と無関係に使われる一般市場用語なので除外
     if vix_chg > 3:
-        if re.search(r'不安感.{0,5}低下|恐怖感.{0,5}低下|リスクオン', content):
+        if re.search(r'不安感.{0,5}低下|恐怖感.{0,5}低下|VIX.{0,10}低下', content):
             warnings.append(
                 f"VIX説明の矛盾: 実際はVIX {vix_chg:+.1f}%（上昇）なのに低下と記述"
             )
