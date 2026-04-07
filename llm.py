@@ -560,7 +560,7 @@ def ask_thinking(prompt: str, label: str = "THINKING") -> str:
 
     payload = {
         "model":    THINKING_MODEL,
-        "messages": [{"role": "user", "content": prompt}],
+        "messages": [{"role": "user", "content": f"/no_think {prompt}"}],
         "stream":   False,
         "options": {
             "temperature": 0.6,
@@ -624,7 +624,7 @@ def ask_finance(prompt: str, max_tokens: int = 4000, retries: int = 3) -> str:
                     "model":    THINKING_MODEL,  # qwen3:14b
                     "messages": [
                         {"role": "system", "content": _system},
-                        {"role": "user",   "content": prompt},
+                        {"role": "user",   "content": f"/no_think {prompt}"},
                     ],
                     "stream":   False,
                     "options": {
