@@ -566,7 +566,7 @@ def ask_thinking(prompt: str, label: str = "THINKING") -> str:
         "options": {
             "temperature": 0.6,
             "num_ctx":     8192,
-            "num_predict": 4096,
+            "num_predict": 512,   # レビュー回答は短い（SCORE/ISSUES/VERDICT/FEEDBACK）
         },
         "keep_alive": 0,  # 使用後即アンロード
     }

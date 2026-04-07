@@ -1133,11 +1133,11 @@ def generate_article(
     is_finance = genre_id == "finance_news"
 
     # 品質スコア設定
-    # 投資記事: 理想10点・最終試行での許容下限9点・3回固定
+    # 投資記事: 合格9点・最終試行での許容下限8点・3回固定
     # その他:   合格7点・許容下限7点（変更なし）
     if is_finance:
-        PASS_SCORE   = 10  # 理想スコア（1〜2回目の合格基準）
-        ACCEPT_SCORE = 9   # 最終試行での保存許容スコア
+        PASS_SCORE   = 9  # 合格基準（9点以上で即保存）
+        ACCEPT_SCORE = 8  # 最終試行での保存許容スコア
         max_retries  = 3
     else:
         PASS_SCORE   = 7
