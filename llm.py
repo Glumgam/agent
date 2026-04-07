@@ -560,8 +560,9 @@ def ask_thinking(prompt: str, label: str = "THINKING") -> str:
 
     payload = {
         "model":    THINKING_MODEL,
-        "messages": [{"role": "user", "content": f"/no_think {prompt}"}],
+        "messages": [{"role": "user", "content": prompt}],
         "stream":   False,
+        "think":    False,  # thinkingモード無効（トップレベルに置く必要あり）
         "options": {
             "temperature": 0.6,
             "num_ctx":     8192,
@@ -624,9 +625,10 @@ def ask_finance(prompt: str, max_tokens: int = 4000, retries: int = 3) -> str:
                     "model":    THINKING_MODEL,  # qwen3:14b
                     "messages": [
                         {"role": "system", "content": _system},
-                        {"role": "user",   "content": f"/no_think {prompt}"},
+                        {"role": "user",   "content": prompt},
                     ],
                     "stream":   False,
+                    "think":    False,  # thinkingモード無効（トップレベルに置く必要あり）
                     "options": {
                         "temperature": 0.5,
                         "num_ctx":     max(8192, max_tokens + 512),
