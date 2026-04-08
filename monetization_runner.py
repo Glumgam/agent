@@ -214,7 +214,11 @@ def run_finance_news(topic: str, max_restart: int = 2) -> dict:
             variant="hatena",
             finance_cache=finance_data,
         )
-        hatena_failed = hatena_result.get("path") is None or "error" in hatena_result
+        # path=Noneでもpassed=Trueなら既存記事保持として成功扱い（重複スキップ等）
+        hatena_failed = (
+            (hatena_result.get("path") is None and not hatena_result.get("passed", False))
+            or "error" in hatena_result
+        )
         if hatena_failed:
             if restart < MAX_RESTART and _is_in_window():
                 print(f"  ❌ はてな版品質未達 → 再スタート")
