@@ -113,8 +113,6 @@ def generate_paid_footer(genre_id: str) -> str:
 - ✅ 値上がり・値下がりランキング解説
 - ✅ FAQ（投資初心者向け解説）
 
-> 💡 Zenn版では概要のみを掲載しています。
-
 ---
 """
     items_text = "\n".join(f"- ✅ {item}" for item in paid_items)
@@ -125,8 +123,6 @@ def generate_paid_footer(genre_id: str) -> str:
 
 本記事（詳細版）に含まれる内容：
 {items_text}
-
-> 💡 Zenn版では概要のみを掲載しています。
 
 ---
 """
