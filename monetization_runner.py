@@ -49,8 +49,6 @@ def _check_memory() -> int:
             free_pages += int(line.split(":")[1].strip().rstrip("."))
     free_mb = free_pages * 4096 // 1024 // 1024
     print(f"  💾 利用可能メモリ: {free_mb}MB")
-    if free_mb < 4000:
-        print("  ⚠️ メモリ不足の可能性。llm-jp-4が起動できない場合はqwen3:14bで代替します")
     return free_mb
 
 AGENT_ROOT   = Path(__file__).parent
@@ -288,8 +286,12 @@ if __name__ == "__main__":
     else:
         result = run_single(genre_id=args.genre, topic=args.topic)
         # run_single は {"zenn": ..., "hatena": ...} を返す
+        # zenn は停止中のため None が正常
         for variant, r in result.items():
+            if variant == "zenn":
+                continue  # zenn停止中（意図的）
             if r is None or r.get("path") is None:
-                print(f"❌ {variant}版 失敗: {r.get('error', '不明') if r else '結果なし'}")
+                err = r.get('error', '不明') if r else '結果なし'
+                print(f"❌ {variant}版 失敗: {err}")
             else:
                 print(f"✅ {variant}版 完了: {r.get('path', '?')} ({r.get('word_count', 0)}文字)")

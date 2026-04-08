@@ -14,6 +14,140 @@ AGENT_ROOT   = Path(__file__).parent
 CONTENT_DIR  = AGENT_ROOT / "content"          # ルート（後方互換）
 PERF_LOG     = AGENT_ROOT / "memory" / "content_log.json"
 
+# =====================================================
+# SEOタイトル自動生成
+# =====================================================
+_RISE_WORDS     = ["急騰", "大幅高", "反発", "上昇"]
+_FALL_WORDS     = ["急落", "大幅安", "下落", "反落"]
+_ANALYSIS_WORDS = ["背景と今後の戦略", "理由と注目ポイント", "相場分析と注目セクター", "要因と明日への展望"]
+_TITLE_HISTORY  = AGENT_ROOT / "memory" / "title_history.json"
+
+
+def _load_title_history() -> list:
+    try:
+        return json.loads(_TITLE_HISTORY.read_text(encoding="utf-8"))[-20:]
+    except Exception:
+        return []
+
+
+def _save_title_history(pattern: str) -> None:
+    history = _load_title_history()
+    history.append({"pattern": pattern, "ts": datetime.now().isoformat()})
+    _TITLE_HISTORY.parent.mkdir(parents=True, exist_ok=True)
+    _TITLE_HISTORY.write_text(
+        json.dumps(history[-20:], ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+
+
+def _count_recent_pattern(pattern: str, within: int = 4) -> int:
+    """直近N件で同パターンが何回使われたか"""
+    return sum(1 for h in _load_title_history()[-within:] if h["pattern"] == pattern)
+
+
+def _pick_word(words: list, seed: int) -> str:
+    return words[seed % len(words)]
+
+
+def _make_seo_title(topic: str, finance_data: dict) -> str:
+    """
+    SEO最適化タイトルを投資データから自動生成する。
+    - テーマ選択: 原油急変 > VIX急変 > 日経急変 > デフォルト
+    - 同パターン4連続で自動切替（重複回避）
+    - 朝版（0〜11時）と夕版（12〜23時）で異なるseedを使用
+    """
+    import hashlib
+
+    # 日付・時間帯からseedを生成（朝夕で異なるパターンを選択）
+    now      = datetime.now()
+    slot     = "am" if now.hour < 12 else "pm"
+    seed_str = now.strftime("%Y%m%d") + slot
+    seed     = int(hashlib.md5(seed_str.encode()).hexdigest(), 16)
+
+    # 日付文字列を取得（トピックの（）内、なければ今日）
+    m = re.search(r"（(.+?)）", topic)
+    date_str = m.group(1) if m else now.strftime("%Y年%m月%d日")
+
+    # 投資データから変動率を抽出
+    macro = finance_data.get("macro", {})
+    us    = macro.get("us_stocks", {})
+    comm  = macro.get("commodities", {})
+
+    vix_chg = us.get("VIX", {}).get("change_pct") or 0.0
+    wti_chg = comm.get("WTI原油", {}).get("change_pct") or 0.0
+
+    nikkei_raw = finance_data.get("market_summary", {}).get("nikkei_change", "") or ""
+    try:
+        nikkei_chg = float(re.sub(r"[^0-9+\-.]", "", nikkei_raw.split("%")[0]))
+    except (ValueError, IndexError):
+        nikkei_chg = 0.0
+
+    analysis = _pick_word(_ANALYSIS_WORDS, seed)
+
+    # テーマ選択（変動幅 × 重複回避）
+    def _can_use(pat: str) -> bool:
+        return _count_recent_pattern(pat) < 3
+
+    if abs(wti_chg) >= 3.0 and _can_use("oil"):
+        pattern = "oil"
+        sign    = f"{wti_chg:+.1f}"
+        word    = _pick_word(_FALL_WORDS if wti_chg < 0 else _RISE_WORDS, seed)
+        title   = f"【原油{sign}%{word}】日本株への影響と{analysis}（{date_str}）"
+
+    elif abs(vix_chg) >= 7.0 and _can_use("vix"):
+        pattern = "vix"
+        sign    = f"{vix_chg:+.1f}"
+        # VIX上昇=リスクオフ、VIX下落=リスクオン
+        mood    = "リスクオフ" if vix_chg > 0 else "リスクオン"
+        title   = f"【VIX{sign}%・{mood}】{analysis}（{date_str}）"
+
+    elif abs(nikkei_chg) >= 1.0 and _can_use("nikkei"):
+        pattern = "nikkei"
+        sign    = f"{nikkei_chg:+.2f}"
+        word    = _pick_word(_RISE_WORDS if nikkei_chg >= 0 else _FALL_WORDS, seed)
+        title   = f"【日経平均{sign}%{word}】{analysis}（{date_str}）"
+
+    else:
+        pattern = "default"
+        if abs(nikkei_chg) >= 0.01:
+            sign  = f"{nikkei_chg:+.2f}"
+            title = f"【日経平均{sign}%】本日の日本株市場まとめと注目ポイント（{date_str}）"
+        else:
+            title = f"本日の日本株市場まとめと注目ポイント（{date_str}）"
+
+    _save_title_history(pattern)
+    return title
+
+
+def _check_title_content_consistency(title: str, content: str, finance_data: dict) -> list:
+    """
+    SEOタイトルと記事本文の整合性を確認する。
+    タイトルで主張している数値・方向性が記事中に存在するかチェック。
+    Returns: 不整合の警告リスト（空なら問題なし）
+    """
+    warnings = []
+
+    # 原油タイトルの場合: 記事に「原油」「WTI」が含まれているか
+    if "原油" in title and re.search(r"[+-]\d+\.\d+%", title):
+        if not re.search(r"原油|WTI", content):
+            warnings.append("SEOタイトルに「原油」があるが記事本文に原油の言及なし")
+
+    # VIXタイトルの場合: 記事に「VIX」が含まれているか
+    if "VIX" in title and re.search(r"[+-]\d+\.\d+%", title):
+        if not re.search(r"VIX", content):
+            warnings.append("SEOタイトルに「VIX」があるが記事本文にVIXの言及なし")
+
+    # 日経平均タイトルの場合: 方向性チェック
+    m = re.search(r"日経平均([+-]\d+\.\d+)%", title)
+    if m:
+        title_chg = float(m.group(1))
+        # 上昇タイトルなのに記事で急落と書いていないか（逆方向チェック）
+        if title_chg > 0 and re.search(r"日経.{0,5}急落|大幅.{0,3}下落", content):
+            warnings.append(f"SEOタイトルは日経+{title_chg:.2f}%なのに記事に「急落」表現あり")
+        elif title_chg < 0 and re.search(r"日経.{0,5}急騰|大幅.{0,3}上昇", content):
+            warnings.append(f"SEOタイトルは日経{title_chg:.2f}%なのに記事に「急騰」表現あり")
+
+    return warnings
+
 # ジャンル別サブディレクトリ
 CONTENT_DIRS = {
     "finance_news": AGENT_ROOT / "content" / "finance",
@@ -691,7 +825,7 @@ def _normalize_style(content: str) -> str:
     result = content
 
     # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    # ⓪ タイトル行正規化（llm-jp-4プリアンブル・異形式対応）
+    # ⓪ タイトル行正規化（プリアンブル・異形式対応）
     # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     _lines = result.split('\n')
 
@@ -1430,6 +1564,24 @@ def generate_article(
             )
     except Exception as e:
         print(f"  ⚠️ 導線文注入スキップ: {e}")
+
+    # SEOタイトル自動生成・整合チェック（投資記事のみ）
+    if is_finance and _finance_data_for_check:
+        try:
+            seo_title = _make_seo_title(topic, _finance_data_for_check)
+            lines = content.split('\n')
+            if lines and lines[0].startswith('# '):
+                lines[0] = f"# {seo_title}"
+                content   = '\n'.join(lines)
+                print(f"  🏷️ SEOタイトル: {seo_title}")
+            # 整合チェック
+            consistency_warns = _check_title_content_consistency(
+                seo_title, content, _finance_data_for_check
+            )
+            for w in consistency_warns:
+                print(f"  ⚠️ タイトル整合: {w}")
+        except Exception as e:
+            print(f"  ⚠️ SEOタイトル生成スキップ: {e}")
 
     # グラフ生成・埋め込み（はてな版・投資記事のみ）
     if is_finance and variant == "hatena" and _finance_data_for_check:

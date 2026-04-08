@@ -8,6 +8,7 @@
 import re
 import json
 from pathlib import Path
+from datetime import datetime
 
 AGENT_ROOT  = Path(__file__).parent
 CONTENT_DIR = AGENT_ROOT / "content"
@@ -165,6 +166,14 @@ def check_and_resolve_duplicate(
 
     elif new_score == existing_score:
         try:
+            # 同日記事なら最新データ優先で置き換え
+            today         = datetime.now().date()
+            existing_date = datetime.fromtimestamp(existing_path.stat().st_mtime).date()
+            if existing_date == today:
+                existing_path.unlink()
+                print(f"  🔄 同日同スコア({new_score}点) → 最新データで置き換え")
+                return {"action": "keep_new", "reason": "同日再生成・最新データ優先"}
+            # 別日の記事: 文字数が多い方を残す
             existing_len = len(existing_path.read_text(encoding="utf-8"))
             new_len      = len(new_content)
             if new_len > existing_len:
@@ -178,8 +187,20 @@ def check_and_resolve_duplicate(
             return {"action": "keep_existing", "reason": "比較失敗のため既存を維持"}
 
     else:
-        print(f"  ⏭️ 品質比較: 既存({existing_score}点) >= 新記事({new_score}点) → スキップ")
-        return {"action": "keep_existing", "reason": f"既存({existing_score}点) >= 新記事({new_score}点)"}
+        # スコアが下がった場合: 既存を保持（ただし大幅な差がなければ同日なら更新）
+        try:
+            score_diff    = existing_score - new_score
+            today         = datetime.now().date()
+            existing_date = datetime.fromtimestamp(existing_path.stat().st_mtime).date()
+            if existing_date == today and score_diff == 1:
+                # 同日かつ1点差は許容範囲として最新データ優先
+                existing_path.unlink()
+                print(f"  🔄 同日・1点差({new_score}点 vs 既存{existing_score}点) → 最新データで置き換え")
+                return {"action": "keep_new", "reason": "同日再生成・1点差以内のため最新データ優先"}
+        except Exception:
+            pass
+        print(f"  ⏭️ 品質比較: 既存({existing_score}点) > 新記事({new_score}点+2以上) → スキップ")
+        return {"action": "keep_existing", "reason": f"既存({existing_score}点) > 新記事({new_score}点)"}
 
 
 def check_duplicate(
