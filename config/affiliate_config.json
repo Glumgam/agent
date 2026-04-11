@@ -1,0 +1,30 @@
+{
+  "amazon": {
+    "books": [
+      {
+        "url": "https://amzn.to/4cASuam",
+        "title": "21世紀の資本",
+        "desc": "格差と資本主義の本質を解き明かした世界的ベストセラー。長期投資家必読の一冊。"
+      },
+      {
+        "url": "https://amzn.to/4mpZ5I0",
+        "title": "うねり取り入門: 株のプロへの近道",
+        "desc": "相場の大きなトレンドを掴む「うねり取り」手法を体系的に解説。"
+      },
+      {
+        "url": "https://amzn.to/4miQTsU",
+        "title": "稼げる投資家になるための投資の正しい考え方 -歴史から学ぶ30の教訓",
+        "desc": "歴史的な相場の教訓から学ぶ、再現性の高い投資の考え方。"
+      }
+    ],
+    "apple": [
+      {"url": "https://amzn.to/4sqxbwK"},
+      {"url": "https://amzn.to/3QvJaMe"},
+      {"url": "https://amzn.to/3OymkD9"},
+      {"url": "https://amzn.to/4voCv6K"},
+      {"url": "https://amzn.to/47VYDLE"},
+      {"url": "https://amzn.to/4tGlRhh"}
+    ]
+  },
+  "rakuten": {}
+}

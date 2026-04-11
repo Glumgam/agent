@@ -179,6 +179,43 @@ def _check_nikkei_consistency(content: str, nikkei_actual: float) -> str:
     return re.sub(pattern, replace_nikkei, content)
 
 
+_AFFILIATE_CONFIG = AGENT_ROOT / "config" / "affiliate_config.json"
+
+
+def _build_affiliate_footer() -> str:
+    """アフィリエイトセクションを記事末尾（免責事項直前）に追加する"""
+    import random as _random
+    try:
+        cfg = json.loads(_AFFILIATE_CONFIG.read_text(encoding="utf-8"))
+    except Exception:
+        return ""
+
+    books = cfg.get("amazon", {}).get("books", [])
+    apple = cfg.get("amazon", {}).get("apple", [])
+
+    sections = []
+
+    if books:
+        book = _random.choice(books)
+        sections.append(
+            f"## 📚 今日の一冊\n\n"
+            f"**[{book['title']}]({book['url']})**\n\n"
+            f"{book['desc']}\n\n"
+            f"---"
+        )
+
+    if apple:
+        item = _random.choice(apple)
+        sections.append(
+            f"## 💻 投資家におすすめのガジェット\n\n"
+            f"快適な投資環境を整えるために：\n\n"
+            f"**[Amazonで見る]({item['url']})**\n\n"
+            f"---"
+        )
+
+    return "\n\n".join(sections)
+
+
 # ジャンル別サブディレクトリ
 CONTENT_DIRS = {
     "finance_news": AGENT_ROOT / "content" / "finance",
@@ -1703,6 +1740,12 @@ def generate_article(
                 print(f"  📊 チャートセクション埋め込み完了（{len(charts)}枚）")
         except Exception as e:
             print(f"  ⚠️ グラフ生成スキップ: {e}")
+
+    # アフィリエイトフッターを追加（投資記事・はてな版のみ）
+    if is_finance and variant == "hatena":
+        _affiliate = _build_affiliate_footer()
+        if _affiliate and "## 免責事項" in content:
+            content = content.replace("## 免責事項", _affiliate + "\n\n## 免責事項", 1)
 
     # 保存前の最終クリーニング（スコアに関わらず必ず実行）
     content = _final_clean(content, topic, genre_id)
