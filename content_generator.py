@@ -1074,18 +1074,26 @@ def _local_fix(content: str, issues: list, finance_data: dict) -> str:
         return content
 
     # Step0: 数値乖離は直接置換で修正（LLM不要・確実）
-    # 例: "USD/JPY数値の乖離: 記事=167.4円 / 実際=158.436円" → 167.4 を 158.44 に置換
+    # 円建て: "記事=167.4円 / 実際=158.44円"
+    # pt建て: "記事=25.3pt / 実際=18.50pt"
+    # ドル建て: "記事=80.5ドル / 実際=65.20ドル"
+    _UNIT_PATTERNS = [
+        (r'記事=(\d+\.?\d*)円 / 実際=(\d+\.?\d*)円',   "円"),
+        (r'記事=(\d+\.?\d*)pt / 実際=(\d+\.?\d*)pt',   "pt"),
+        (r'記事=(\d+\.?\d*)ドル / 実際=(\d+\.?\d*)ドル', "ドル"),
+    ]
     for issue in issues:
-        m = re.search(r'記事=(\d+\.?\d*)円 / 実際=(\d+\.?\d*)円', issue)
-        if m:
-            wrong_val   = m.group(1)
-            correct_raw = float(m.group(2))
-            correct_val = f"{correct_raw:.2f}"
-            # 記事内の誤値を全パターンで置換（末尾円ありなし両方）
-            for wrong_pat in [f"{wrong_val}円", wrong_val]:
-                if wrong_pat in content:
-                    content = content.replace(wrong_pat, f"{correct_val}円")
-                    print(f"  🔢 数値直接修正: {wrong_pat} → {correct_val}円")
+        for unit_pattern, unit in _UNIT_PATTERNS:
+            m = re.search(unit_pattern, issue)
+            if m:
+                wrong_val   = m.group(1)
+                correct_raw = float(m.group(2))
+                correct_val = f"{correct_raw:.2f}"
+                for wrong_pat in [f"{wrong_val}{unit}", wrong_val]:
+                    if wrong_pat in content:
+                        content = content.replace(wrong_pat, f"{correct_val}{unit}")
+                        print(f"  🔢 数値直接修正: {wrong_pat} → {correct_val}{unit}")
+                break  # 単位がマッチしたら次のissueへ
 
     # Step1: 後処理で解決できるものを適用
     content = _normalize_style(content)

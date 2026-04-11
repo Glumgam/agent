@@ -29,13 +29,14 @@ def check_numbers(content: str, finance_data: dict) -> list:
     market = finance_data.get("market_summary", {})
     macro  = finance_data.get("macro", {})
     forex  = macro.get("forex", {})
+    us     = macro.get("us_stocks", {})
+    comm   = macro.get("commodities", {})
 
-    # 日経平均チェック
+    # 日経平均チェック（許容誤差: 500円）
     nikkei_actual_str = market.get("nikkei_price", "").replace(",", "")
     if nikkei_actual_str:
         try:
             nikkei_actual = float(nikkei_actual_str)
-            # 記事内の日経平均数値（4〜5万円台）を抽出
             nikkei_in_article = re.findall(r'[3-6][0-9],[0-9]{3}(?:\.[0-9]+)?(?=円)', content)
             for n in nikkei_in_article:
                 n_val = float(n.replace(",", ""))
@@ -46,7 +47,7 @@ def check_numbers(content: str, finance_data: dict) -> list:
         except (ValueError, TypeError):
             pass
 
-    # USD/JPY チェック
+    # USD/JPY チェック（許容誤差: 2円）
     usd_jpy_actual = forex.get("USD/JPY", {}).get("price")
     if isinstance(usd_jpy_actual, float):
         fx_in_article = re.findall(r'1[4-7][0-9]\.[0-9]+(?=円)', content)
@@ -56,6 +57,48 @@ def check_numbers(content: str, finance_data: dict) -> list:
                 if abs(fx_val - usd_jpy_actual) > 2.0:
                     issues.append(
                         f"USD/JPY数値の乖離: 記事={fx_val}円 / 実際={usd_jpy_actual}円"
+                    )
+            except (ValueError, TypeError):
+                pass
+
+    # VIX チェック（「VIX」直後の数値のみ対象、許容誤差: 1.0ポイント）
+    vix_actual = us.get("VIX", {}).get("price")
+    if isinstance(vix_actual, float):
+        vix_in_article = re.findall(r'VIX[^0-9]{0,10}?(\d{1,3}(?:\.\d{1,2})?)', content)
+        for v in vix_in_article:
+            try:
+                v_val = float(v)
+                if 5 <= v_val <= 100 and abs(v_val - vix_actual) > 1.0:
+                    issues.append(
+                        f"VIX数値の乖離: 記事={v_val}pt / 実際={vix_actual:.2f}pt"
+                    )
+            except (ValueError, TypeError):
+                pass
+
+    # WTI原油 チェック（「WTI」「原油」直後の数値のみ対象、許容誤差: 2ドル）
+    wti_actual = comm.get("WTI原油", {}).get("price")
+    if isinstance(wti_actual, float):
+        wti_in_article = re.findall(r'(?:WTI|原油)[^0-9]{0,10}?(\d{2,3}(?:\.\d{1,2})?)', content)
+        for w in wti_in_article:
+            try:
+                w_val = float(w)
+                if 20 <= w_val <= 300 and abs(w_val - wti_actual) > 2.0:
+                    issues.append(
+                        f"WTI原油数値の乖離: 記事={w_val}ドル / 実際={wti_actual:.2f}ドル"
+                    )
+            except (ValueError, TypeError):
+                pass
+
+    # S&P500 チェック（「S&P」直後の数値のみ対象、許容誤差: 50ポイント）
+    sp500_actual = us.get("S&P500", {}).get("price")
+    if isinstance(sp500_actual, float):
+        sp_in_article = re.findall(r'S&P500?[^0-9]{0,10}?(\d{1,2},?\d{3}(?:\.\d{1,2})?)', content)
+        for s in sp_in_article:
+            try:
+                s_val = float(s.replace(",", ""))
+                if 1000 <= s_val <= 20000 and abs(s_val - sp500_actual) > 50:
+                    issues.append(
+                        f"S&P500数値の乖離: 記事={s_val}pt / 実際={sp500_actual:.2f}pt"
                     )
             except (ValueError, TypeError):
                 pass
