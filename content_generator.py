@@ -151,20 +151,32 @@ def _check_title_content_consistency(title: str, content: str, finance_data: dic
 
 def _check_nikkei_consistency(content: str, nikkei_actual: float) -> str:
     """
-    記事内の日経平均数値を実際の値に統一する。
-    実際値と10%以上乖離している4〜6桁カンマ付き数値を置換する。
+    記事内の日経平均数値を実際の終値に完全統一する。
+    日経平均の範囲（10,000〜100,000円）内かつ実際値と1%以上乖離している数値を置換する。
     """
-    pattern = r'(\d{2,3},\d{3}(?:\.\d+)?)(円|\s*円台)'
+    if nikkei_actual <= 0:
+        return content
 
-    def replace_wrong_value(m: re.Match) -> str:
-        val = float(m.group(1).replace(',', ''))
-        if abs(val - nikkei_actual) / nikkei_actual > 0.1:
-            actual_str = f"{nikkei_actual:,.2f}"
+    actual_str = f"{nikkei_actual:,.2f}"
+
+    # カンマあり（38,500.11）またはカンマなし5桁（38500）
+    pattern = r'(?<!\d)(\d{2},\d{3}(?:\.\d{1,2})?|\d{5}(?:\.\d{1,2})?)(?=\s*(?:円|円台|ドル台|ポイント)?)'
+
+    def is_nikkei_range(val: float) -> bool:
+        return 10000 <= val <= 100000
+
+    def replace_nikkei(m: re.Match) -> str:
+        val_str = m.group(1).replace(',', '')
+        try:
+            val = float(val_str)
+        except ValueError:
+            return m.group(0)
+        if is_nikkei_range(val) and abs(val - nikkei_actual) / nikkei_actual > 0.01:
             print(f"  🔢 日経数値修正: {m.group(1)} → {actual_str}")
-            return actual_str + m.group(2)
+            return actual_str
         return m.group(0)
 
-    return re.sub(pattern, replace_wrong_value, content)
+    return re.sub(pattern, replace_nikkei, content)
 
 
 # ジャンル別サブディレクトリ
