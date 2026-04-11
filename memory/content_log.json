@@ -2711,5 +2711,865 @@
     },
     "quality_passed": false,
     "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "本日の日本株市況まとめ2026年04月05日",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260405_本日の日本株市況まとめ2026年04月05日_hatena.md",
+    "rag_hits": 0,
+    "word_count": 147,
+    "generated_at": "2026-04-05T12:26:18.796446",
+    "review_score": 7,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "paid_suitable": false,
+    "paid_label": "📝 無料記事",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [],
+      "score_penalty": 0
+    },
+    "quality_passed": false,
+    "quality_reason": "文字数不足: 147文字（最低1500文字）"
+  },
+  {
+    "title": "本日の日本株市況まとめ2026年04月05日",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260405_本日の日本株市況まとめ2026年04月05日_hatena_1.md",
+    "rag_hits": 0,
+    "word_count": 3050,
+    "generated_at": "2026-04-05T12:45:42.014230",
+    "review_score": 9,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "paid_suitable": true,
+    "paid_label": "💎 プレミアム記事（200円）",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [
+        "フォーマット違反: 銘柄ブロックに「背景:」がない"
+      ],
+      "score_penalty": 1
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "今週の株主優待・株式分割情報（2026年04月第13週）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260405_今週の株主優待株式分割情報2026年04月第13週_hatena.md",
+    "rag_hits": 0,
+    "word_count": 4731,
+    "generated_at": "2026-04-05T13:48:56.918909",
+    "review_score": 10,
+    "review_passed": true,
+    "review_feedback": "良好です。",
+    "paid_suitable": true,
+    "paid_label": "💎 プレミアム記事（200円）",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [
+        "コンテキスト外の情報の可能性: 「米中関係」"
+      ],
+      "score_penalty": 1
+    },
+    "quality_passed": false,
+    "quality_reason": "タイトル行なし（最初の行が '# 記事タイトル' 形式でない）: 'We have data:'"
+  },
+  {
+    "title": "本日の日本株市況まとめ（2026年04月05日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260405_本日の日本株市況まとめ2026年04月05日_hatena.md",
+    "rag_hits": 0,
+    "word_count": 2895,
+    "generated_at": "2026-04-05T14:02:26.469924",
+    "review_score": 9,
+    "review_passed": true,
+    "review_feedback": "良好**",
+    "paid_suitable": false,
+    "paid_label": "💎 プレミアム記事（200円）",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [],
+      "score_penalty": 0
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "値上がり率ランキング解説（2026年04月05日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260405_値上がり率ランキング解説2026年04月05日_hatena.md",
+    "rag_hits": 0,
+    "word_count": 3908,
+    "generated_at": "2026-04-05T14:21:01.431913",
+    "review_score": 9,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "paid_suitable": true,
+    "paid_label": "💎 プレミアム記事（200円）",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [
+        "時間表現の検証不可: 「2週間ぶり」→ コンテキストに過去データがないため数値の正確性を確認できません。「数週間ぶり」等の曖昧表現への変更を推奨します。"
+      ],
+      "score_penalty": 1
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "値下がり率ランキング解説（2026年04月05日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260405_値下がり率ランキング解説2026年04月05日_hatena.md",
+    "rag_hits": 0,
+    "word_count": 988,
+    "generated_at": "2026-04-05T14:26:55.218163",
+    "review_score": 7,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "paid_suitable": false,
+    "paid_label": "📝 無料記事",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [],
+      "score_penalty": 0
+    },
+    "quality_passed": false,
+    "quality_reason": "文字数不足: 988文字（最低1500文字）"
+  },
+  {
+    "title": "今週の配当・優待情報まとめ（2026年04月）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260405_今週の配当優待情報まとめ2026年04月_hatena.md",
+    "rag_hits": 0,
+    "word_count": 3382,
+    "generated_at": "2026-04-05T14:43:07.739968",
+    "review_score": 8,
+    "review_passed": true,
+    "review_feedback": "普通体とですます体の統一を図ることで日本語の自然さがさらに向上します",
+    "paid_suitable": true,
+    "paid_label": "📊 詳細分析記事（200円）",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [],
+      "score_penalty": 0
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "値下がり率ランキング解説（2026年04月05日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260405_値下がり率ランキング解説2026年04月05日_hatena_1.md",
+    "rag_hits": 0,
+    "word_count": 3519,
+    "generated_at": "2026-04-05T15:01:16.427533",
+    "review_score": 8,
+    "review_passed": true,
+    "review_feedback": "「背景は未公表」の出現回数を3回以内に減らすことでより自然な文章になります。",
+    "paid_suitable": true,
+    "paid_label": "📊 詳細分析記事（200円）",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [],
+      "score_penalty": 0
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "Pythonのpathlib完全活用ガイド",
+    "genre": "python_tips",
+    "path": "/Volumes/ESD-EHA/agent/content/tech/20260405_pythonのpathlib完全活用ガイド_hatena.md",
+    "rag_hits": 0,
+    "word_count": 2984,
+    "generated_at": "2026-04-05T15:27:59.058905",
+    "review_score": 8,
+    "review_passed": true,
+    "review_feedback": "コードブロックの記法とタイトルの冗長性を修正すること",
+    "paid_suitable": true,
+    "paid_label": "📊 詳細分析記事（100円）",
+    "quality_passed": true,
+    "quality_reason": "OK"
+  },
+  {
+    "title": "Pythonの内包表記とジェネレータの使い分け",
+    "genre": "python_tips",
+    "path": "/Volumes/ESD-EHA/agent/content/tech/20260405_pythonの内包表記とジェネレータの使い分け_hatena.md",
+    "rag_hits": 0,
+    "word_count": 3680,
+    "generated_at": "2026-04-05T15:39:11.715215",
+    "review_score": 7,
+    "review_passed": true,
+    "review_feedback": "タプル内包表記のコード例と説明の整合性を確認し、コードブロックの記法を修正すること",
+    "paid_suitable": false,
+    "paid_label": "📝 無料記事",
+    "quality_passed": true,
+    "quality_reason": "OK"
+  },
+  {
+    "title": "httpxでモダンなHTTPクライアントを実装する",
+    "genre": "library_intro",
+    "path": "/Volumes/ESD-EHA/agent/content/tech/20260405_httpxでモダンなhttpクライアントを実装する_hatena.md",
+    "rag_hits": 0,
+    "word_count": 4057,
+    "generated_at": "2026-04-05T16:11:12.180673",
+    "review_score": 9,
+    "review_passed": true,
+    "review_feedback": "コードブロックのフォーマットを統一し、バックティックの閉じ忘れを修正してください",
+    "paid_suitable": true,
+    "paid_label": "💎 プレミアム記事（100円）",
+    "quality_passed": true,
+    "quality_reason": "OK"
+  },
+  {
+    "title": "PythonでAPIデータを自動収集・保存する方法",
+    "genre": "automation",
+    "path": "/Volumes/ESD-EHA/agent/content/tech/20260405_pythonでapiデータを自動収集保存する方法_hatena.md",
+    "rag_hits": 0,
+    "word_count": 4752,
+    "generated_at": "2026-04-05T16:19:14.879343",
+    "review_score": 7,
+    "review_passed": true,
+    "review_feedback": "中国語混入の修正と未使用ライブラリの記述削除が最優先改善点",
+    "paid_suitable": false,
+    "paid_label": "📝 無料記事",
+    "quality_passed": true,
+    "quality_reason": "OK"
+  },
+  {
+    "title": "今週の株主優待・株式分割情報（2026年04月第13週）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260405_今週の株主優待株式分割情報2026年04月第13週_hatena.md",
+    "rag_hits": 0,
+    "word_count": 3594,
+    "generated_at": "2026-04-05T16:53:48.110300",
+    "review_score": 9,
+    "review_passed": true,
+    "review_feedback": "標準的な日本語表現（ですます体 or である体）の統一と、繰り返し表現の抑制が重要です。",
+    "paid_suitable": true,
+    "paid_label": "💎 プレミアム記事（200円）",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [],
+      "score_penalty": 0
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "本日の日本株市況まとめ（2026年04月05日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260405_本日の日本株市況まとめ2026年04月05日_hatena_2.md",
+    "rag_hits": 0,
+    "word_count": 6640,
+    "generated_at": "2026-04-05T19:01:54.698212",
+    "review_score": 10,
+    "review_passed": true,
+    "review_feedback": "\"良好\"",
+    "paid_suitable": true,
+    "paid_label": "💎 プレミアム記事（200円）",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [],
+      "score_penalty": 0
+    },
+    "quality_passed": false,
+    "quality_reason": "タイトル行なし（最初の行が '# 記事タイトル' 形式でない）: '(Note: Theuser wants a detailed article meeting al'"
+  },
+  {
+    "title": "本日の日本株市況まとめ（2026年04月05日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260405_本日の日本株市況まとめ2026年04月05日_hatena.md",
+    "rag_hits": 0,
+    "word_count": 5375,
+    "generated_at": "2026-04-05T19:16:39.593762",
+    "review_score": 10,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "paid_suitable": true,
+    "paid_label": "💎 プレミアム記事（200円）",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [],
+      "score_penalty": 0
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "本日の日本株市況まとめ（2026年04月05日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260405_本日の日本株市況まとめ2026年04月05日_hatena.md",
+    "rag_hits": 0,
+    "word_count": 3111,
+    "generated_at": "2026-04-05T19:34:26.401775",
+    "review_score": 7,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "paid_suitable": false,
+    "paid_label": "📝 無料記事",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [
+        "フォーマット違反: 銘柄ブロックに「背景:」がない"
+      ],
+      "score_penalty": 1
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "本日の日本株市況まとめ（2026年04月05日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260405_本日の日本株市況まとめ2026年04月05日_hatena_1.md",
+    "rag_hits": 0,
+    "word_count": 3576,
+    "generated_at": "2026-04-05T23:51:08.415909",
+    "review_score": 8,
+    "review_passed": true,
+    "review_feedback": "「ですます体」と「である体」の混在を統一するなど、文脈に応じた文体の整合性を確認してください。",
+    "paid_suitable": true,
+    "paid_label": "📊 詳細分析記事（200円）",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [],
+      "score_penalty": 0
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "本日の日本株市況まとめ（2026年04月06日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260406_本日の日本株市況まとめ2026年04月06日_hatena.md",
+    "rag_hits": 0,
+    "word_count": 3704,
+    "generated_at": "2026-04-06T20:23:32.696683",
+    "review_score": 7,
+    "review_passed": true,
+    "review_feedback": "ですます体と普通体の統一を図ることで日本語の自然さが向上します。",
+    "paid_suitable": false,
+    "paid_label": "📰 週明け無料記事（毎週月曜公開）",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [
+        "VIX説明の矛盾: 実際はVIX +4.4%（上昇）なのに低下と記述"
+      ],
+      "score_penalty": 1
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "本日の日本株市況まとめ（2026年04月06日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260406_本日の日本株市況まとめ2026年04月06日_hatena_1.md",
+    "rag_hits": 0,
+    "word_count": 3107,
+    "generated_at": "2026-04-06T20:44:48.049287",
+    "review_score": 8,
+    "review_passed": true,
+    "review_feedback": "混在したですます体とます体の統一を図ることで、日本語の品質をさらに向上させることができます。",
+    "paid_suitable": false,
+    "paid_label": "📰 週明け無料記事（毎週月曜公開）",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [],
+      "score_penalty": 0
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "本日の日本株市況まとめ（2026年04月07日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260407_本日の日本株市況まとめ2026年04月07日_hatena.md",
+    "rag_hits": 0,
+    "word_count": 3180,
+    "generated_at": "2026-04-07T05:53:41.461981",
+    "review_score": 7,
+    "review_passed": true,
+    "review_feedback": "** 全体的に情報が網羅的で、数値も正確、文章はですます体で統一され、読み手にとって有用です。",
+    "paid_suitable": false,
+    "paid_label": "📝 無料記事",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [],
+      "score_penalty": 0
+    },
+    "quality_passed": false,
+    "quality_reason": "見出し不足: 1個（最低3個）"
+  },
+  {
+    "title": "本日の日本株市況まとめ（2026年04月07日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260407_本日の日本株市況まとめ2026年04月07日_hatena_1.md",
+    "rag_hits": 0,
+    "word_count": 6053,
+    "generated_at": "2026-04-07T19:33:16.919566",
+    "review_score": 9,
+    "review_passed": true,
+    "review_feedback": "良好です。",
+    "paid_suitable": true,
+    "paid_label": "💎 プレミアム記事（200円）",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [],
+      "score_penalty": 0
+    },
+    "quality_passed": false,
+    "quality_reason": "タイトル行なし（最初の行が '# 記事タイトル' 形式でない）: '- The first line must be \"# の記事タイトル\"? Actually rul'"
+  },
+  {
+    "title": "本日の日本株市況まとめ（2026年04月07日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260407_本日の日本株市況まとめ2026年04月07日_hatena.md",
+    "rag_hits": 0,
+    "word_count": 2940,
+    "generated_at": "2026-04-07T20:14:12.975016",
+    "review_score": 7,
+    "review_passed": true,
+    "review_feedback": "ですます体と普通体の統一、および「背景は未公表」の繰り返しを改善することで、文章の自然さと信頼性がさらに向上します。",
+    "paid_suitable": false,
+    "paid_label": "📝 無料記事",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [],
+      "score_penalty": 0
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "値下がり率ランキング解説（2026年04月07日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260407_値下がり率ランキング解説2026年04月07日_hatena.md",
+    "rag_hits": 0,
+    "word_count": 3309,
+    "generated_at": "2026-04-07T23:10:25.744813",
+    "review_score": 9,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "paid_suitable": true,
+    "paid_label": "💎 プレミアム記事（200円）",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [
+        "VIX説明の矛盾: 実際はVIX +6.6%（上昇）なのに低下と記述"
+      ],
+      "score_penalty": 1
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "今週の株主優待・株式分割情報（2026年04月第14週）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260408_今週の株主優待株式分割情報2026年04月第14週_hatena.md",
+    "rag_hits": 0,
+    "word_count": 3185,
+    "generated_at": "2026-04-08T05:50:39.645955",
+    "review_score": 9,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "paid_suitable": true,
+    "paid_label": "💎 プレミアム記事（200円）",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [],
+      "score_penalty": 0
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "値下がり率ランキング解説（2026年04月08日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260408_値下がり率ランキング解説2026年04月08日_hatena.md",
+    "rag_hits": 0,
+    "word_count": 3338,
+    "generated_at": "2026-04-08T06:01:23.917862",
+    "review_score": 10,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "paid_suitable": true,
+    "paid_label": "💎 プレミアム記事（200円）",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [],
+      "score_penalty": 0
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "値上がり率ランキング解説（2026年04月08日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260408_値上がり率ランキング解説2026年04月08日_hatena.md",
+    "rag_hits": 0,
+    "word_count": 3744,
+    "generated_at": "2026-04-08T06:27:26.951963",
+    "review_score": 10,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "paid_suitable": true,
+    "paid_label": "💎 プレミアム記事（200円）",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [],
+      "score_penalty": 0
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "値上がり率ランキング解説（2026年04月08日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260408_値上がり率ランキング解説2026年04月08日_hatena_1.md",
+    "rag_hits": 0,
+    "word_count": 4184,
+    "generated_at": "2026-04-08T06:47:00.666425",
+    "review_score": 9,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "paid_suitable": true,
+    "paid_label": "💎 プレミアム記事（200円）",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [
+        "曖昧表現の検出: 「見込まれています」→ 根拠を明示するか「背景は未公表」に変更"
+      ],
+      "score_penalty": 1
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "値上がり率ランキング解説（2026年04月08日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260408_値上がり率ランキング解説2026年04月08日_hatena_2.md",
+    "rag_hits": 0,
+    "word_count": 3537,
+    "generated_at": "2026-04-08T07:10:37.281335",
+    "review_score": 10,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "paid_suitable": true,
+    "paid_label": "💎 プレミアム記事（200円）",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [],
+      "score_penalty": 0
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "値上がり率ランキング解説（2026年04月08日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260408_値上がり率ランキング解説2026年04月08日_hatena_1.md",
+    "rag_hits": 0,
+    "word_count": 3582,
+    "generated_at": "2026-04-08T07:36:00.366109",
+    "review_score": 9,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "paid_suitable": true,
+    "paid_label": "💎 プレミアム記事（200円）",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [],
+      "score_penalty": 0
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "本日の日本株市況まとめ（2026年04月08日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260408_本日の日本株市況まとめ2026年04月08日_hatena.md",
+    "rag_hits": 0,
+    "word_count": 3960,
+    "generated_at": "2026-04-08T19:15:40.597723",
+    "review_score": 10,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "paid_suitable": true,
+    "paid_label": "💎 プレミアム記事（200円）",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [
+        "曖昧表現の検出: 「期待されています」→ 根拠を明示するか「背景は未公表」に変更"
+      ],
+      "score_penalty": 1
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "値上がり率ランキング解説（2026年04月08日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260408_値上がり率ランキング解説2026年04月08日_hatena_3.md",
+    "rag_hits": 0,
+    "word_count": 3575,
+    "generated_at": "2026-04-08T20:37:13.004033",
+    "review_score": 9,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "paid_suitable": true,
+    "paid_label": "💎 プレミアム記事（200円）",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [
+        "曖昧表現の検出: 「見込まれています」→ 根拠を明示するか「背景は未公表」に変更"
+      ],
+      "score_penalty": 1
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "本日の日本株市況まとめ（2026年04月08日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260408_本日の日本株市況まとめ2026年04月08日_hatena_1.md",
+    "rag_hits": 0,
+    "word_count": 3461,
+    "generated_at": "2026-04-08T20:58:11.892800",
+    "review_score": 10,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "paid_suitable": true,
+    "paid_label": "💎 プレミアム記事（200円）",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [],
+      "score_penalty": 0
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "本日の日本株市況まとめ（2026年04月09日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260409_本日の日本株市況まとめ2026年04月09日_hatena.md",
+    "rag_hits": 0,
+    "word_count": 3913,
+    "generated_at": "2026-04-09T06:05:49.744418",
+    "review_score": 9,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "paid_suitable": true,
+    "paid_label": "💎 プレミアム記事（200円）",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [],
+      "score_penalty": 0
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "本日の日本株市況まとめ（2026年04月09日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260409_本日の日本株市況まとめ2026年04月09日_hatena_1.md",
+    "rag_hits": 0,
+    "word_count": 3582,
+    "generated_at": "2026-04-09T18:20:07.109947",
+    "review_score": 9,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "paid_suitable": true,
+    "paid_label": "💎 プレミアム記事（200円）",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [],
+      "score_penalty": 0
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "本日の日本株市況まとめ（2026年04月11日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260411_本日の日本株市況まとめ2026年04月11日_hatena.md",
+    "rag_hits": 0,
+    "word_count": 3469,
+    "generated_at": "2026-04-11T01:58:12.044411",
+    "review_score": 10,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "paid_suitable": true,
+    "paid_label": "💎 プレミアム記事（200円）",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [],
+      "score_penalty": 0
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "本日の日本株市況まとめ（2026年04月11日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260411_本日の日本株市況まとめ2026年04月11日_hatena_1.md",
+    "rag_hits": 0,
+    "word_count": 3671,
+    "generated_at": "2026-04-11T10:45:23.734735",
+    "review_score": 10,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "paid_suitable": true,
+    "paid_label": "💎 プレミアム記事（200円）",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [],
+      "score_penalty": 0
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "本日の日本株市況まとめ（2026年04月11日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260411_本日の日本株市況まとめ2026年04月11日_hatena.md",
+    "rag_hits": 0,
+    "word_count": 3579,
+    "generated_at": "2026-04-11T14:21:06.174501",
+    "review_score": 10,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "paid_suitable": true,
+    "paid_label": "💎 プレミアム記事（200円）",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [],
+      "score_penalty": 0
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "本日の日本株市況まとめ（2026年04月11日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260411_本日の日本株市況まとめ2026年04月11日_hatena_1.md",
+    "rag_hits": 0,
+    "word_count": 4100,
+    "generated_at": "2026-04-11T14:40:55.866367",
+    "review_score": 10,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "paid_suitable": true,
+    "paid_label": "💎 プレミアム記事（200円）",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [],
+      "score_penalty": 0
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "本日の日本株市況まとめ（2026年04月11日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260411_本日の日本株市況まとめ2026年04月11日_hatena.md",
+    "rag_hits": 0,
+    "word_count": 3749,
+    "generated_at": "2026-04-11T15:12:17.600418",
+    "review_score": 10,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "paid_suitable": true,
+    "paid_label": "💎 プレミアム記事（200円）",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [
+        "曖昧表現の検出: 「期待されています」→ 根拠を明示するか「背景は未公表」に変更",
+        "曖昧表現の検出: 「見込まれています」→ 根拠を明示するか「背景は未公表」に変更"
+      ],
+      "score_penalty": 2
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "本日の日本株市況まとめ（2026年04月11日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260411_本日の日本株市況まとめ2026年04月11日_hatena_1.md",
+    "rag_hits": 0,
+    "word_count": 3802,
+    "generated_at": "2026-04-11T15:34:26.645839",
+    "review_score": 10,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "paid_suitable": true,
+    "paid_label": "💎 プレミアム記事（200円）",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [],
+      "score_penalty": 0
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "本日の日本株市況まとめ（2026年04月11日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260411_本日の日本株市況まとめ2026年04月11日_hatena.md",
+    "rag_hits": 0,
+    "word_count": 3652,
+    "generated_at": "2026-04-11T16:04:32.791986",
+    "review_score": 9,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "paid_suitable": true,
+    "paid_label": "💎 プレミアム記事（200円）",
+    "fact_check": {
+      "passed": true,
+      "issues": [],
+      "warnings": [
+        "曖昧表現の検出: 「期待されています」→ 根拠を明示するか「背景は未公表」に変更"
+      ],
+      "score_penalty": 1
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
   }
 ]
