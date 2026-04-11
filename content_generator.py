@@ -148,6 +148,25 @@ def _check_title_content_consistency(title: str, content: str, finance_data: dic
 
     return warnings
 
+
+def _check_nikkei_consistency(content: str, nikkei_actual: float) -> str:
+    """
+    記事内の日経平均数値を実際の値に統一する。
+    実際値と10%以上乖離している4〜6桁カンマ付き数値を置換する。
+    """
+    pattern = r'(\d{2,3},\d{3}(?:\.\d+)?)(円|\s*円台)'
+
+    def replace_wrong_value(m: re.Match) -> str:
+        val = float(m.group(1).replace(',', ''))
+        if abs(val - nikkei_actual) / nikkei_actual > 0.1:
+            actual_str = f"{nikkei_actual:,.2f}"
+            print(f"  🔢 日経数値修正: {m.group(1)} → {actual_str}")
+            return actual_str + m.group(2)
+        return m.group(0)
+
+    return re.sub(pattern, replace_wrong_value, content)
+
+
 # ジャンル別サブディレクトリ
 CONTENT_DIRS = {
     "finance_news": AGENT_ROOT / "content" / "finance",
@@ -1599,6 +1618,16 @@ def generate_article(
             )
     except Exception as e:
         print(f"  ⚠️ 導線文注入スキップ: {e}")
+
+    # 日経平均数値の整合チェック（投資記事のみ）
+    if is_finance and _finance_data_for_check:
+        try:
+            nikkei_str = _finance_data_for_check.get("market_summary", {}).get("nikkei_price", "")
+            nikkei_val = float(nikkei_str.replace(',', '')) if nikkei_str else 0.0
+            if nikkei_val > 0:
+                content = _check_nikkei_consistency(content, nikkei_val)
+        except Exception as e:
+            print(f"  ⚠️ 日経数値整合チェックスキップ: {e}")
 
     # SEOタイトル自動生成・整合チェック（投資記事のみ）
     if is_finance and _finance_data_for_check:
