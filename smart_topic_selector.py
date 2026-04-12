@@ -85,10 +85,15 @@ def select_article_type(now: datetime = None) -> dict:
         friday = _prev_business_day(today)
         return market_topic(friday)
 
-    # 祝日 → 前営業日の市況まとめ
+    # 祝日の場合
     if jpholiday.is_holiday(today):
-        prev = _prev_business_day(today)
-        return market_topic(prev)
+        yesterday = today - timedelta(days=1)
+        # 前日も祝日・土日 → 連続休暇の2日目以降 → 前日のニュースまとめ
+        if not _is_market_open(yesterday):
+            return news_topic(yesterday)
+        # 前日は営業日 → 連続休暇の初日 → 前日市況まとめ
+        else:
+            return market_topic(yesterday)
 
     # 平日早朝 → 前日のニュースまとめ（前日が休日の場合）
     if is_early_morning:
