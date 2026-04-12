@@ -198,7 +198,7 @@ def _build_affiliate_footer() -> str:
 
     # 投資本セクション
     if rakuten_books or amazon_books:
-        section = "## 📚 今日の一冊\n\n"
+        section = "## 📚 おすすめの書籍\n\n"
         # 楽天ウィジェット（HTMLそのまま埋め込み）
         if rakuten_books:
             book = _random.choice(rakuten_books)
@@ -214,7 +214,7 @@ def _build_affiliate_footer() -> str:
     if amazon_apple:
         item = _random.choice(amazon_apple)
         sections.append(
-            f"## 💻 投資家におすすめのガジェット\n\n"
+            f"## 💻 ガジェット系\n\n"
             f"快適な投資環境を整えるために：\n\n"
             f"**[Amazonで見る]({item['url']})**\n\n"
             f"---"
