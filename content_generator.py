@@ -190,22 +190,29 @@ def _build_affiliate_footer() -> str:
     except Exception:
         return ""
 
-    books = cfg.get("amazon", {}).get("books", [])
-    apple = cfg.get("amazon", {}).get("apple", [])
+    amazon_books  = cfg.get("amazon", {}).get("books", [])
+    amazon_apple  = cfg.get("amazon", {}).get("apple", [])
+    rakuten_books = cfg.get("rakuten", {}).get("books", [])
 
     sections = []
 
-    if books:
-        book = _random.choice(books)
-        sections.append(
-            f"## 📚 今日の一冊\n\n"
-            f"**[{book['title']}]({book['url']})**\n\n"
-            f"{book['desc']}\n\n"
-            f"---"
-        )
+    # 投資本セクション
+    if rakuten_books or amazon_books:
+        section = "## 📚 今日の一冊\n\n"
+        # 楽天ウィジェット（HTMLそのまま埋め込み）
+        if rakuten_books:
+            book = _random.choice(rakuten_books)
+            section += book["html"] + "\n\n"
+        # AmazonリンクはMarkdown形式
+        if amazon_books:
+            book = _random.choice(amazon_books)
+            section += f"**[{book['title']}（Amazon）]({book['url']})**\n\n{book['desc']}\n\n"
+        section += "---"
+        sections.append(section)
 
-    if apple:
-        item = _random.choice(apple)
+    # Appleガジェット
+    if amazon_apple:
+        item = _random.choice(amazon_apple)
         sections.append(
             f"## 💻 投資家におすすめのガジェット\n\n"
             f"快適な投資環境を整えるために：\n\n"
