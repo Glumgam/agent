@@ -253,6 +253,10 @@ def run_single(genre_id: str = None, topic: str = None) -> dict:
     if genre_id == "finance_news":
         return run_finance_news(topic)
 
+    # ニュースまとめ
+    if genre_id == "news_digest":
+        return run_news_digest(topic)
+
     # 技術記事: はてな版のみ生成（Zenn版は停止）
     results = {"zenn": None}
     print(f"\n--- はてな版（詳細）---")
@@ -260,6 +264,22 @@ def run_single(genre_id: str = None, topic: str = None) -> dict:
         topic=topic, genre_id=genre_id, variant="hatena",
     )
     return results
+
+
+def run_news_digest(topic: str) -> dict:
+    """ニュースまとめ記事を生成・投稿する"""
+    from content_generator import generate_article
+    print(f"\n--- ニュースまとめ ---")
+    result = generate_article(
+        topic=topic,
+        genre_id="news_digest",
+        variant="hatena",
+    )
+    if result and result.get("passed"):
+        print(f"✅ ニュースまとめ完了: {result['path']}")
+        return {"zenn": None, "hatena": result}
+    print("❌ ニュースまとめ生成失敗")
+    return {"zenn": None, "hatena": None}
 
 
 def run_all() -> list:
@@ -288,6 +308,13 @@ if __name__ == "__main__":
         success = sum(1 for r in results if "error" not in r)
         print(f"\n完了: {success}/{len(results)}件生成")
     else:
+        # genre・topic 両方未指定なら曜日・祝日に応じて自動判定
+        if args.genre is None and args.topic is None:
+            from smart_topic_selector import select_article_type
+            selected = select_article_type()
+            print(f"  🗓️ 自動判定: {selected['reason']}")
+            args.genre = selected["genre"]
+            args.topic = selected["topic"]
         result = run_single(genre_id=args.genre, topic=args.topic)
         # run_single は {"zenn": ..., "hatena": ...} を返す
         # zenn は停止中のため None が正常
