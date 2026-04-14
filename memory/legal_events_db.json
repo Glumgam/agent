@@ -1,1003 +1,5 @@
 [
   {
-    "date": "2026-03-24 09:03",
-    "high": [
-      {
-        "source": "金融庁関連",
-        "title": "金融庁、いわき信組に一部業務停止命令 反社勢力へ資金提供 - nikkinonline.com",
-        "published": "Fri, 31 Oct 2025 08:09:04 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiVkFVX3lxTE43TDBTeExfOG04TWk5SFdTWW1qMURBbkxwN2o3U01tdXNzem9jOGExQmJnZmMyM0VpVDdrX1hHWXVKUndqb0Q4Q09KcWxYaGpTbEs5QTNB?oc=5",
-        "risk": {
-          "category": "高リスク",
-          "level": "high",
-          "tag": "🔴 重大リスク"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "金融庁関連",
-        "title": "金融庁、いわき信用組合に一部業務停止命令 反社に資金提供 - 日本経済新聞",
-        "published": "Fri, 31 Oct 2025 07:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMibEFVX3lxTE0yVHJaZlZ0WFc4OE9JaXFtSUdwbHQxenh5WkJ3T2R6bUkwbjFBdmUyT05xbXI4RVliRkY2cHhQQnFiaDlXY2EyOGRYMTg4elRpN2dOeXVJUWlkaXJmcVVXQ3NDRUU3NkcxRzVHdg?oc=5",
-        "risk": {
-          "category": "高リスク",
-          "level": "high",
-          "tag": "🔴 重大リスク"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "金融庁関連",
-        "title": "ＳＢＩ証券、金融庁が一部業務停止命令へ…ＩＰＯで株価操作か - 読売新聞オンライン",
-        "published": "Thu, 11 Jan 2024 08:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE1FNVJnTGJCUktRLUM3LUdiZFRQN04yeFM0dzBodUt1WFNFWVBRN0RkTG4td29SWXlfYjdOZGNfVTA4czF3VVZxWF9QaTlmajlGelJrMmZLUmFXQ29jRE8wMUlzX1c?oc=5",
-        "risk": {
-          "category": "高リスク",
-          "level": "high",
-          "tag": "🔴 重大リスク"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "公正取引委員会関連",
-        "title": "香川県発注工事巡る談合、排除命令へ…公取委が２０社以上に課徴金 - ｄメニューニュース",
-        "published": "Mon, 23 Mar 2026 17:13:50 GMT",
-        "link": "https://news.google.com/rss/articles/CBMihAFBVV95cUxPQmg5TF9LQVRvYlNabkk3QzI3dUhtYTJ3ZXZkN2t0Vkg1Rmd2dnJpbWdfWDMzcXhoa05kWllYOTlnVHgxbVotUVVpdEVWVnAwc0ptWmZCZVFBMWVfWTRYLVc4cTQ1d2ZGekFDeWs2WVhYUVdadGV2UHZlQ2FWNXg2blpBaFnSAYoBQVVfeXFMUHdhRXlyek92OFFweldlUEJkLWdmcmd0c0VpaVFpTW1ORGIyUENQMTZJS3kxa0FpcHVha3VPUHpaTGVQNUNjMjBmbTJaMTRHeGhmNlI4eFN0eUN2dXZseWFyRmVISHFQXzBrQURKa0RWS2hOcFNVdWpnUkN6TEg3OC1ZTlRuSWRsMUdn?oc=5",
-        "risk": {
-          "category": "高リスク",
-          "level": "high",
-          "tag": "🔴 重大リスク"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "公正取引委員会関連",
-        "title": "香川県発注の工事巡り談合 二十数社に排除措置命令へ 公取委 - au Webポータル",
-        "published": "Mon, 23 Mar 2026 17:11:04 GMT",
-        "link": "https://news.google.com/rss/articles/CBMie0FVX3lxTE81WmJaR1JlTXIycEloVGRFQ3BrQ20wYWhYbGxfeHhSUmxnY3VsWExiUXBPQWtYYlNRTUFoaVNsZzE2SDlwbmtMMUNacXVBU1R1WW4zWUZINjZIOUw5eEJHMXBWd3BPa1RYcDF1a1pGMmRERjdGbjRQc3NrVQ?oc=5",
-        "risk": {
-          "category": "高リスク",
-          "level": "high",
-          "tag": "🔴 重大リスク"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "公正取引委員会関連",
-        "title": "香川県発注工事巡る談合、排除命令へ…公取委が２０社以上に課徴金 (2026年3月24日掲載) - ライブドアニュース",
-        "published": "Mon, 23 Mar 2026 17:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiXkFVX3lxTFBTVEh0YzI2alYzZFpQcE5oYXNZVmRacFRDOTRhTVJndFF0XzBfWlAyb3F0bVpBV3YxQTBEMGM0a2dwdzlDdms0YWRYemFSaHA0bjhqUDNKMXhTWk1EUnc?oc=5",
-        "risk": {
-          "category": "高リスク",
-          "level": "high",
-          "tag": "🔴 重大リスク"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "公正取引委員会関連",
-        "title": "極東開発工業[7226]：公正取引委員会からの課徴金納付命令に対する取消訴訟の提起について 2026年3月17日(適時開示) ：日経会社情報DIGITAL - 日本経済新聞",
-        "published": "Tue, 17 Mar 2026 06:30:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiakFVX3lxTFBkbnI3LWNoU0xVc3RxRWNGM2lwSlFqV2htWFB5cVZRc0NUMnA5Q2wxY2VRalBXdkx6c0ZTemFBMDZUSmhuSWY4alQxMTJOMWhTamhTUGhuSFN4OVA5YmExNklNNHRRMnZvYXc?oc=5",
-        "risk": {
-          "category": "高リスク",
-          "level": "high",
-          "tag": "🔴 重大リスク"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "公正取引委員会関連",
-        "title": "香川県発注工事巡る談合、排除命令へ…公取委が２０ 社以上に課徴金 - MSN",
-        "published": "Mon, 23 Mar 2026 17:53:12 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiwANBVV95cUxPN0dJc0paYi1NVlVSX0NoejU0Q2RlN05Gem83TjByRzB5aHRkR3BrVkZIV05WOHVYdHl1MGc1RDVFd2sydzh4V3dEVGp4MEM2N2huaDJ2M0tsUEdIZ2lFM2UzLWVBWEdOcDBuVmg3d0xiRTJETXFtc0tKX1FiOS1hc0xzS1g3OVJoOGZQeGZMSUNpV3hMVWpDSXlnalF2d2JLTXJHMUZENkI5NF9zTjI1dUh6SGFudjR4T3lrQ0ttQ1QzNmRoQ3AxUTFjTDZid1phWFBmM0E2SGo3cTAtQkhfX1BwSW1jM0FBRUxOVldYSUZaZVVLYlRpTUFES2l0SnA5eFpmcWVxYTdJcHJ0S0tqVHVveWRzSHN4MWN2WENDSHJWYlRicTFub1owZnE3cURKWHltalNNVTFCN0NhaDY0bzU1OVhMMEsxVTdlTzFrcWF4VnFtajRNNk13dWFyMFpTbURmaWVLS2ZDa3hoVWpDQ21vZ2ZjbjdaQ3QwTG9IS1htckNzX0NIYVd2bWF3YkFIWGpTZ1NmeVZzNGJ6VVFzVUZ0VFlHU2FFYmJpd2otZkJ4bmc2c3NnSm40bWVmMEFr?oc=5",
-        "risk": {
-          "category": "高リスク",
-          "level": "high",
-          "tag": "🔴 重大リスク"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "公正取引委員会関連",
-        "title": "極東開発工業、日本トレクス／公正取引委員会に対し課徴金納付命令の取消訴訟を提起 - トラックニュース",
-        "published": "Tue, 17 Mar 2026 07:49:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiVEFVX3lxTE1oT0FhR2tlT2hpOGVBcFA5ZXdHWVZPaWxnclY2eHpnY2EwOUhSSGxkNlV5djR4WXRfTUJoN3pLXzY5SzJXNVA1N3ljT3ItWjFkdlJ2WA?oc=5",
-        "risk": {
-          "category": "高リスク",
-          "level": "high",
-          "tag": "🔴 重大リスク"
-        },
-        "related_stocks": []
-      }
-    ],
-    "medium": [
-      {
-        "source": "訴訟関連",
-        "title": "フジテレビ50億円訴訟で中居正広が怯える大多亮氏＆港浩一氏、「損害賠償請求は十分に可能」なこれだけの理由 - 週刊女性PRIME",
-        "published": "Wed, 03 Sep 2025 07:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTFA0TWxpYWpzX0s2dFk4SWNnRGxmel9vbDlMbjFHOF9CRXRCNVBoNlp4Y3lmNmM3Z0xZTW9PNkJsbzE0NDBud2h6dndwRTJlYUxkaExjVUFLazJweUJo?oc=5",
-        "companies": [],
-        "risk": {
-          "category": "中リスク",
-          "level": "medium",
-          "tag": "🟡 要注意"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "訴訟関連",
-        "title": "ニュース「ITbookホールディングスの取締役４名、株主より損害賠償請求訴訟」 - corporate-legal.jp",
-        "published": "Tue, 09 May 2023 07:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE9JODRMd0pWaXV6cmNkdnp5WENKQUVGRjRyZDFKYzZmQU5SelpDbUxZOUFneWowNFJyanRTUFlxNUpMSjdwQWl6d0lUdkFkenNWNVE?oc=5",
-        "companies": [],
-        "risk": {
-          "category": "中リスク",
-          "level": "medium",
-          "tag": "🟡 要注意"
-        },
-        "related_stocks": []
-      }
-    ],
-    "low": [
-      {
-        "source": "訴訟関連",
-        "title": "ソニーら音楽レーベル、Internet Archiveへの著作権侵害訴訟で和解 - Gadget Gate",
-        "published": "Thu, 18 Sep 2025 07:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE13QjF6V3JQZTNjNG50SjRaYVBvd3A1enp3cjdpRkFmODZ1TVAtUFFVVVdZZHl3Qi1nak13LUZJckZUY3lEN21sRzE0S2JRajVUTWc?oc=5",
-        "companies": [
-          {
-            "name": "ソニー",
-            "code": "6758"
-          }
-        ],
-        "risk": {
-          "category": "低リスク・情報開示",
-          "level": "low",
-          "tag": "🟢 解消・好転"
-        },
-        "related_stocks": [
-          {
-            "name": "ソニー",
-            "code": "6758"
-          }
-        ]
-      },
-      {
-        "source": "訴訟関連",
-        "title": "ソニー＆ワーナー＆ユニバーサルが音楽生成AI企業「Suno」「Udio」からライセンス料徴収で和解を検討か - GIGAZINE",
-        "published": "Mon, 02 Jun 2025 07:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTE5wLWJtTWQyY1BYUXMwYzlPS2NXZUNLWkktdWxrS1dDWGc5dVJxVzc2ODd5bUQ3NUpTSHU4X1c3dUQ2WEgwOFpLYkNDNGdLdFdtR29HWXVObllac2libVZDdHJwTHRIMUthUVJWX25YaTFWUVd0TXc?oc=5",
-        "companies": [
-          {
-            "name": "ソニー",
-            "code": "6758"
-          }
-        ],
-        "risk": {
-          "category": "低リスク・情報開示",
-          "level": "low",
-          "tag": "🟢 解消・好転"
-        },
-        "related_stocks": [
-          {
-            "name": "ソニー",
-            "code": "6758"
-          }
-        ]
-      }
-    ],
-    "info": [
-      {
-        "source": "金融庁関連",
-        "title": "資金提供先は反社会的勢力 いわき信組に業務停止・改善命令 金融庁 - 朝日新聞",
-        "published": "Fri, 31 Oct 2025 07:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE1YWmFwbDZnX3BpRVNBZWU3dHFCQ2d2LW9VWW1ZTDYyZ29kOXBrUmRUMXdTS1d3RW9jUmxRdUJLLTVzSDUxUXZDX0txMW51Z2FrV0RQMl82bGNaTVVXckJzclZnRWgtbmc?oc=5",
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "金融庁関連",
-        "title": "いわき信組が一部業務停止へ 金融庁 無断借名融資から反社に資金提供と認定 - いわき民報社",
-        "published": "Fri, 31 Oct 2025 07:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE9xeE9ERFRoZU5TYTNwcHJoM2g4RWpPTERCc1VsVmllSERxV1M1UFNOZXRUZ1JvRGZuYXg0aXB5Q21idGtHamRVRTlNZGNvbTA1Y29BV0JERmFWdw?oc=5",
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "金融庁関連",
-        "title": "ニュース「金融庁が岡安商事株式会社に対する行政処分について公表」 - corporate-legal.jp",
-        "published": "Sun, 03 Jul 2022 23:45:12 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE5iMThld3NXeWNYLTNxN3ZaU3QwbFhvUzU5QlFiLVdMMG5iQjZubmpGNW4tVElqcTdyN0d3SWRzSVJjUXJpbWtLUDBSU0ttOER0Y1E?oc=5",
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "金融庁関連",
-        "title": "金融庁がスルガ銀行に６カ月停止命令、投資用不動産などの新規ローン - Bloomberg.com",
-        "published": "Fri, 05 Oct 2018 07:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTE5JSUE3LS1Tbl9rczRPeldoM0hlNzl1ODlLcm55R3lQUzFFRVJMV2dHNjN1NTBDbzY3YnNrTm9pcm1GSlBpRkdfNW41LUpXenNaczNONk45RVNKN0pyQ3lveXp3UXFRZGtTTEhnVFVYWklWRXQ1RkE?oc=5",
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "EDINET関連",
-        "title": "水戸証券[8622]：過年度の有価証券報告書等の訂正報告書の提出及び決算短信等の一部訂正についてのお知らせ 2026年3月23日(適時開示) ：日経会社情報DIGITAL - 日本経済新聞",
-        "published": "Mon, 23 Mar 2026 06:00:00 GMT",
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "EDINET関連",
-        "title": "ビー・エム・エル[4694]：過年度の有価証券報告書等の訂正報告書の提出および過年度の決算短信等の訂正に関するお知らせ 2026年3月16日(適時開示) ：日経会社情報DIGITAL - 日本経済新聞",
-        "published": "Mon, 16 Mar 2026 05:00:00 GMT",
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "EDINET関連",
-        "title": "クックビズ[6558]：訂正有価証券報告書－第18期(2024/12/01－2025/11/30) (有価証券報告書) ：日経会社情報DIGITAL - 日本経済新聞",
-        "published": "Wed, 11 Mar 2026 07:00:00 GMT",
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "EDINET関連",
-        "title": "マーケットエンタープライズ[3135]：訂正半期報告書－第20期(2025/07/01－2026/06/30) (有価証券報告書) ：日経会社情報DIGITAL - 日本経済新聞",
-        "published": "Fri, 27 Feb 2026 08:00:00 GMT",
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "EDINET関連",
-        "title": "エディオン[2730]：訂正有価証券報告書－第24期(2024/04/01－2025/03/31) (有価証券報告書) ：日経会社情報DIGITAL - 日本経済新聞",
-        "published": "Fri, 27 Feb 2026 08:00:00 GMT",
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "EDINET関連",
-        "title": "みずほフィナンシャルグループ[8411]：訂正発行登録書 (有価証券報告書) ：日経会社情報DIGITAL - 日本経済新聞",
-        "published": "Tue, 03 Mar 2026 08:00:00 GMT",
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": [
-          {
-            "name": "みずほフィナンシャルグループ",
-            "code": "8411"
-          }
-        ]
-      },
-      {
-        "source": "EDINET関連",
-        "title": "ステップ[9795]：訂正有価証券報告書－第46期(2023/10/01－2024/09/30) (有価証券報告書) ：日経会社情報DIGITAL - 日本経済新聞",
-        "published": "Tue, 10 Feb 2026 08:00:00 GMT",
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "訴訟関連",
-        "title": "unbanked（旧第一商品）金塊取引で13億円損失の闇！大株主Akatsuki提訴とオーナー案件の罠 - coki.jp",
-        "published": "Tue, 03 Mar 2026 08:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE16b3BVaXR3REtLb1F0ejNJb0JWV0l3SzV0MDB2aHhXZXd1T0NoQkppVGZNYTBtdDBNTURrdUR4b09kRURvUnFfRHdRaV9td2J6dHp1Vjh0allHQQ?oc=5",
-        "companies": [],
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "訴訟関連",
-        "title": "〈詳報記事〉アクティビストが東光高岳とナカノフドー建設に提訴請求、｢株主総会から法廷へ｣の流れが加速している - 東洋経済オンライン",
-        "published": "Thu, 26 Jun 2025 07:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiUkFVX3lxTFBzZjJUTk9tX3UwVXlSUGRzZG40OXBFSEtOVm5ldm9OaXJlaFk2cTlZLUY1MjY1Umk2NnJLU1NYLV90cEIzVVM3NDRNVWxHUkE4ckE?oc=5",
-        "companies": [],
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "訴訟関連",
-        "title": "「この職場にいたくない」東証プライム上場企業で2年目の新入社員が自死 繰り返された“強い叱責”に遺族らが損害賠償求め提訴 - 弁護士JP",
-        "published": "Wed, 30 Apr 2025 07:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiREFVX3lxTE5pMUtVdHVBLXljcmhKVDJmSkdHM2xVVnU0SVR2ejZYelh3V2h6SDY1SDlvQ1RBM3RqRHdoR1NvcjI1OHZC?oc=5",
-        "companies": [],
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "訴訟関連",
-        "title": "GMO熊谷氏が明かす「900億円訴訟」の真相、財閥と宗教に学ぶ“独自過ぎる”経営論とは？ - ダイヤモンド・オンライン",
-        "published": "Wed, 04 Jun 2025 07:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiTEFVX3lxTE1kVWxIVGFRbE5WeHlqMGtIazNvTHp5cUZRX3duQjdfSnZrN3hCQ1hfVEhXTENNTlVPWUthbkprelU4ZWNsa1RldEF3Tk7SAU9BVV95cUxONkNoTE9CZHFablRrX29ZYXlxOXBaZkFZZ0xwZ1g1cEQwdjJfSzRBblh6cVdVMG9wNGxhS0ZJNERjYTZBd2l2VjdKUU40TjZF?oc=5",
-        "companies": [],
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "訴訟関連",
-        "title": "フジテレビの株主代表訴訟 会社と株主、旧経営陣にバラバラ提訴の怪 - 日経ビジネス電子版",
-        "published": "Fri, 18 Jul 2025 07:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE5UUk40WGpnYnJDRkFzVVVVR1R6enlyYWxSRTBUZzdMWW43Q0RkZGRlRktYYTZDWVZrTkJFOXl3SDBsbXlycFFPN0VnNVpvV1J6MzBOQVllSTVkbG02bW1jakVTOGtOZms?oc=5",
-        "companies": [],
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "訴訟関連",
-        "title": "アクティビストが小林製薬に100億円超の提訴請求 - 日経BP",
-        "published": "Mon, 06 Jan 2025 08:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTE5nUnM4ZVZHclhld1JMeEVGMVVRZmJkUnFmRFg0NGhwT0hsWG1wbTN5U1RDWmN4U016cFliNTZsaFNCckE2R2UzZE9kWVkwcTU2azIwNnBVUzhPQkthcE1TM2NaU3R0MUdZNlBPN3lVV1c?oc=5",
-        "companies": [
-          {
-            "name": "小林製薬",
-            "code": null
-          }
-        ],
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "訴訟関連",
-        "title": "国や自動車メーカーを提訴 ぜんそく患者「排ガスで発症」―東京地裁 - 時事ドットコム",
-        "published": "Tue, 01 Jul 2025 07:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiY0FVX3lxTE91MjBMbU5wWjhfVjJoaENub1VVT1RIRzZBZHJDUmZ3WVZIaGVSa0w1Q1k4VDVDa01BYk40VF81SEd0MG9IZ1puOVB4X1c3bDRNWm5kMkZteWZTTDVUandFLXlUZw?oc=5",
-        "companies": [],
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "訴訟関連",
-        "title": "日本製鉄、トヨタと三井物産への特許訴訟を放棄 - 日本経済新聞",
-        "published": "Thu, 02 Nov 2023 07:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMibEFVX3lxTE1nTTlrMngwZ0wtV2Z3TTc2bVFQSUVTTVVJRkhqbHNvYWZTUXBfcmd1YWhNNWVLd1hTQ1pZd2Q5YVdaOFBzQk5vNVJaaGw4aHRRR3RKSkpnSE1MR1dFSGFOUzlWcEdaNzVLT0xHUw?oc=5",
-        "companies": [
-          {
-            "name": "トヨタ",
-            "code": "7203"
-          }
-        ],
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": [
-          {
-            "name": "トヨタ",
-            "code": "7203"
-          }
-        ]
-      },
-      {
-        "source": "訴訟関連",
-        "title": "トヨタ100％子会社で労災認定パワハラ 「お前は無能」「反社の方がまとも」…若手社員が提訴、会社側は「指導の範囲内」主張 - 弁護士JP",
-        "published": "Wed, 21 May 2025 07:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiREFVX3lxTE5OUVlKRGNTYUlZTFdOZ0htZlExdTNuZkVVTGdzbm1Ka29ldGZxX0hROUVKWGt1UTJZVjFHZXR5VDRmY2oz?oc=5",
-        "companies": [
-          {
-            "name": "トヨタ",
-            "code": "7203"
-          }
-        ],
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": [
-          {
-            "name": "トヨタ",
-            "code": "7203"
-          }
-        ]
-      },
-      {
-        "source": "訴訟関連",
-        "title": "日野とトヨタに賠償請求、米で顧客企業が集団提訴 - LOGISTICS TODAY",
-        "published": "Fri, 12 Aug 2022 07:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiSEFVX3lxTFB5MVJYampQSHNvQ1BaeGkwMzFsNXBlY2dxSnFwdkhxY21LTEVsNU9ySlQwdWp4ZWJtbDBXdlZ6U0dVVzE0a0lXTA?oc=5",
-        "companies": [
-          {
-            "name": "トヨタ",
-            "code": "7203"
-          }
-        ],
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": [
-          {
-            "name": "トヨタ",
-            "code": "7203"
-          }
-        ]
-      },
-      {
-        "source": "訴訟関連",
-        "title": "ダイハツの認証不正問題 トヨタ会長らに55億円の賠償求め株主提訴 [愛知県] - 朝日新聞",
-        "published": "Fri, 29 Nov 2024 08:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE9PeGpjWm1lUXo0eERJQmZzQWhKOTF3S3RYRHpxclZaeUdEN0pRWUFqYkh3QkRiQzdUeHZ4RVQ3SVc3MnZSY3Q1aXE5WmlMSzAzb3NRUVV2R29XaWI2M1kzd3JsZW5PNk0?oc=5",
-        "companies": [
-          {
-            "name": "トヨタ",
-            "code": "7203"
-          }
-        ],
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": [
-          {
-            "name": "トヨタ",
-            "code": "7203"
-          }
-        ]
-      },
-      {
-        "source": "訴訟関連",
-        "title": "トヨタ、電磁鋼板特許権侵害に関する訴訟終了－日本製鉄が請求放棄 - Bloomberg.com",
-        "published": "Thu, 02 Nov 2023 07:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTE90b3p6Q3dHUjFvUjZmQXAwcWtSRmJVTEN6WDFqTUhUbnR5elpkeDZKWVVUaElpN3VPeGtGdnRUUTJHcG9qMXFELS1zUkp2NU1UTFZ5QVR2QncxbjhWMWgwZGZGS0ZGTWZiR0x0UEJrNjhDX09UVHc?oc=5",
-        "companies": [
-          {
-            "name": "トヨタ",
-            "code": "7203"
-          }
-        ],
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": [
-          {
-            "name": "トヨタ",
-            "code": "7203"
-          }
-        ]
-      },
-      {
-        "source": "訴訟関連",
-        "title": "ソニーがテンセント提訴 ─ Horizon酷似ゲーム巡り知財訴訟へ - ゲーム情報！ゲームのはなし",
-        "published": "Thu, 31 Jul 2025 07:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiSkFVX3lxTE9QYlFDc280QUxZbzNvYkxHQVN5OGJpSmdfd0FTWkZOZ01wRTl3RzRhYW5JZmhBM0ZVbDZCUW5iVHpzVnh2Vm15WHJR?oc=5",
-        "companies": [
-          {
-            "name": "ソニー",
-            "code": "6758"
-          }
-        ],
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": [
-          {
-            "name": "ソニー",
-            "code": "6758"
-          }
-        ]
-      },
-      {
-        "source": "訴訟関連",
-        "title": "ソニーがＣＢＳ提訴、米人気クイズ番組の配信契約巡り対立 - Bloomberg.com",
-        "published": "Thu, 31 Oct 2024 07:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTE01UXZwRXlaSmtsTUd1bTFEZTNFd1hfLWJkQ0FIN09YZG9yekJrWFJCOUlRQ0ZKR2Z3bGRWRkZDc2c1QXFjeFVSTXU4V05KcEViNElGMGhZVzlOekx4aVVPdWVVYlRvX2hxVHFlUnE4Rk14UU9rcVE?oc=5",
-        "companies": [
-          {
-            "name": "ソニー",
-            "code": "6758"
-          }
-        ],
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": [
-          {
-            "name": "ソニー",
-            "code": "6758"
-          }
-        ]
-      },
-      {
-        "source": "訴訟関連",
-        "title": "音楽生成ＡＩ相手に初訴訟、ソニーなど大手3社 著作権侵害訴え - Reuters",
-        "published": "Mon, 24 Jun 2024 07:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMihAFBVV95cUxNbDdoQk1UbmVCUl92ZFVrWTRJQWZNanpjQTRPbXVDSzB6ZEF6SjlmTXFMZUtKd1BvZ3lfbUdEQmt3UHZiRjA5UlF4TVFsWWVkOHBFQVFsTUhXOTRMZVJQMGJ1eEpvQm85endNOHNfeGFfU3hUU1NNdWRlOVpuTm9qSlRDNzA?oc=5",
-        "companies": [
-          {
-            "name": "ソニー",
-            "code": "6758"
-          }
-        ],
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": [
-          {
-            "name": "ソニー",
-            "code": "6758"
-          }
-        ]
-      },
-      {
-        "source": "訴訟関連",
-        "title": "PS Storeめぐる1.2兆円の賠償請求 ソニーが起こされた不条理な訴訟 - Forbes JAPAN",
-        "published": "Fri, 24 Nov 2023 08:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiWEFVX3lxTFAyQ0F3dFA1OXkzblF5bnUwN0VNdmU0V0k5UHRFY2FiZllIbHU4SDdUUmlEYXlraWhGbTc3MW9DU1lHZjdoNVlidS1CbFZ4TGVWXzV5RXpZb08?oc=5",
-        "companies": [
-          {
-            "name": "ソニー",
-            "code": "6758"
-          }
-        ],
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": [
-          {
-            "name": "ソニー",
-            "code": "6758"
-          }
-        ]
-      },
-      {
-        "source": "訴訟関連",
-        "title": "元小結｢舞の海｣が野村証券らに損害賠償訴訟 顧客に｢脱税スキーム｣を紹介した責任を問う - 東洋経済オンライン",
-        "published": "Mon, 17 Mar 2025 07:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE0yUEhxZ19zZ01QeWFyeVEtQkUxWjlIRUwtY29Kci0yWXJHZVZiM0VuSWtfcDVjcHlxcS1kS08yLVRJY0R6Qy1sX18yZUpGUGYwZ0E?oc=5",
-        "companies": [
-          {
-            "name": "野村",
-            "code": "8604"
-          },
-          {
-            "name": "野村証券",
-            "code": null
-          }
-        ],
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": [
-          {
-            "name": "野村",
-            "code": "8604"
-          }
-        ]
-      }
-    ],
-    "total": 41
-  },
-  {
-    "date": "2026-03-24 12:02",
-    "high": [
-      {
-        "source": "金融庁関連",
-        "title": "金融庁、いわき信組に一部業務停止命令 反社勢力へ資金提供 - nikkinonline.com",
-        "published": "Fri, 31 Oct 2025 08:09:04 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiVkFVX3lxTE43TDBTeExfOG04TWk5SFdTWW1qMURBbkxwN2o3U01tdXNzem9jOGExQmJnZmMyM0VpVDdrX1hHWXVKUndqb0Q4Q09KcWxYaGpTbEs5QTNB?oc=5",
-        "risk": {
-          "category": "高リスク",
-          "level": "high",
-          "tag": "🔴 重大リスク"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "金融庁関連",
-        "title": "金融庁、いわき信用組合に一部業務停止命令 反社に資金提供 - 日本経済新聞",
-        "published": "Fri, 31 Oct 2025 07:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMibEFVX3lxTE0yVHJaZlZ0WFc4OE9JaXFtSUdwbHQxenh5WkJ3T2R6bUkwbjFBdmUyT05xbXI4RVliRkY2cHhQQnFiaDlXY2EyOGRYMTg4elRpN2dOeXVJUWlkaXJmcVVXQ3NDRUU3NkcxRzVHdg?oc=5",
-        "risk": {
-          "category": "高リスク",
-          "level": "high",
-          "tag": "🔴 重大リスク"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "公正取引委員会関連",
-        "title": "香川県発注の土木工事で談合認定 高松の20社超に排除措置と課徴金納付命令へ 公正取引委員会（KSB瀬戸内海放送） - Yahoo!ニュース",
-        "published": "Tue, 24 Mar 2026 01:24:36 GMT",
-        "link": "https://news.google.com/rss/articles/CBMif0FVX3lxTE1yeXdwMmp6QVZZT3RRYjNoRjUzdlJPUERWLWNUOGRLQjl4ZXlSWmZfbFRESl9seFdtbC1TRFRlTG5RYmJWNzA3ck1Rc0RQYU1pQ3VoYWNubE9MaUs0akZ2OEVGQWtfb011aFpBM18xNXZIWUVVVnpFNkJlck9KWHM?oc=5",
-        "risk": {
-          "category": "高リスク",
-          "level": "high",
-          "tag": "🔴 重大リスク"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "公正取引委員会関連",
-        "title": "二十数社に課徴金４億円 香川県工事で談合認定―公取委 - 時事ドットコム",
-        "published": "Mon, 23 Mar 2026 17:01:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiY0FVX3lxTE94LU01dElwU0g1NE5RVGxlTVM4TXA1bFMtRUhMWnQwUWJlOVdqbWZMM0d1cWpnVGFTMlVoMDhhbXlNbXM0TjF1ZXlNdGd2dW01bE1NM2dESm5yb2V4TVpnZEllUQ?oc=5",
-        "risk": {
-          "category": "高リスク",
-          "level": "high",
-          "tag": "🔴 重大リスク"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "公正取引委員会関連",
-        "title": "香川県発注工事巡る談合、排除命令へ…公取委が２０社以上に課徴金 - ｄメニューニュース",
-        "published": "Mon, 23 Mar 2026 17:13:50 GMT",
-        "link": "https://news.google.com/rss/articles/CBMihAFBVV95cUxPQmg5TF9LQVRvYlNabkk3QzI3dUhtYTJ3ZXZkN2t0Vkg1Rmd2dnJpbWdfWDMzcXhoa05kWllYOTlnVHgxbVotUVVpdEVWVnAwc0ptWmZCZVFBMWVfWTRYLVc4cTQ1d2ZGekFDeWs2WVhYUVdadGV2UHZlQ2FWNXg2blpBaFnSAYoBQVVfeXFMUHdhRXlyek92OFFweldlUEJkLWdmcmd0c0VpaVFpTW1ORGIyUENQMTZJS3kxa0FpcHVha3VPUHpaTGVQNUNjMjBmbTJaMTRHeGhmNlI4eFN0eUN2dXZseWFyRmVISHFQXzBrQURKa0RWS2hOcFNVdWpnUkN6TEg3OC1ZTlRuSWRsMUdn?oc=5",
-        "risk": {
-          "category": "高リスク",
-          "level": "high",
-          "tag": "🔴 重大リスク"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "公正取引委員会関連",
-        "title": "香川県発注の工事巡り談合 二十数社に排除措置命令へ 公取委 - au Webポータル",
-        "published": "Mon, 23 Mar 2026 17:11:04 GMT",
-        "link": "https://news.google.com/rss/articles/CBMie0FVX3lxTE81WmJaR1JlTXIycEloVGRFQ3BrQ20wYWhYbGxfeHhSUmxnY3VsWExiUXBPQWtYYlNRTUFoaVNsZzE2SDlwbmtMMUNacXVBU1R1WW4zWUZINjZIOUw5eEJHMXBWd3BPa1RYcDF1a1pGMmRERjdGbjRQc3NrVQ?oc=5",
-        "risk": {
-          "category": "高リスク",
-          "level": "high",
-          "tag": "🔴 重大リスク"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "公正取引委員会関連",
-        "title": "香川県発注工事巡る談合、排除命令へ…公取委が２０ 社以上に課徴金 - MSN",
-        "published": "Mon, 23 Mar 2026 17:53:13 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiwANBVV95cUxPN0dJc0paYi1NVlVSX0NoejU0Q2RlN05Gem83TjByRzB5aHRkR3BrVkZIV05WOHVYdHl1MGc1RDVFd2sydzh4V3dEVGp4MEM2N2huaDJ2M0tsUEdIZ2lFM2UzLWVBWEdOcDBuVmg3d0xiRTJETXFtc0tKX1FiOS1hc0xzS1g3OVJoOGZQeGZMSUNpV3hMVWpDSXlnalF2d2JLTXJHMUZENkI5NF9zTjI1dUh6SGFudjR4T3lrQ0ttQ1QzNmRoQ3AxUTFjTDZid1phWFBmM0E2SGo3cTAtQkhfX1BwSW1jM0FBRUxOVldYSUZaZVVLYlRpTUFES2l0SnA5eFpmcWVxYTdJcHJ0S0tqVHVveWRzSHN4MWN2WENDSHJWYlRicTFub1owZnE3cURKWHltalNNVTFCN0NhaDY0bzU1OVhMMEsxVTdlTzFrcWF4VnFtajRNNk13dWFyMFpTbURmaWVLS2ZDa3hoVWpDQ21vZ2ZjbjdaQ3QwTG9IS1htckNzX0NIYVd2bWF3YkFIWGpTZ1NmeVZzNGJ6VVFzVUZ0VFlHU2FFYmJpd2otZkJ4bmc2c3NnSm40bWVmMEFr?oc=5",
-        "risk": {
-          "category": "高リスク",
-          "level": "high",
-          "tag": "🔴 重大リスク"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "公正取引委員会関連",
-        "title": "極東開発工業[7226]：公正取引委員会からの課徴金納付命令に対する取消訴訟の提起について 2026年3月17日(適時開示) ：日経会社情報DIGITAL - 日本経済新聞",
-        "published": "Tue, 17 Mar 2026 06:30:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiakFVX3lxTFBkbnI3LWNoU0xVc3RxRWNGM2lwSlFqV2htWFB5cVZRc0NUMnA5Q2wxY2VRalBXdkx6c0ZTemFBMDZUSmhuSWY4alQxMTJOMWhTamhTUGhuSFN4OVA5YmExNklNNHRRMnZvYXc?oc=5",
-        "risk": {
-          "category": "高リスク",
-          "level": "high",
-          "tag": "🔴 重大リスク"
-        },
-        "related_stocks": []
-      }
-    ],
-    "medium": [
-      {
-        "source": "訴訟関連",
-        "title": "フジテレビ50億円訴訟で中居正広が怯える大多亮氏＆港浩一氏、「損害賠償請求は十分に可能」なこれだけの理由 - 週刊女性PRIME",
-        "published": "Wed, 03 Sep 2025 07:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTFA0TWxpYWpzX0s2dFk4SWNnRGxmel9vbDlMbjFHOF9CRXRCNVBoNlp4Y3lmNmM3Z0xZTW9PNkJsbzE0NDBud2h6dndwRTJlYUxkaExjVUFLazJweUJo?oc=5",
-        "companies": [],
-        "risk": {
-          "category": "中リスク",
-          "level": "medium",
-          "tag": "🟡 要注意"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "訴訟関連",
-        "title": "ニュース「ITbookホールディングスの取締役４名、株主より損害賠償請求訴訟」 - corporate-legal.jp",
-        "published": "Tue, 09 May 2023 07:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE9JODRMd0pWaXV6cmNkdnp5WENKQUVGRjRyZDFKYzZmQU5SelpDbUxZOUFneWowNFJyanRTUFlxNUpMSjdwQWl6d0lUdkFkenNWNVE?oc=5",
-        "companies": [],
-        "risk": {
-          "category": "中リスク",
-          "level": "medium",
-          "tag": "🟡 要注意"
-        },
-        "related_stocks": []
-      }
-    ],
-    "low": [],
-    "info": [
-      {
-        "source": "金融庁関連",
-        "title": "資金提供先は反社会的勢力 いわき信組に業務停止・改善命令 金融庁 - 朝日新聞",
-        "published": "Fri, 31 Oct 2025 07:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE1YWmFwbDZnX3BpRVNBZWU3dHFCQ2d2LW9VWW1ZTDYyZ29kOXBrUmRUMXdTS1d3RW9jUmxRdUJLLTVzSDUxUXZDX0txMW51Z2FrV0RQMl82bGNaTVVXckJzclZnRWgtbmc?oc=5",
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "金融庁関連",
-        "title": "いわき信組が一部業務停止へ 金融庁 無断借名融資から反社に資金提供と認定 - いわき民報社",
-        "published": "Fri, 31 Oct 2025 07:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE9xeE9ERFRoZU5TYTNwcHJoM2g4RWpPTERCc1VsVmllSERxV1M1UFNOZXRUZ1JvRGZuYXg0aXB5Q21idGtHamRVRTlNZGNvbTA1Y29BV0JERmFWdw?oc=5",
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "金融庁関連",
-        "title": "金融庁がスルガ銀行に６カ月停止命令、投資用不動産などの新規ローン - Bloomberg.com",
-        "published": "Fri, 05 Oct 2018 07:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMidkFVX3lxTE5JSUE3LS1Tbl9rczRPeldoM0hlNzl1ODlLcm55R3lQUzFFRVJMV2dHNjN1NTBDbzY3YnNrTm9pcm1GSlBpRkdfNW41LUpXenNaczNONk45RVNKN0pyQ3lveXp3UXFRZGtTTEhnVFVYWklWRXQ1RkE?oc=5",
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "金融庁関連",
-        "title": "ニュース「金融庁が岡安商事株式会社に対する行政処分について公表」 - corporate-legal.jp",
-        "published": "Sun, 03 Jul 2022 23:45:12 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE5iMThld3NXeWNYLTNxN3ZaU3QwbFhvUzU5QlFiLVdMMG5iQjZubmpGNW4tVElqcTdyN0d3SWRzSVJjUXJpbWtLUDBSU0ttOER0Y1E?oc=5",
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "EDINET関連",
-        "title": "水戸証券[8622]：過年度の有価証券報告書等の訂正報告書の提出及び決算短信等の一部訂正についてのお知らせ 2026年3月23日(適時開示) ：日経会社情報DIGITAL - 日本経済新聞",
-        "published": "Mon, 23 Mar 2026 06:00:00 GMT",
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "EDINET関連",
-        "title": "ビー・エム・エル[4694]：過年度の有価証券報告書等の訂正報告書の提出および過年度の決算短信等の訂正に関するお知らせ 2026年3月16日(適時開示) ：日経会社情報DIGITAL - 日本経済新聞",
-        "published": "Mon, 16 Mar 2026 05:00:00 GMT",
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "EDINET関連",
-        "title": "クックビズ[6558]：訂正有価証券報告書－第18期(2024/12/01－2025/11/30) (有価証券報告書) ：日経会社情報DIGITAL - 日本経済新聞",
-        "published": "Wed, 11 Mar 2026 07:00:00 GMT",
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "EDINET関連",
-        "title": "マーケットエンタープライズ[3135]：訂正半期報告書－第20期(2025/07/01－2026/06/30) (有価証券報告書) ：日経会社情報DIGITAL - 日本経済新聞",
-        "published": "Fri, 27 Feb 2026 08:00:00 GMT",
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "EDINET関連",
-        "title": "みずほフィナンシャルグループ[8411]：訂正発行登録書 (有価証券報告書) ：日経会社情報DIGITAL - 日本経済新聞",
-        "published": "Tue, 03 Mar 2026 08:00:00 GMT",
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": [
-          {
-            "name": "みずほフィナンシャルグループ",
-            "code": "8411"
-          }
-        ]
-      },
-      {
-        "source": "EDINET関連",
-        "title": "エディオン[2730]：訂正有価証券報告書－第24期(2024/04/01－2025/03/31) (有価証券報告書) ：日経会社情報DIGITAL - 日本経済新聞",
-        "published": "Fri, 27 Feb 2026 08:00:00 GMT",
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "EDINET関連",
-        "title": "エス・サイエンス[5721]：訂正半期報告書－第107期(2025/04/01－2026/03/31) (有価証券報告書) ：日経会社情報DIGITAL - 日本経済新聞",
-        "published": "Tue, 25 Nov 2025 08:00:00 GMT",
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "訴訟関連",
-        "title": "unbanked（旧第一商品）金塊取引で13億円損失の闇！大株主Akatsuki提訴とオーナー案件の罠 - coki.jp",
-        "published": "Tue, 03 Mar 2026 08:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE16b3BVaXR3REtLb1F0ejNJb0JWV0l3SzV0MDB2aHhXZXd1T0NoQkppVGZNYTBtdDBNTURrdUR4b09kRURvUnFfRHdRaV9td2J6dHp1Vjh0allHQQ?oc=5",
-        "companies": [],
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "訴訟関連",
-        "title": "〈詳報記事〉アクティビストが東光高岳とナカノフドー建設に提訴請求、｢株主総会から法廷へ｣の流れが加速している - 東洋経済オンライン",
-        "published": "Thu, 26 Jun 2025 07:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiUkFVX3lxTFBzZjJUTk9tX3UwVXlSUGRzZG40OXBFSEtOVm5ldm9OaXJlaFk2cTlZLUY1MjY1Umk2NnJLU1NYLV90cEIzVVM3NDRNVWxHUkE4ckE?oc=5",
-        "companies": [],
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "訴訟関連",
-        "title": "「この職場にいたくない」東証プライム上場企業で2年目の新入社員が自死 繰り返された“強い叱責”に遺族らが損害賠償求め提訴 - 弁護士JP",
-        "published": "Wed, 30 Apr 2025 07:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiREFVX3lxTE5pMUtVdHVBLXljcmhKVDJmSkdHM2xVVnU0SVR2ejZYelh3V2h6SDY1SDlvQ1RBM3RqRHdoR1NvcjI1OHZC?oc=5",
-        "companies": [],
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "訴訟関連",
-        "title": "GMO熊谷氏が明かす「900億円訴訟」の真相、財閥と宗教に学ぶ“独自過ぎる”経営論とは？ - ダイヤモンド・オンライン",
-        "published": "Wed, 04 Jun 2025 07:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiTEFVX3lxTE1kVWxIVGFRbE5WeHlqMGtIazNvTHp5cUZRX3duQjdfSnZrN3hCQ1hfVEhXTENNTlVPWUthbkprelU4ZWNsa1RldEF3Tk7SAU9BVV95cUxONkNoTE9CZHFablRrX29ZYXlxOXBaZkFZZ0xwZ1g1cEQwdjJfSzRBblh6cVdVMG9wNGxhS0ZJNERjYTZBd2l2VjdKUU40TjZF?oc=5",
-        "companies": [],
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "訴訟関連",
-        "title": "フジテレビの株主代表訴訟 会社と株主、旧経営陣にバラバラ提訴の怪 - 日経ビジネス電子版",
-        "published": "Fri, 18 Jul 2025 07:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE5UUk40WGpnYnJDRkFzVVVVR1R6enlyYWxSRTBUZzdMWW43Q0RkZGRlRktYYTZDWVZrTkJFOXl3SDBsbXlycFFPN0VnNVpvV1J6MzBOQVllSTVkbG02bW1jakVTOGtOZms?oc=5",
-        "companies": [],
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": []
-      },
-      {
-        "source": "訴訟関連",
-        "title": "アクティビストが小林製薬に100億円超の提訴請求 - 日経BP",
-        "published": "Mon, 06 Jan 2025 08:00:00 GMT",
-        "link": "https://news.google.com/rss/articles/CBMicEFVX3lxTE5nUnM4ZVZHclhld1JMeEVGMVVRZmJkUnFmRFg0NGhwT0hsWG1wbTN5U1RDWmN4U016cFliNTZsaFNCckE2R2UzZE9kWVkwcTU2azIwNnBVUzhPQkthcE1TM2NaU3R0MUdZNlBPN3lVV1c?oc=5",
-        "companies": [
-          {
-            "name": "小林製薬",
-            "code": null
-          }
-        ],
-        "risk": {
-          "category": "情報開示",
-          "level": "info",
-          "tag": "ℹ️ 情報"
-        },
-        "related_stocks": []
-      }
-    ],
-    "total": 27
-  },
-  {
     "date": "2026-03-24 12:18",
     "high": [
       {
@@ -65752,5 +64754,653 @@
       }
     ],
     "total": 28
+  },
+  {
+    "date": "2026-04-15 05:17",
+    "high": [
+      {
+        "source": "金融庁関連",
+        "title": "金融庁、いわき信組に一部業務停止命令 反社勢力へ資金提供 - nikkinonline.com",
+        "published": "Fri, 31 Oct 2025 08:09:04 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiVkFVX3lxTE43TDBTeExfOG04TWk5SFdTWW1qMURBbkxwN2o3U01tdXNzem9jOGExQmJnZmMyM0VpVDdrX1hHWXVKUndqb0Q4Q09KcWxYaGpTbEs5QTNB?oc=5",
+        "risk": {
+          "category": "高リスク",
+          "level": "high",
+          "tag": "🔴 重大リスク"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "金融庁関連",
+        "title": "金融庁、いわき信用組合に一部業務停止命令 反社に資金提供 - 日本経済新聞",
+        "published": "Fri, 31 Oct 2025 07:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMibEFVX3lxTE0yVHJaZlZ0WFc4OE9JaXFtSUdwbHQxenh5WkJ3T2R6bUkwbjFBdmUyT05xbXI4RVliRkY2cHhQQnFiaDlXY2EyOGRYMTg4elRpN2dOeXVJUWlkaXJmcVVXQ3NDRUU3NkcxRzVHdg?oc=5",
+        "risk": {
+          "category": "高リスク",
+          "level": "high",
+          "tag": "🔴 重大リスク"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "金融庁関連",
+        "title": "反社勢力へ資金提供 金融庁、いわき信組に一部業務停止命令 - 観光経済新聞",
+        "published": "Tue, 11 Nov 2025 08:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiVEFVX3lxTE1zN0Z4dlhvcnZkLXZ4T1EwdVk4d0xxS3RINWc2alJRVEY5Z1lpV3ZxX2ZmODN4Si1JM0dQdzFna25WYjQ3blIxNnNDR193N3N2ekRrbQ?oc=5",
+        "risk": {
+          "category": "高リスク",
+          "level": "high",
+          "tag": "🔴 重大リスク"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "金融庁関連",
+        "title": "ＳＢＩ証券、金融庁が一部業務停止命令へ…ＩＰＯで株価操作か - 読売新聞オンライン",
+        "published": "Thu, 11 Jan 2024 08:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE1FNVJnTGJCUktRLUM3LUdiZFRQN04yeFM0dzBodUt1WFNFWVBRN0RkTG4td29SWXlfYjdOZGNfVTA4czF3VVZxWF9QaTlmajlGelJrMmZLUmFXQ29jRE8wMUlzX1c?oc=5",
+        "risk": {
+          "category": "高リスク",
+          "level": "high",
+          "tag": "🔴 重大リスク"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "金融庁関連",
+        "title": "金融庁､SBI証券に1週間の一部業務停止命令を発出 - 四季報オンライン",
+        "published": "Fri, 12 Jan 2024 08:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiV0FVX3lxTE9KS3haVm5rVzU0UXBNUFBvSU93LS1wbFNuTV9DRUNPNUVqcHlVZll2RkJ6NVlwZEhKbkNkc1h5cHZpQXQxTjFnWENyNlFrTjVrdzFEVkdvTQ?oc=5",
+        "risk": {
+          "category": "高リスク",
+          "level": "high",
+          "tag": "🔴 重大リスク"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "公正取引委員会関連",
+        "title": "極東開発工業[7226]：公正取引委員会からの課徴金納付命令に対する取消訴訟の提起について 2026年3月17日(適時開示) ：日経会社情報DIGITAL - 日本経済新聞",
+        "published": "Tue, 17 Mar 2026 07:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiakFVX3lxTFBkbnI3LWNoU0xVc3RxRWNGM2lwSlFqV2htWFB5cVZRc0NUMnA5Q2wxY2VRalBXdkx6c0ZTemFBMDZUSmhuSWY4alQxMTJOMWhTamhTUGhuSFN4OVA5YmExNklNNHRRMnZvYXc?oc=5",
+        "risk": {
+          "category": "高リスク",
+          "level": "high",
+          "tag": "🔴 重大リスク"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "公正取引委員会関連",
+        "title": "首都高談合、４社に排除命令へ 清掃業務で、２社には課徴金―公取委 - 時事ドットコム",
+        "published": "Thu, 29 Jan 2026 08:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiY0FVX3lxTE95QmtGaVR2Z0VzWkM4b3VZMWQ1aXpwbmlkMHZNbkpOaEpUU3N3MjVQTnJ3eWhYc2d5dDZvY2hYei1NN0NleGZOaGNjb29nYm51aTFQcEhvUlE2WnhsVERXaUFXRQ?oc=5",
+        "risk": {
+          "category": "高リスク",
+          "level": "high",
+          "tag": "🔴 重大リスク"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "公正取引委員会関連",
+        "title": "香川県発注の土木工事で談合認定 高松の20社超に排除措置と課徴金納付命令へ 公正取引委員会（KSB瀬戸内海放送） - Yahoo!ニュース",
+        "published": "Tue, 24 Mar 2026 07:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMif0FVX3lxTE1yeXdwMmp6QVZZT3RRYjNoRjUzdlJPUERWLWNUOGRLQjl4ZXlSWmZfbFRESl9seFdtbC1TRFRlTG5RYmJWNzA3ck1Rc0RQYU1pQ3VoYWNubE9MaUs0akZ2OEVGQWtfb011aFpBM18xNXZIWUVVVnpFNkJlck9KWHM?oc=5",
+        "risk": {
+          "category": "高リスク",
+          "level": "high",
+          "tag": "🔴 重大リスク"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "公正取引委員会関連",
+        "title": "特装車カルテル、架装2社が課徴金命令取消訴訟 - LOGISTICS TODAY",
+        "published": "Tue, 17 Mar 2026 07:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiSEFVX3lxTE1ZZ0Jjdk5kTVFELUN1TFRkdC13VUE2NzdTVUx4S0owZlMzR2lHMFVGUjR2QmYzOGkxVnFaSzZCMFk1RDdUTTBRUA?oc=5",
+        "risk": {
+          "category": "高リスク",
+          "level": "high",
+          "tag": "🔴 重大リスク"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "公正取引委員会関連",
+        "title": "二十数社に課徴金４億円 香川県工事で談合認定―公取委 - 時事ドットコム",
+        "published": "Tue, 24 Mar 2026 07:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiY0FVX3lxTE94LU01dElwU0g1NE5RVGxlTVM4TXA1bFMtRUhMWnQwUWJlOVdqbWZMM0d1cWpnVGFTMlVoMDhhbXlNbXM0TjF1ZXlNdGd2dW01bE1NM2dESm5yb2V4TVpnZEllUQ?oc=5",
+        "risk": {
+          "category": "高リスク",
+          "level": "high",
+          "tag": "🔴 重大リスク"
+        },
+        "related_stocks": []
+      }
+    ],
+    "medium": [
+      {
+        "source": "訴訟関連",
+        "title": "10年物私募債投資で60％の含み損、私募ファンドが上場企業を提訴も4億3千万円の損害賠償請求は一審で敗訴 - Moomoo",
+        "published": "Tue, 07 Apr 2026 05:48:03 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiogFBVV95cUxOWjVrWWowYXJRUFZ4REpZRzJLaXJBc0ZtLXlLTnVZdmRRWk1IMmNBOWRvX01va2xib1ZwYk90Qlh3OEV5Z2I2elhndXJxa3l2MmFqVjhJcG52QjNVXzdHam9mV2UtSzh1M1NWSUFSMEd4dnhzSEhhYkdxVWNnZzdRUXNhUTVkUF82OThydm04WllPSDVxVTlfWU9HQ3FZUzdjeEE?oc=5",
+        "companies": [],
+        "risk": {
+          "category": "中リスク",
+          "level": "medium",
+          "tag": "🟡 要注意"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "訴訟関連",
+        "title": "ビッグモーター新卒社員、“電話1本”で解雇通告され自死 「死刑死刑死刑」LINE送信の元副社長らに「8800万円」損害賠償請求 - au Webポータル",
+        "published": "Thu, 20 Nov 2025 08:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMie0FVX3lxTE01NmlweHlLTUN6UGp5RU1URVEzalRvSHZFLU8wakxUT00zN0RYT0pRVDJFNFlHSS1tUEVKd29YMk9yajdXeEtNNEZkUW1Ob1BpVS1Oa2R4R3V1QVVIQ2VkZm9IdkJ6ZTkyc0N2c1dsdHFNal9SOGlkWG13MA?oc=5",
+        "companies": [],
+        "risk": {
+          "category": "中リスク",
+          "level": "medium",
+          "tag": "🟡 要注意"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "訴訟関連",
+        "title": "フジテレビ50億円訴訟で中居正広が怯える大多亮氏＆港浩一氏、「損害賠償請求は十分に可能」なこれだけの理由 - 週刊女性PRIME",
+        "published": "Wed, 03 Sep 2025 07:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTFA0TWxpYWpzX0s2dFk4SWNnRGxmel9vbDlMbjFHOF9CRXRCNVBoNlp4Y3lmNmM3Z0xZTW9PNkJsbzE0NDBud2h6dndwRTJlYUxkaExjVUFLazJweUJo?oc=5",
+        "companies": [],
+        "risk": {
+          "category": "中リスク",
+          "level": "medium",
+          "tag": "🟡 要注意"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "訴訟関連",
+        "title": "ニュース「ITbookホールディングスの取締役４名、株主より損害賠償請求訴訟」 - corporate-legal.jp",
+        "published": "Tue, 09 May 2023 07:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE9JODRMd0pWaXV6cmNkdnp5WENKQUVGRjRyZDFKYzZmQU5SelpDbUxZOUFneWowNFJyanRTUFlxNUpMSjdwQWl6d0lUdkFkenNWNVE?oc=5",
+        "companies": [],
+        "risk": {
+          "category": "中リスク",
+          "level": "medium",
+          "tag": "🟡 要注意"
+        },
+        "related_stocks": []
+      }
+    ],
+    "low": [],
+    "info": [
+      {
+        "source": "金融庁関連",
+        "title": "資金提供先は反社会的勢力 いわき信組に業務停止・改善命令 金融庁 - 朝日新聞",
+        "published": "Fri, 31 Oct 2025 07:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE1YWmFwbDZnX3BpRVNBZWU3dHFCQ2d2LW9VWW1ZTDYyZ29kOXBrUmRUMXdTS1d3RW9jUmxRdUJLLTVzSDUxUXZDX0txMW51Z2FrV0RQMl82bGNaTVVXckJzclZnRWgtbmc?oc=5",
+        "risk": {
+          "category": "情報開示",
+          "level": "info",
+          "tag": "ℹ️ 情報"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "金融庁関連",
+        "title": "いわき信組が一部業務停止へ 金融庁 無断借名融資から反社に資金提供と認定 - いわき民報社",
+        "published": "Fri, 31 Oct 2025 07:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE9xeE9ERFRoZU5TYTNwcHJoM2g4RWpPTERCc1VsVmllSERxV1M1UFNOZXRUZ1JvRGZuYXg0aXB5Q21idGtHamRVRTlNZGNvbTA1Y29BV0JERmFWdw?oc=5",
+        "risk": {
+          "category": "情報開示",
+          "level": "info",
+          "tag": "ℹ️ 情報"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "金融庁関連",
+        "title": "いわき信用組合、金融庁から業務の一部停止命令 反社勢力へ10億円提供 - ツギノジダイ",
+        "published": "Sat, 01 Nov 2025 07:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE5qbEhPR1hSRDc4bmNoSVZLZEo2eWJyZUhFbVFxNExKTU4zM3lHamU0NGpZUlQxQ05rRDlKdGVkVWNPSXhXTFZVQkxOaXRMalRndHc?oc=5",
+        "risk": {
+          "category": "情報開示",
+          "level": "info",
+          "tag": "ℹ️ 情報"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "EDINET関連",
+        "title": "アプリックス[3727]：訂正有価証券報告書－第40期(2024/01/01－2024/12/31) (有価証券報告書) ：日経会社情報DIGITAL - 日本経済新聞",
+        "published": "Wed, 08 Apr 2026 07:13:12 GMT",
+        "risk": {
+          "category": "情報開示",
+          "level": "info",
+          "tag": "ℹ️ 情報"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "EDINET関連",
+        "title": "Ｄｅｎｋｅｉ－反発 過年度の有価証券報告書などに係る訂正報告書を提出(トレーダーズ・ウェブ) - Yahoo!ファイナンス",
+        "published": "Tue, 31 Mar 2026 07:00:00 GMT",
+        "risk": {
+          "category": "情報開示",
+          "level": "info",
+          "tag": "ℹ️ 情報"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "EDINET関連",
+        "title": "ガーラ[4777]：訂正有価証券報告書－第33期(2025/01/01－2025/12/31) (有価証券報告書) ：日経会社情報DIGITAL - 日本経済新聞",
+        "published": "Mon, 06 Apr 2026 11:05:48 GMT",
+        "risk": {
+          "category": "情報開示",
+          "level": "info",
+          "tag": "ℹ️ 情報"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "EDINET関連",
+        "title": "新報国マテリアル[5542]：訂正有価証券報告書－第93期(2025/01/01－2025/12/31) (有価証券報告書) ：日経会社情報DIGITAL - 日本経済新聞",
+        "published": "Fri, 03 Apr 2026 07:00:00 GMT",
+        "risk": {
+          "category": "情報開示",
+          "level": "info",
+          "tag": "ℹ️ 情報"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "EDINET関連",
+        "title": "積水ハウス[1928]：訂正有価証券報告書－第71期(2021/02/01－2022/01/31) (有価証券報告書) ：日経会社情報DIGITAL - 日本経済新聞",
+        "published": "Mon, 23 Mar 2026 07:00:00 GMT",
+        "risk": {
+          "category": "情報開示",
+          "level": "info",
+          "tag": "ℹ️ 情報"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "EDINET関連",
+        "title": "Ｄｅｎｋｅｉ：過年度の有価証券報告書等に係る訂正報告書の提出及び過年度の決算短信等に係る訂正に関するお知らせ - 日本経済新聞",
+        "published": "Mon, 30 Mar 2026 07:00:00 GMT",
+        "risk": {
+          "category": "情報開示",
+          "level": "info",
+          "tag": "ℹ️ 情報"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "訴訟関連",
+        "title": "unbanked（旧第一商品）金塊取引で13億円損失の闇！大株主Akatsuki提訴とオーナー案件の罠 - coki.jp",
+        "published": "Tue, 03 Mar 2026 08:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE16b3BVaXR3REtLb1F0ejNJb0JWV0l3SzV0MDB2aHhXZXd1T0NoQkppVGZNYTBtdDBNTURrdUR4b09kRURvUnFfRHdRaV9td2J6dHp1Vjh0allHQQ?oc=5",
+        "companies": [],
+        "risk": {
+          "category": "情報開示",
+          "level": "info",
+          "tag": "ℹ️ 情報"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "訴訟関連",
+        "title": "「この職場にいたくない」東証プライム上場企業で2年目の新入社員が自死 繰り返された“強い叱責”に遺族らが損害賠償求め提訴 - 弁護士JP",
+        "published": "Wed, 30 Apr 2025 07:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiREFVX3lxTE5pMUtVdHVBLXljcmhKVDJmSkdHM2xVVnU0SVR2ejZYelh3V2h6SDY1SDlvQ1RBM3RqRHdoR1NvcjI1OHZC?oc=5",
+        "companies": [],
+        "risk": {
+          "category": "情報開示",
+          "level": "info",
+          "tag": "ℹ️ 情報"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "訴訟関連",
+        "title": "【独自】電気興業の前社長に2億円超請求の株主代表訴訟へ！「アクティビストvs経営陣」の法廷闘争が多発 - ダイヤモンド・オンライン",
+        "published": "Wed, 16 Oct 2024 07:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiTEFVX3lxTE54bVJrSlk5aHFsWEwwTjFuUzBjcmplbldiajNnQXoyLVFMMHU3Y0ZuR3B4RjNWRV91cjVsbUo3eXM5MzlZSUwzUkxrNVXSAU9BVV95cUxOOVJ6SFd1NnpQMmstSWlRUEF3bFB0YjhEdmN5cTQyNWZLMXhaTTVXRTdzTkVMeFdIMXI4ZXFpOW16S01XeTNRZlNOemZpSm80?oc=5",
+        "companies": [],
+        "risk": {
+          "category": "情報開示",
+          "level": "info",
+          "tag": "ℹ️ 情報"
+        },
+        "related_stocks": []
+      }
+    ],
+    "total": 26
+  },
+  {
+    "date": "2026-04-15 05:44",
+    "high": [
+      {
+        "source": "金融庁関連",
+        "title": "金融庁、いわき信組に一部業務停止命令 反社勢力へ資金提供 - nikkinonline.com",
+        "published": "Fri, 31 Oct 2025 08:09:04 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiVkFVX3lxTE43TDBTeExfOG04TWk5SFdTWW1qMURBbkxwN2o3U01tdXNzem9jOGExQmJnZmMyM0VpVDdrX1hHWXVKUndqb0Q4Q09KcWxYaGpTbEs5QTNB?oc=5",
+        "risk": {
+          "category": "高リスク",
+          "level": "high",
+          "tag": "🔴 重大リスク"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "金融庁関連",
+        "title": "金融庁、いわき信用組合に一部業務停止命令 反社に資金提供 - 日本経済新聞",
+        "published": "Fri, 31 Oct 2025 07:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMibEFVX3lxTE0yVHJaZlZ0WFc4OE9JaXFtSUdwbHQxenh5WkJ3T2R6bUkwbjFBdmUyT05xbXI4RVliRkY2cHhQQnFiaDlXY2EyOGRYMTg4elRpN2dOeXVJUWlkaXJmcVVXQ3NDRUU3NkcxRzVHdg?oc=5",
+        "risk": {
+          "category": "高リスク",
+          "level": "high",
+          "tag": "🔴 重大リスク"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "金融庁関連",
+        "title": "反社勢力へ資金提供 金融庁、いわき信組に一部業務停止命令 - 観光経済新聞",
+        "published": "Tue, 11 Nov 2025 08:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiVEFVX3lxTE1zN0Z4dlhvcnZkLXZ4T1EwdVk4d0xxS3RINWc2alJRVEY5Z1lpV3ZxX2ZmODN4Si1JM0dQdzFna25WYjQ3blIxNnNDR193N3N2ekRrbQ?oc=5",
+        "risk": {
+          "category": "高リスク",
+          "level": "high",
+          "tag": "🔴 重大リスク"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "金融庁関連",
+        "title": "ＳＢＩ証券、金融庁が一部業務停止命令へ…ＩＰＯで株価操作か - 読売新聞オンライン",
+        "published": "Thu, 11 Jan 2024 08:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE1FNVJnTGJCUktRLUM3LUdiZFRQN04yeFM0dzBodUt1WFNFWVBRN0RkTG4td29SWXlfYjdOZGNfVTA4czF3VVZxWF9QaTlmajlGelJrMmZLUmFXQ29jRE8wMUlzX1c?oc=5",
+        "risk": {
+          "category": "高リスク",
+          "level": "high",
+          "tag": "🔴 重大リスク"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "金融庁関連",
+        "title": "金融庁､SBI証券に1週間の一部業務停止命令を発出 - 四季報オンライン",
+        "published": "Fri, 12 Jan 2024 08:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiV0FVX3lxTE9KS3haVm5rVzU0UXBNUFBvSU93LS1wbFNuTV9DRUNPNUVqcHlVZll2RkJ6NVlwZEhKbkNkc1h5cHZpQXQxTjFnWENyNlFrTjVrdzFEVkdvTQ?oc=5",
+        "risk": {
+          "category": "高リスク",
+          "level": "high",
+          "tag": "🔴 重大リスク"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "公正取引委員会関連",
+        "title": "極東開発工業[7226]：公正取引委員会からの課徴金納付命令に対する取消訴訟の提起について 2026年3月17日(適時開示) ：日経会社情報DIGITAL - 日本経済新聞",
+        "published": "Tue, 17 Mar 2026 07:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiakFVX3lxTFBkbnI3LWNoU0xVc3RxRWNGM2lwSlFqV2htWFB5cVZRc0NUMnA5Q2wxY2VRalBXdkx6c0ZTemFBMDZUSmhuSWY4alQxMTJOMWhTamhTUGhuSFN4OVA5YmExNklNNHRRMnZvYXc?oc=5",
+        "risk": {
+          "category": "高リスク",
+          "level": "high",
+          "tag": "🔴 重大リスク"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "公正取引委員会関連",
+        "title": "首都高談合、４社に排除命令へ 清掃業務で、２社には課徴金―公取委 - 時事ドットコム",
+        "published": "Thu, 29 Jan 2026 08:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiY0FVX3lxTE95QmtGaVR2Z0VzWkM4b3VZMWQ1aXpwbmlkMHZNbkpOaEpUU3N3MjVQTnJ3eWhYc2d5dDZvY2hYei1NN0NleGZOaGNjb29nYm51aTFQcEhvUlE2WnhsVERXaUFXRQ?oc=5",
+        "risk": {
+          "category": "高リスク",
+          "level": "high",
+          "tag": "🔴 重大リスク"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "公正取引委員会関連",
+        "title": "香川県発注の土木工事で談合認定 高松の20社超に排除措置と課徴金納付命令へ 公正取引委員会（KSB瀬戸内海放送） - Yahoo!ニュース",
+        "published": "Tue, 24 Mar 2026 07:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMif0FVX3lxTE1yeXdwMmp6QVZZT3RRYjNoRjUzdlJPUERWLWNUOGRLQjl4ZXlSWmZfbFRESl9seFdtbC1TRFRlTG5RYmJWNzA3ck1Rc0RQYU1pQ3VoYWNubE9MaUs0akZ2OEVGQWtfb011aFpBM18xNXZIWUVVVnpFNkJlck9KWHM?oc=5",
+        "risk": {
+          "category": "高リスク",
+          "level": "high",
+          "tag": "🔴 重大リスク"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "公正取引委員会関連",
+        "title": "特装車カルテル、架装2社が課徴金命令取消訴訟 - LOGISTICS TODAY",
+        "published": "Tue, 17 Mar 2026 07:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiSEFVX3lxTE1ZZ0Jjdk5kTVFELUN1TFRkdC13VUE2NzdTVUx4S0owZlMzR2lHMFVGUjR2QmYzOGkxVnFaSzZCMFk1RDdUTTBRUA?oc=5",
+        "risk": {
+          "category": "高リスク",
+          "level": "high",
+          "tag": "🔴 重大リスク"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "公正取引委員会関連",
+        "title": "二十数社に課徴金４億円 香川県工事で談合認定―公取委 - 時事ドットコム",
+        "published": "Tue, 24 Mar 2026 07:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiY0FVX3lxTE94LU01dElwU0g1NE5RVGxlTVM4TXA1bFMtRUhMWnQwUWJlOVdqbWZMM0d1cWpnVGFTMlVoMDhhbXlNbXM0TjF1ZXlNdGd2dW01bE1NM2dESm5yb2V4TVpnZEllUQ?oc=5",
+        "risk": {
+          "category": "高リスク",
+          "level": "high",
+          "tag": "🔴 重大リスク"
+        },
+        "related_stocks": []
+      }
+    ],
+    "medium": [
+      {
+        "source": "訴訟関連",
+        "title": "10年物私募債投資で60％の含み損、私募ファンドが上場企業を提訴も4億3千万円の損害賠償請求は一審で敗訴 - Moomoo",
+        "published": "Tue, 07 Apr 2026 05:48:03 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiogFBVV95cUxOWjVrWWowYXJRUFZ4REpZRzJLaXJBc0ZtLXlLTnVZdmRRWk1IMmNBOWRvX01va2xib1ZwYk90Qlh3OEV5Z2I2elhndXJxa3l2MmFqVjhJcG52QjNVXzdHam9mV2UtSzh1M1NWSUFSMEd4dnhzSEhhYkdxVWNnZzdRUXNhUTVkUF82OThydm04WllPSDVxVTlfWU9HQ3FZUzdjeEE?oc=5",
+        "companies": [],
+        "risk": {
+          "category": "中リスク",
+          "level": "medium",
+          "tag": "🟡 要注意"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "訴訟関連",
+        "title": "ビッグモーター新卒社員、“電話1本”で解雇通告され自死 「死刑死刑死刑」LINE送信の元副社長らに「8800万円」損害賠償請求 - au Webポータル",
+        "published": "Thu, 20 Nov 2025 08:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMie0FVX3lxTE01NmlweHlLTUN6UGp5RU1URVEzalRvSHZFLU8wakxUT00zN0RYT0pRVDJFNFlHSS1tUEVKd29YMk9yajdXeEtNNEZkUW1Ob1BpVS1Oa2R4R3V1QVVIQ2VkZm9IdkJ6ZTkyc0N2c1dsdHFNal9SOGlkWG13MA?oc=5",
+        "companies": [],
+        "risk": {
+          "category": "中リスク",
+          "level": "medium",
+          "tag": "🟡 要注意"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "訴訟関連",
+        "title": "フジテレビ50億円訴訟で中居正広が怯える大多亮氏＆港浩一氏、「損害賠償請求は十分に可能」なこれだけの理由 - 週刊女性PRIME",
+        "published": "Wed, 03 Sep 2025 07:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiXEFVX3lxTFA0TWxpYWpzX0s2dFk4SWNnRGxmel9vbDlMbjFHOF9CRXRCNVBoNlp4Y3lmNmM3Z0xZTW9PNkJsbzE0NDBud2h6dndwRTJlYUxkaExjVUFLazJweUJo?oc=5",
+        "companies": [],
+        "risk": {
+          "category": "中リスク",
+          "level": "medium",
+          "tag": "🟡 要注意"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "訴訟関連",
+        "title": "ニュース「ITbookホールディングスの取締役４名、株主より損害賠償請求訴訟」 - corporate-legal.jp",
+        "published": "Tue, 09 May 2023 07:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE9JODRMd0pWaXV6cmNkdnp5WENKQUVGRjRyZDFKYzZmQU5SelpDbUxZOUFneWowNFJyanRTUFlxNUpMSjdwQWl6d0lUdkFkenNWNVE?oc=5",
+        "companies": [],
+        "risk": {
+          "category": "中リスク",
+          "level": "medium",
+          "tag": "🟡 要注意"
+        },
+        "related_stocks": []
+      }
+    ],
+    "low": [],
+    "info": [
+      {
+        "source": "金融庁関連",
+        "title": "資金提供先は反社会的勢力 いわき信組に業務停止・改善命令 金融庁 - 朝日新聞",
+        "published": "Fri, 31 Oct 2025 07:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE1YWmFwbDZnX3BpRVNBZWU3dHFCQ2d2LW9VWW1ZTDYyZ29kOXBrUmRUMXdTS1d3RW9jUmxRdUJLLTVzSDUxUXZDX0txMW51Z2FrV0RQMl82bGNaTVVXckJzclZnRWgtbmc?oc=5",
+        "risk": {
+          "category": "情報開示",
+          "level": "info",
+          "tag": "ℹ️ 情報"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "金融庁関連",
+        "title": "いわき信組が一部業務停止へ 金融庁 無断借名融資から反社に資金提供と認定 - いわき民報社",
+        "published": "Fri, 31 Oct 2025 07:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE9xeE9ERFRoZU5TYTNwcHJoM2g4RWpPTERCc1VsVmllSERxV1M1UFNOZXRUZ1JvRGZuYXg0aXB5Q21idGtHamRVRTlNZGNvbTA1Y29BV0JERmFWdw?oc=5",
+        "risk": {
+          "category": "情報開示",
+          "level": "info",
+          "tag": "ℹ️ 情報"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "金融庁関連",
+        "title": "いわき信用組合、金融庁から業務の一部停止命令 反社勢力へ10億円提供 - ツギノジダイ",
+        "published": "Sat, 01 Nov 2025 07:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE5qbEhPR1hSRDc4bmNoSVZLZEo2eWJyZUhFbVFxNExKTU4zM3lHamU0NGpZUlQxQ05rRDlKdGVkVWNPSXhXTFZVQkxOaXRMalRndHc?oc=5",
+        "risk": {
+          "category": "情報開示",
+          "level": "info",
+          "tag": "ℹ️ 情報"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "EDINET関連",
+        "title": "アプリックス[3727]：訂正有価証券報告書－第40期(2024/01/01－2024/12/31) (有価証券報告書) ：日経会社情報DIGITAL - 日本経済新聞",
+        "published": "Wed, 08 Apr 2026 07:13:12 GMT",
+        "risk": {
+          "category": "情報開示",
+          "level": "info",
+          "tag": "ℹ️ 情報"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "EDINET関連",
+        "title": "Ｄｅｎｋｅｉ－反発 過年度の有価証券報告書などに係る訂正報告書を提出(トレーダーズ・ウェブ) - Yahoo!ファイナンス",
+        "published": "Tue, 31 Mar 2026 07:00:00 GMT",
+        "risk": {
+          "category": "情報開示",
+          "level": "info",
+          "tag": "ℹ️ 情報"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "EDINET関連",
+        "title": "ガーラ[4777]：訂正有価証券報告書－第33期(2025/01/01－2025/12/31) (有価証券報告書) ：日経会社情報DIGITAL - 日本経済新聞",
+        "published": "Mon, 06 Apr 2026 11:05:48 GMT",
+        "risk": {
+          "category": "情報開示",
+          "level": "info",
+          "tag": "ℹ️ 情報"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "EDINET関連",
+        "title": "新報国マテリアル[5542]：訂正有価証券報告書－第93期(2025/01/01－2025/12/31) (有価証券報告書) ：日経会社情報DIGITAL - 日本経済新聞",
+        "published": "Fri, 03 Apr 2026 07:00:00 GMT",
+        "risk": {
+          "category": "情報開示",
+          "level": "info",
+          "tag": "ℹ️ 情報"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "EDINET関連",
+        "title": "積水ハウス[1928]：訂正有価証券報告書－第71期(2021/02/01－2022/01/31) (有価証券報告書) ：日経会社情報DIGITAL - 日本経済新聞",
+        "published": "Mon, 23 Mar 2026 07:00:00 GMT",
+        "risk": {
+          "category": "情報開示",
+          "level": "info",
+          "tag": "ℹ️ 情報"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "EDINET関連",
+        "title": "Ｄｅｎｋｅｉ：過年度の有価証券報告書等に係る訂正報告書の提出及び過年度の決算短信等に係る訂正に関するお知らせ - 日本経済新聞",
+        "published": "Mon, 30 Mar 2026 07:00:00 GMT",
+        "risk": {
+          "category": "情報開示",
+          "level": "info",
+          "tag": "ℹ️ 情報"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "訴訟関連",
+        "title": "unbanked（旧第一商品）金塊取引で13億円損失の闇！大株主Akatsuki提訴とオーナー案件の罠 - coki.jp",
+        "published": "Tue, 03 Mar 2026 08:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiWkFVX3lxTE16b3BVaXR3REtLb1F0ejNJb0JWV0l3SzV0MDB2aHhXZXd1T0NoQkppVGZNYTBtdDBNTURrdUR4b09kRURvUnFfRHdRaV9td2J6dHp1Vjh0allHQQ?oc=5",
+        "companies": [],
+        "risk": {
+          "category": "情報開示",
+          "level": "info",
+          "tag": "ℹ️ 情報"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "訴訟関連",
+        "title": "「この職場にいたくない」東証プライム上場企業で2年目の新入社員が自死 繰り返された“強い叱責”に遺族らが損害賠償求め提訴 - 弁護士JP",
+        "published": "Wed, 30 Apr 2025 07:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiREFVX3lxTE5pMUtVdHVBLXljcmhKVDJmSkdHM2xVVnU0SVR2ejZYelh3V2h6SDY1SDlvQ1RBM3RqRHdoR1NvcjI1OHZC?oc=5",
+        "companies": [],
+        "risk": {
+          "category": "情報開示",
+          "level": "info",
+          "tag": "ℹ️ 情報"
+        },
+        "related_stocks": []
+      },
+      {
+        "source": "訴訟関連",
+        "title": "【独自】電気興業の前社長に2億円超請求の株主代表訴訟へ！「アクティビストvs経営陣」の法廷闘争が多発 - ダイヤモンド・オンライン",
+        "published": "Wed, 16 Oct 2024 07:00:00 GMT",
+        "link": "https://news.google.com/rss/articles/CBMiTEFVX3lxTE54bVJrSlk5aHFsWEwwTjFuUzBjcmplbldiajNnQXoyLVFMMHU3Y0ZuR3B4RjNWRV91cjVsbUo3eXM5MzlZSUwzUkxrNVXSAU9BVV95cUxOOVJ6SFd1NnpQMmstSWlRUEF3bFB0YjhEdmN5cTQyNWZLMXhaTTVXRTdzTkVMeFdIMXI4ZXFpOW16S01XeTNRZlNOemZpSm80?oc=5",
+        "companies": [],
+        "risk": {
+          "category": "情報開示",
+          "level": "info",
+          "tag": "ℹ️ 情報"
+        },
+        "related_stocks": []
+      }
+    ],
+    "total": 26
   }
 ]
