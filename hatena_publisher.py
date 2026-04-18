@@ -136,17 +136,42 @@ def _prepare_content(content: str) -> tuple:
     return content.strip(), "text/plain"
 
 
+def _build_categories(title: str, content: str) -> list:
+    """記事タイトル・本文からカテゴリ・タグを自動生成する"""
+    categories = ["日本株", "株式投資", "市場分析"]
+    text = title + content
+    if "原油" in text:
+        categories.append("原油")
+    if "円安" in text or "為替" in text or "USD" in text:
+        categories.append("為替")
+    if "半導体" in text:
+        categories.append("半導体")
+    if "VIX" in text:
+        categories.append("VIX")
+    if "高配当" in text:
+        categories.append("高配当株")
+    if "ランキング" in text:
+        categories.append("値上がりランキング")
+    if "ニュース" in text and "まとめ" in text:
+        categories.append("ニュースまとめ")
+    return list(dict.fromkeys(categories))  # 重複除去・挿入順維持
+
+
 def _make_hatena_entry(title: str, body: str, content_type: str, draft: bool = True) -> str:
     """AtomPub形式のXMLエントリを生成する"""
-    # タイトルとbodyをXMLエスケープ（& < > が含まれるMarkdown対策）
     title_escaped = saxutils.escape(title)
     body_escaped  = saxutils.escape(body)
     draft_str     = "yes" if draft else "no"
+    categories    = _build_categories(title, body)
+    category_xml  = "\n  ".join(
+        f'<category term="{saxutils.escape(c)}" />' for c in categories
+    )
     return f"""<?xml version="1.0" encoding="utf-8"?>
 <entry xmlns="http://www.w3.org/2005/Atom"
        xmlns:app="http://www.w3.org/2007/app">
   <title>{title_escaped}</title>
   <content type="{content_type}">{body_escaped}</content>
+  {category_xml}
   <app:control>
     <app:draft>{draft_str}</app:draft>
   </app:control>
