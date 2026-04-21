@@ -3958,5 +3958,28 @@
     },
     "quality_passed": false,
     "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "本日の日本株市況まとめ（2026年04月21日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260421_本日の日本株市況まとめ2026年04月21日_hatena.md",
+    "rag_hits": 0,
+    "word_count": 5751,
+    "generated_at": "2026-04-21T20:22:23.239149",
+    "review_score": 9,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "paid_suitable": true,
+    "paid_label": "💎 プレミアム記事（200円）",
+    "fact_check": {
+      "passed": false,
+      "issues": [
+        "VIX数値の乖離: 記事=20.0pt / 実際=18.96pt"
+      ],
+      "warnings": [],
+      "score_penalty": 2
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
   }
 ]
