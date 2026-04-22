@@ -184,9 +184,13 @@ _AFFILIATE_CONFIG = AGENT_ROOT / "config" / "affiliate_config.json"
 
 def _fix_all_financial_numbers(content: str, finance_data: dict) -> str:
     """
-    記事内の全主要数値を実際値に強制置換する。
-    各指標名の直後にある数値のみを対象にし誤検知を防止する。
-    許容誤差ゼロ: 実際値と0.1%以上乖離している数値は全て修正する。
+    記事内の主要指標数値を実際値に修正する。
+    変動率（%表記）は絶対に触らない。価格・指数値のみを対象とする。
+
+    バグ防止の設計原則:
+    - 指標名の直後の数値のみを対象（コンテキスト制約）
+    - prefix部では +/- 符号を消費しない（[^0-9+\\-] を使用）
+    - 数値の直後に % がある場合はスキップ（変動率保護）
     """
     market = finance_data.get("market_summary", {})
     macro  = finance_data.get("macro", {})
@@ -194,68 +198,59 @@ def _fix_all_financial_numbers(content: str, finance_data: dict) -> str:
     us     = macro.get("us_stocks", {})
     comm   = macro.get("commodities", {})
 
-    # 正しいキーで実際値を取得
     nikkei_str = market.get("nikkei_price", "").replace(",", "")
     try:
         nikkei_val = float(nikkei_str) if nikkei_str else 0.0
     except ValueError:
         nikkei_val = 0.0
 
-    # (指標名パターン, 実際値, 書式, 後続の単位候補)
+    # (指標名プレフィックスパターン, 実際値, フォーマット関数)
+    # ※ prefix に [^0-9+\-] を使うことで +/- 符号を消費しない
     rules = [
-        # 日経平均: カンマ付き5桁
-        (r'日経平均\s*[：:は]?\s*',
+        (r'(?:日経平均)\s*[：:は]?\s*',
          nikkei_val,
-         lambda v: f"{v:,.2f}",
-         r'(?:円|円台)?'),
-        # USD/JPY
+         lambda v: f"{v:,.2f}"),
         (r'(?:USD/JPY|ドル円|ドル/円)\s*[：:は]?\s*',
          forex.get("USD/JPY", {}).get("price") or 0,
-         lambda v: f"{v:.2f}",
-         r'(?:円|円台)?'),
-        # VIX: 数値直後に「pt」「ポイント」があるかもしれない
-        (r'VIX[^0-9]{0,10}?',
+         lambda v: f"{v:.2f}"),
+        (r'VIX[^0-9+\-]{0,8}',
          us.get("VIX", {}).get("price") or 0,
-         lambda v: f"{v:.2f}",
-         r'(?:pt|ポイント)?'),
-        # WTI原油
-        (r'(?:WTI原油|WTI)[^0-9]{0,10}?',
+         lambda v: f"{v:.2f}"),
+        (r'(?:WTI原油|WTI)\s*[：:は]?\s*',
          comm.get("WTI原油", {}).get("price") or 0,
-         lambda v: f"{v:.2f}",
-         r'(?:ドル|USD)?'),
-        # S&P500
-        (r'S&P500?[^0-9]{0,10}?',
+         lambda v: f"{v:.2f}"),
+        (r'S&P\s*500?\s*[：:は]?\s*',
          us.get("S&P500", {}).get("price") or 0,
-         lambda v: f"{v:,.2f}",
-         r'(?:pt|ポイント|ドル)?'),
-        # 金（Gold）
-        (r'(?:金価格|金\(Gold\)|金スポット)[^0-9]{0,10}?',
+         lambda v: f"{v:,.2f}"),
+        (r'(?:金価格|金\(Gold\)|Goldスポット)\s*[：:は]?\s*',
          comm.get("金", {}).get("price") or 0,
-         lambda v: f"{v:,.1f}",
-         r'(?:ドル)?'),
+         lambda v: f"{v:,.1f}"),
     ]
 
-    for prefix_pat, actual, fmt_fn, suffix_pat in rules:
+    for prefix_pat, actual, fmt_fn in rules:
         if not actual or actual <= 0:
             continue
         actual_str = fmt_fn(actual)
 
-        # 指標名の直後の数値を対象にして置換
+        # 数値パターン: カンマあり・なし対応
+        # 直後に % がある場合（変動率）はスキップするため否定先読みを使用
         full_pat = (
             r'(' + prefix_pat + r')'
             r'(\d{1,3}(?:,\d{3})*(?:\.\d{1,3})?)'
-            r'(' + suffix_pat + r')'
+            r'(?!\s*%)'   # 直後に%があれば変動率なのでスキップ
         )
 
-        def _replacer(m, actual=actual, fmt_fn=fmt_fn, actual_str=actual_str):
+        def _replacer(m, actual=actual, actual_str=actual_str):
             raw_num = m.group(2).replace(",", "")
             try:
                 val = float(raw_num)
             except ValueError:
                 return m.group(0)
+            if val <= 0:
+                return m.group(0)
             if abs(val - actual) / actual > 0.001:
                 print(f"  🔢 数値強制置換: {m.group(2)} → {actual_str}")
-                return m.group(1) + actual_str + m.group(3)
+                return m.group(1) + actual_str
             return m.group(0)
 
         content = re.sub(full_pat, _replacer, content)
