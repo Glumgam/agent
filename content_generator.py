@@ -182,6 +182,87 @@ def _check_nikkei_consistency(content: str, nikkei_actual: float) -> str:
 _AFFILIATE_CONFIG = AGENT_ROOT / "config" / "affiliate_config.json"
 
 
+def _fix_all_financial_numbers(content: str, finance_data: dict) -> str:
+    """
+    記事内の全主要数値を実際値に強制置換する。
+    各指標名の直後にある数値のみを対象にし誤検知を防止する。
+    許容誤差ゼロ: 実際値と0.1%以上乖離している数値は全て修正する。
+    """
+    market = finance_data.get("market_summary", {})
+    macro  = finance_data.get("macro", {})
+    forex  = macro.get("forex", {})
+    us     = macro.get("us_stocks", {})
+    comm   = macro.get("commodities", {})
+
+    # 正しいキーで実際値を取得
+    nikkei_str = market.get("nikkei_price", "").replace(",", "")
+    try:
+        nikkei_val = float(nikkei_str) if nikkei_str else 0.0
+    except ValueError:
+        nikkei_val = 0.0
+
+    # (指標名パターン, 実際値, 書式, 後続の単位候補)
+    rules = [
+        # 日経平均: カンマ付き5桁
+        (r'日経平均\s*[：:は]?\s*',
+         nikkei_val,
+         lambda v: f"{v:,.2f}",
+         r'(?:円|円台)?'),
+        # USD/JPY
+        (r'(?:USD/JPY|ドル円|ドル/円)\s*[：:は]?\s*',
+         forex.get("USD/JPY", {}).get("price") or 0,
+         lambda v: f"{v:.2f}",
+         r'(?:円|円台)?'),
+        # VIX: 数値直後に「pt」「ポイント」があるかもしれない
+        (r'VIX[^0-9]{0,10}?',
+         us.get("VIX", {}).get("price") or 0,
+         lambda v: f"{v:.2f}",
+         r'(?:pt|ポイント)?'),
+        # WTI原油
+        (r'(?:WTI原油|WTI)[^0-9]{0,10}?',
+         comm.get("WTI原油", {}).get("price") or 0,
+         lambda v: f"{v:.2f}",
+         r'(?:ドル|USD)?'),
+        # S&P500
+        (r'S&P500?[^0-9]{0,10}?',
+         us.get("S&P500", {}).get("price") or 0,
+         lambda v: f"{v:,.2f}",
+         r'(?:pt|ポイント|ドル)?'),
+        # 金（Gold）
+        (r'(?:金価格|金\(Gold\)|金スポット)[^0-9]{0,10}?',
+         comm.get("金", {}).get("price") or 0,
+         lambda v: f"{v:,.1f}",
+         r'(?:ドル)?'),
+    ]
+
+    for prefix_pat, actual, fmt_fn, suffix_pat in rules:
+        if not actual or actual <= 0:
+            continue
+        actual_str = fmt_fn(actual)
+
+        # 指標名の直後の数値を対象にして置換
+        full_pat = (
+            r'(' + prefix_pat + r')'
+            r'(\d{1,3}(?:,\d{3})*(?:\.\d{1,3})?)'
+            r'(' + suffix_pat + r')'
+        )
+
+        def _replacer(m, actual=actual, fmt_fn=fmt_fn, actual_str=actual_str):
+            raw_num = m.group(2).replace(",", "")
+            try:
+                val = float(raw_num)
+            except ValueError:
+                return m.group(0)
+            if abs(val - actual) / actual > 0.001:
+                print(f"  🔢 数値強制置換: {m.group(2)} → {actual_str}")
+                return m.group(1) + actual_str + m.group(3)
+            return m.group(0)
+
+        content = re.sub(full_pat, _replacer, content)
+
+    return content
+
+
 def _build_affiliate_footer() -> str:
     """アフィリエイトセクションを記事末尾（免責事項直前）に追加する"""
     import random as _random
@@ -1647,6 +1728,10 @@ def generate_article(
                     }
         # --- QUALITY REVIEW END ---
 
+        # --- 数値強制置換（ファクトチェック前に全指標を正確な値に修正）---
+        if is_finance and _finance_data_for_check:
+            content = _fix_all_financial_numbers(content, _finance_data_for_check)
+
         # --- FACT CHECK START ---
         if is_finance and _finance_data_for_check:
             try:
@@ -1662,7 +1747,11 @@ def generate_article(
                     fc_issues   = fc_result["issues"]
                     issues_text = "\n".join(f"- {i}" for i in fc_issues)
                     if attempt < max_retries - 1:
-                        # Level 2: 局所修正で解決できるか試みる
+                        # Level 2-a: 再度数値強制置換を試みる
+                        content = _fix_all_financial_numbers(
+                            content, _finance_data_for_check or {}
+                        )
+                        # Level 2-b: 局所修正で解決できるか試みる
                         print(f"  🔧 ファクトチェック失敗 → 局所修正を試行中...")
                         fixed_fc = _local_fix(content, fc_issues,
                                               _finance_data_for_check or {})
