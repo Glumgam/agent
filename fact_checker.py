@@ -61,14 +61,15 @@ def check_numbers(content: str, finance_data: dict) -> list:
             except (ValueError, TypeError):
                 pass
 
-    # VIX チェック（「VIX」直後の数値のみ対象、許容誤差: 0）
+    # VIX チェック（「VIX」直後の数値のみ対象、許容誤差: 10%）
+    # ※ VIXは整数で丸めて記述されやすいため他指標より緩い閾値を設定
     vix_actual = us.get("VIX", {}).get("price")
     if isinstance(vix_actual, float):
         vix_in_article = re.findall(r'VIX[^0-9]{0,10}?(\d{1,3}(?:\.\d{1,2})?)', content)
         for v in vix_in_article:
             try:
                 v_val = float(v)
-                if 5 <= v_val <= 100 and abs(v_val - vix_actual) > 0.005:
+                if 5 <= v_val <= 100 and abs(v_val - vix_actual) / vix_actual > 0.10:
                     issues.append(
                         f"VIX数値の乖離: 記事={v_val}pt / 実際={vix_actual:.2f}pt"
                     )
