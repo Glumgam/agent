@@ -652,3 +652,126 @@ def ask_finance(prompt: str, max_tokens: int = 4000, retries: int = 3) -> str:
             time.sleep(5)
     print("[llm] ask_finance 全リトライ失敗 → ask_plain にフォールバック")
     return ask_plain(prompt)
+
+
+# -------------------------
+# AI STOCK ANALYSIS
+# -------------------------
+
+def analyze_stock_background(stocks: list, market_context: dict) -> dict:
+    """
+    ランキング上位銘柄の値動き背景をAIで推定する。
+    stocks: ["1. 企業名 (+21.38%)", ...] 形式のリスト
+    market_context: finance_data dict（market_summary / macro 等を含む）
+    Returns: {"銘柄名": "推定背景テキスト", ...}
+    """
+    if not stocks:
+        return {}
+
+    market_summary = market_context.get("market_summary", {})
+    macro  = market_context.get("macro", {})
+    forex  = macro.get("forex", {})
+    us     = macro.get("us_stocks", {})
+    comm   = macro.get("commodities", {})
+
+    nikkei         = market_summary.get("nikkei_price", "N/A")
+    nikkei_change  = market_summary.get("nikkei_change", "")
+    usd_jpy        = forex.get("USD/JPY", {}).get("price", "N/A")
+    sp500          = us.get("S&P500", {}).get("price", "N/A")
+    vix            = us.get("VIX", {}).get("price", "N/A")
+    wti            = comm.get("WTI原油", {}).get("price", "N/A")
+
+    market_env = (
+        f"日経平均: {nikkei}円 ({nikkei_change})\n"
+        f"USD/JPY: {usd_jpy}円 / S&P500: {sp500} / VIX: {vix} / WTI原油: {wti}"
+    )
+    stock_list_str = "\n".join(stocks)
+
+    prompt = f"""/no_think
+以下の日本株ランキング銘柄について、本日の市場環境をふまえて各銘柄の値動きの背景を簡潔に推定してください。
+
+【市場環境】
+{market_env}
+
+【対象銘柄】
+{stock_list_str}
+
+各銘柄について以下の形式で1〜2文で回答してください:
+銘柄名: 推定背景テキスト
+
+【ルール】
+- 根拠のある推測のみ（架空の決算・提携等を捏造しない）
+- 市場全体の動き（セクター・マクロ・円安/円高）を根拠にした説明を優先
+- 断定的に記述（「とみられる」「可能性がある」は使わない）
+- コード番号や順位番号は含めない（銘柄名のみで回答）"""
+
+    try:
+        result = ask_plain(prompt, max_tokens=512, timeout=120)
+        backgrounds = {}
+        for line in result.strip().split("\n"):
+            if ":" in line:
+                parts = line.split(":", 1)
+                name  = parts[0].strip().lstrip("0123456789. 　")
+                bg    = parts[1].strip()
+                if name and bg and len(name) < 30:
+                    backgrounds[name] = bg
+        return backgrounds
+    except Exception as e:
+        print(f"  ⚠️ 銘柄背景推定失敗: {e}")
+        return {}
+
+
+def filter_investment_news(news_list: list, max_count: int = 5) -> list:
+    """
+    ニュース一覧から日本株市場に最も関連するものをAIで選択する。
+    news_list: [{"title": ..., "summary": ..., "source": ...}, ...] 形式
+    Returns: 選択されたニュースdictのリスト（フォールバック: 先頭max_count件）
+    """
+    if not news_list:
+        return []
+
+    candidates = news_list[:20]  # 最大20件を候補に
+    news_lines = []
+    for i, n in enumerate(candidates):
+        title   = n.get("title", "")
+        summary = n.get("summary", "")[:80]
+        news_lines.append(f"{i + 1}. {title}（{summary}）")
+    news_str = "\n".join(news_lines)
+
+    prompt = f"""/no_think
+以下のニュース一覧から、本日の日本株市場に最も関連するニュースを{max_count}件選んでください。
+
+【ニュース一覧】
+{news_str}
+
+【選択基準】
+1. 日本の上場企業に直接影響するニュース
+2. 為替・金利・原油などマクロ要因
+3. 政府の経済政策・規制
+4. 米国株・中国経済の動向
+
+選んだニュースの番号のみを改行区切りで出力してください（例）:
+1
+3
+7"""
+
+    try:
+        result  = ask_plain(prompt, max_tokens=64, timeout=60)
+        indices = []
+        for line in result.strip().split("\n"):
+            m = re.search(r'\d+', line.strip())
+            if m:
+                idx = int(m.group()) - 1  # 0-indexed
+                if 0 <= idx < len(candidates):
+                    indices.append(idx)
+        # 重複除去・挿入順維持
+        seen, unique = set(), []
+        for idx in indices:
+            if idx not in seen:
+                seen.add(idx)
+                unique.append(idx)
+        selected = [candidates[i] for i in unique[:max_count]]
+        return selected if selected else candidates[:max_count]
+    except Exception as e:
+        print(f"  ⚠️ ニュースフィルタリング失敗: {e}")
+        return news_list[:max_count]
