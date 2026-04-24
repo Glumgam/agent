@@ -4050,5 +4050,57 @@
     },
     "quality_passed": false,
     "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "本日の日本株市況まとめ（2026年04月23日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260423_本日の日本株市況まとめ2026年04月23日_hatena.md",
+    "rag_hits": 0,
+    "word_count": 5749,
+    "generated_at": "2026-04-23T21:10:38.767194",
+    "review_score": 9,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "paid_suitable": true,
+    "paid_label": "💎 プレミアム記事（200円）",
+    "fact_check": {
+      "passed": false,
+      "issues": [
+        "USD/JPY数値の乖離: 記事=140.23円 / 実際=159.708円",
+        "USD/JPY数値の乖離: 記事=140.23円 / 実際=159.708円"
+      ],
+      "warnings": [
+        "VIX説明の矛盾: 実際はVIX +3.7%（上昇）なのに低下と記述",
+        "曖昧表現の検出: 「見込まれています」→ 根拠を明示するか「背景は未公表」に変更"
+      ],
+      "score_penalty": 6
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
+  },
+  {
+    "title": "本日の日本株市況まとめ（2026年04月23日）",
+    "genre": "finance_news",
+    "path": "/Volumes/ESD-EHA/agent/content/finance/20260424_本日の日本株市況まとめ2026年04月23日_hatena.md",
+    "rag_hits": 0,
+    "word_count": 6111,
+    "generated_at": "2026-04-24T05:50:39.347787",
+    "review_score": 9,
+    "review_passed": true,
+    "review_feedback": "良好",
+    "paid_suitable": true,
+    "paid_label": "💎 プレミアム記事（200円）",
+    "fact_check": {
+      "passed": false,
+      "issues": [
+        "USD/JPY数値の乖離: 記事=140.23円 / 実際=159.728円",
+        "USD/JPY数値の乖離: 記事=140.23円 / 実際=159.728円",
+        "USD/JPY数値の乖離: 記事=140.23円 / 実際=159.728円"
+      ],
+      "warnings": [],
+      "score_penalty": 6
+    },
+    "quality_passed": false,
+    "quality_reason": "コードブロックなし（最低1個必要）"
   }
 ]
