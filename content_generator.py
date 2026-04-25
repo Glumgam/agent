@@ -439,6 +439,84 @@ def _fill_placeholders(content: str, finance_data: dict) -> str:
 
 
 # ---------------------------------------------------------------------------
+# 後処理: 二重小数点フォーマット崩れの修正
+# ---------------------------------------------------------------------------
+_DBL_DECIMAL_PAT = re.compile(
+    r'(\d+(?:,\d{3})*)\.\d+\.(\d{2})(?!\d)'
+)
+
+
+def _fix_double_decimal(content: str) -> str:
+    """
+    数値フォーマット崩れ（小数点が2つ）を修正する。
+    例: "7,165.085.08" → "7,165.08"
+        "7,165.08.08" → "7,165.08"
+        "35000.005.00" → "35000.00"
+        "85.125.85"    → "85.85"
+    _fix_all_financial_numbers() の二重適用等で発生する
+    明らかな異常パターンを後処理で除去する。
+    整数部（カンマ区切りあり/なし）＋ ".余分桁.最後2桁" を検出し
+    整数部＋最後2桁のみ残す。
+    """
+    return _DBL_DECIMAL_PAT.sub(r'\1.\2', content)
+
+
+# ---------------------------------------------------------------------------
+# 後処理: 注目ニュースセクション空時の自動補完
+# ---------------------------------------------------------------------------
+_NEWS_PRIORITY_KWS = [
+    "株", "円", "経済", "企業", "半導体", "AI", "為替",
+    "金利", "日銀", "輸出", "原油", "決算", "市場",
+]
+
+
+def _ensure_news_section(content: str, finance_data: dict) -> str:
+    """
+    「本日の注目ニュース」セクションが空（10文字未満）の場合に
+    キーワードフィルタ済みニュースで補完する。
+    """
+    news_pat = re.compile(
+        r'(##\s*本日の注目ニュース[^\n]*\n)(.*?)(?=\n##|\Z)',
+        re.DOTALL,
+    )
+    m = news_pat.search(content)
+    if m and len(m.group(2).strip()) >= 10:
+        return content  # 内容あり → スキップ
+
+    # フィルタ済みを優先、なければ生ニュースからキーワード選択
+    all_news = finance_data.get("news_filtered") or finance_data.get("news", [])
+    selected = [
+        n for n in all_news
+        if any(kw in n.get("title", "") for kw in _NEWS_PRIORITY_KWS)
+    ][:3]
+
+    if not selected:
+        return content  # ニュースが取得できなければそのまま
+
+    news_lines = "\n".join(
+        f"{i + 1}. **{n.get('title', '')}**  \n"
+        f"   {n.get('summary', '')[:100]}"
+        for i, n in enumerate(selected)
+    )
+
+    if m:
+        # セクション見出しを保持し中身を置換
+        heading   = m.group(1)
+        rest_from = m.end()
+        content = content[:m.start()] + heading + "\n" + news_lines + "\n\n" + content[rest_from:]
+    else:
+        # セクション自体が存在しない場合は「まとめ」の前に挿入
+        news_section = f"\n## 本日の注目ニュース\n\n{news_lines}\n\n"
+        for anchor in ("## まとめ", "## 📊 まとめ"):
+            if anchor in content:
+                content = content.replace(anchor, news_section + anchor, 1)
+                break
+
+    print("  🔧 注目ニュースセクションを自動補完しました")
+    return content
+
+
+# ---------------------------------------------------------------------------
 # コンテキスト生成: ランキング + AI背景推定のインライン結合
 # ---------------------------------------------------------------------------
 def _build_ranking_context(
@@ -1983,11 +2061,13 @@ def generate_article(
         # --- 数値強制置換（ファクトチェック前に全指標を正確な値に修正）---
         if is_finance and _finance_data_for_check:
             content = _fix_all_financial_numbers(content, _finance_data_for_check)
+            content = _fix_double_decimal(content)   # 二重小数点フォーマット崩れを修正
 
         # --- 後処理: 必須セクション補完 / ですます体変換 / 無関係コンテンツ除去 / プレースホルダー補完 ---
         if is_finance:
             if _finance_data_for_check:
                 content = _ensure_required_sections(content, _finance_data_for_check)
+                content = _ensure_news_section(content, _finance_data_for_check)
             content = _enforce_desu_masu(content)
             content = _filter_irrelevant_content(content)
             if _finance_data_for_check:

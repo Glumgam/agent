@@ -721,14 +721,44 @@ def analyze_stock_background(stocks: list, market_context: dict) -> dict:
         return {}
 
 
+_FINANCE_KEYWORDS = [
+    "株", "円", "経済", "日銀", "金利", "企業", "決算",
+    "半導体", "AI", "輸出", "原油", "為替", "投資", "市場",
+    "上場", "株価", "利下げ", "利上げ", "景気", "物価",
+]
+
+
+def _keyword_fallback(news_list: list, max_count: int) -> list:
+    """
+    キーワードベースで経済・投資関連ニュースを優先選択する。
+    AIフィルタリングが0件を返した場合のフォールバック。
+    """
+    priority = []
+    rest     = []
+    for n in news_list:
+        title = n.get("title", "")
+        if any(kw in title for kw in _FINANCE_KEYWORDS):
+            priority.append(n)
+        else:
+            rest.append(n)
+    selected = (priority + rest)[:max_count]
+    print(f"  🔄 キーワードフォールバック: {len(priority)}件優先 → {len(selected)}件選択")
+    return selected
+
+
 def filter_investment_news(news_list: list, max_count: int = 5) -> list:
     """
     ニュース一覧から日本株市場に最も関連するものをAIで選択する。
     news_list: [{"title": ..., "summary": ..., "source": ...}, ...] 形式
-    Returns: 選択されたニュースdictのリスト（フォールバック: 先頭max_count件）
+    Returns: 選択されたニュースdictのリスト
+    フォールバック順: キーワード優先選択 → 先頭max_count件
     """
     if not news_list:
         return []
+
+    # 候補がmax_count以下ならAIフィルタリング不要
+    if len(news_list) <= max_count:
+        return news_list
 
     candidates = news_list[:20]  # 最大20件を候補に
     news_lines = []
@@ -771,7 +801,13 @@ def filter_investment_news(news_list: list, max_count: int = 5) -> list:
                 seen.add(idx)
                 unique.append(idx)
         selected = [candidates[i] for i in unique[:max_count]]
-        return selected if selected else candidates[:max_count]
+
+        # AIが0件を返した場合はキーワードフォールバック
+        if not selected:
+            print("  ⚠️ AIフィルタが0件返却 → キーワードフォールバック")
+            return _keyword_fallback(news_list, max_count)
+
+        return selected
     except Exception as e:
         print(f"  ⚠️ ニュースフィルタリング失敗: {e}")
-        return news_list[:max_count]
+        return _keyword_fallback(news_list, max_count)
