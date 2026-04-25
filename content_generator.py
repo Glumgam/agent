@@ -406,6 +406,74 @@ def _filter_irrelevant_content(content: str) -> str:
     return '\n\n'.join(filtered)
 
 
+# ---------------------------------------------------------------------------
+# 後処理: プレースホルダー補完
+# ---------------------------------------------------------------------------
+def _fill_placeholders(content: str, finance_data: dict) -> str:
+    """
+    テンプレート例示由来の未置換プレースホルダーを実際の値で埋める。
+    対象: 「USD/JPY +X.X円」「+X.X円」「-X.X円」などのパターン。
+    _enforce_desu_masu() の後に呼び出すこと。
+    """
+    macro      = finance_data.get("macro", {})
+    forex      = macro.get("forex", {})
+    usdjpy_val = forex.get("USD/JPY", {}).get("price") or 0.0
+    usdjpy_chg = forex.get("USD/JPY", {}).get("change_pct") or 0.0
+
+    if not usdjpy_val:
+        return content
+
+    # "USD/JPY +X.X円" / "USD/JPY -X.X円" / "USD/JPY X.X円"
+    content = re.sub(
+        r'USD/JPY\s*[+\-]?X\.X円',
+        f'USD/JPY（{usdjpy_val:.2f}円、前日比{usdjpy_chg:+.2f}%）',
+        content,
+    )
+    # 単独 "+X.X円" / "-X.X円"（為替変動の文脈）
+    content = re.sub(r'[+\-]X\.X円', f'{usdjpy_chg:+.2f}%', content)
+    # 残存 "X.X円"（上記パターンで未処理のプレースホルダー）
+    # \b は日本語文字と ASCII の境界でマッチしないため使わない
+    content = re.sub(r'X\.X円', f'{usdjpy_val:.2f}円', content)
+
+    return content
+
+
+# ---------------------------------------------------------------------------
+# コンテキスト生成: ランキング + AI背景推定のインライン結合
+# ---------------------------------------------------------------------------
+def _build_ranking_context(
+    up_ranking: list,
+    down_ranking: list,
+    stock_backgrounds: dict,
+) -> str:
+    """
+    値上がり・値下がりランキングをAI推定背景とインラインで結合した
+    コンテキスト文字列を返す。
+    up_ranking / down_ranking は "N. 企業名 (+X.XX%)" 形式の文字列リスト。
+    stock_backgrounds は {"企業名": "推定背景テキスト", ...} 形式の dict。
+    """
+    _name_pat = re.compile(r'^\d+\.\s*(.+?)\s*\([+\-]?[\d.]+%?\)\s*$')
+
+    def _block(items: list) -> list:
+        lines = []
+        for item in items[:5]:
+            lines.append(f"- {item}")
+            m = _name_pat.match(item.strip())
+            if m:
+                name = m.group(1).strip()
+                bg   = stock_backgrounds.get(name, "")
+                if bg:
+                    lines.append(f"  AI推定背景: {bg}")
+        return lines
+
+    result = ["【値上がり上位（AI背景推定付き）】"]
+    result.extend(_block(up_ranking))
+    result.append("")
+    result.append("【値下がり上位（AI背景推定付き）】")
+    result.extend(_block(down_ranking))
+    return "\n".join(result)
+
+
 def _build_affiliate_footer() -> str:
     """アフィリエイトセクションを記事末尾（免責事項直前）に追加する"""
     import random as _random
@@ -1673,15 +1741,13 @@ def generate_article(
                 else:
                     _data["stock_backgrounds"] = {}
 
-                # 銘柄背景をコンテキスト文字列に追加
-                if _data.get("stock_backgrounds"):
-                    bg_lines = [
-                        f"  {name}: {bg}"
-                        for name, bg in _data["stock_backgrounds"].items()
-                    ]
-                    extra_context += (
-                        "\n\n【銘柄背景推定（AI分析）】\n" + "\n".join(bg_lines)
-                    )
+                # ランキング + AI背景をインライン結合してコンテキストに追加
+                ranking_ctx = _build_ranking_context(
+                    _data.get("up_ranking", []),
+                    _data.get("down_ranking", []),
+                    _data.get("stock_backgrounds", {}),
+                )
+                extra_context += "\n\n" + ranking_ctx
 
             except Exception as e:
                 print(f"  ⚠️ AI分析スキップ: {e}")
@@ -1918,12 +1984,14 @@ def generate_article(
         if is_finance and _finance_data_for_check:
             content = _fix_all_financial_numbers(content, _finance_data_for_check)
 
-        # --- 後処理: 必須セクション補完 / ですます体変換 / 無関係コンテンツ除去 ---
+        # --- 後処理: 必須セクション補完 / ですます体変換 / 無関係コンテンツ除去 / プレースホルダー補完 ---
         if is_finance:
             if _finance_data_for_check:
                 content = _ensure_required_sections(content, _finance_data_for_check)
             content = _enforce_desu_masu(content)
             content = _filter_irrelevant_content(content)
+            if _finance_data_for_check:
+                content = _fill_placeholders(content, _finance_data_for_check)
 
         # --- FACT CHECK START ---
         if is_finance and _finance_data_for_check:
