@@ -658,12 +658,31 @@ def ask_finance(prompt: str, max_tokens: int = 4000, retries: int = 3) -> str:
 # AI STOCK ANALYSIS
 # -------------------------
 
+def _find_news_for_stock(stock_name: str, news_list: list) -> str:
+    """
+    銘柄名に関連するニュースを検索する。
+    株式会社等の一般語を除去した名称で部分一致検索する。
+    見つかった場合はタイトルを最大2件返す。見つからない場合は空文字を返す。
+    """
+    name_clean = re.sub(r'[（(）)株式会社ホールディングスグループ]', '', stock_name).strip()
+    # 短すぎる名前は誤マッチ防止のため検索しない
+    if len(name_clean) < 2:
+        return ""
+    found = []
+    for item in news_list:
+        title = item.get("title", "") + " " + item.get("summary", "")
+        if name_clean in title:
+            found.append(item.get("title", ""))
+    return "、".join(found[:2]) if found else ""
+
+
 def analyze_stock_background(stocks: list, market_context: dict) -> dict:
     """
     ランキング上位銘柄の値動き背景をAIで推定する。
+    確認できない理由は創作せず「個別材料は確認されていません」と明記させる。
     stocks: ["1. 企業名 (+21.38%)", ...] 形式のリスト
     market_context: finance_data dict（market_summary / macro 等を含む）
-    Returns: {"銘柄名": "推定背景テキスト", ...}
+    Returns: {"銘柄名": "背景テキスト", ...}
     """
     if not stocks:
         return {}
@@ -674,47 +693,108 @@ def analyze_stock_background(stocks: list, market_context: dict) -> dict:
     us     = macro.get("us_stocks", {})
     comm   = macro.get("commodities", {})
 
-    nikkei         = market_summary.get("nikkei_price", "N/A")
-    nikkei_change  = market_summary.get("nikkei_change", "")
-    usd_jpy        = forex.get("USD/JPY", {}).get("price", "N/A")
-    sp500          = us.get("S&P500", {}).get("price", "N/A")
-    vix            = us.get("VIX", {}).get("price", "N/A")
-    wti            = comm.get("WTI原油", {}).get("price", "N/A")
+    nikkei        = market_summary.get("nikkei_price", "N/A")
+    nikkei_change = market_summary.get("nikkei_change", "")
+    usd_jpy       = forex.get("USD/JPY", {}).get("price", "N/A")
+    sp500         = us.get("S&P500", {}).get("price", "N/A")
+    vix_price     = us.get("VIX", {}).get("price", "N/A")
+    vix_chg       = us.get("VIX", {}).get("change_pct") or 0.0
+    wti           = comm.get("WTI原油", {}).get("price", "N/A")
 
-    market_env = (
-        f"日経平均: {nikkei}円 ({nikkei_change})\n"
-        f"USD/JPY: {usd_jpy}円 / S&P500: {sp500} / VIX: {vix} / WTI原油: {wti}"
-    )
-    stock_list_str = "\n".join(stocks)
+    # 日経変動方向
+    try:
+        m = re.search(r'([+-]?\d+\.?\d*)', str(nikkei_change))
+        nikkei_chg_val = float(m.group(1)) if m else 0.0
+    except Exception:
+        nikkei_chg_val = 0.0
+    market_mood = "上昇" if nikkei_chg_val >= 0 else "下落"
+
+    # VIX方向
+    try:
+        vix_float = float(vix_price)
+    except Exception:
+        vix_float = 20.0
+    vix_dir = "上昇（リスクオフ）" if float(vix_chg) > 0 else "低下（リスクオン）"
+
+    # USD/JPY float
+    try:
+        usdjpy_float = float(str(usd_jpy).replace(",", ""))
+    except Exception:
+        usdjpy_float = 0.0
+
+    # ニュース一覧（フィルタ済み優先）
+    news_all = market_context.get("news_filtered") or market_context.get("news", [])
+
+    # ニュース見出し一覧（プロンプト用）
+    news_summary_lines = [f"- {n.get('title', '')}" for n in news_all[:8] if n.get("title")]
+    news_summary = "\n".join(news_summary_lines) if news_summary_lines else "（本日のニュース情報なし）"
+
+    # 銘柄ごとにニュース照合を実施してプロンプトに含める
+    stocks_lines = []
+    for s in stocks:
+        m2 = re.match(r'^\d+\.\s*(.+?)\s*\(', s)
+        raw_name = m2.group(1).strip() if m2 else s
+        related = _find_news_for_stock(raw_name, news_all)
+        entry = s
+        if related:
+            entry += f"\n  関連ニュース: {related}"
+        stocks_lines.append(entry)
+    stocks_text = "\n".join(stocks_lines)
 
     prompt = f"""/no_think
-以下の日本株ランキング銘柄について、本日の市場環境をふまえて各銘柄の値動きの背景を簡潔に推定してください。
+本日の日本株市場で以下の銘柄が急騰・急落しました。
+各銘柄の背景を分析してください。
 
-【市場環境】
-{market_env}
+【重要なルール】
+- 本日のニュース・適時開示に記載がない理由は書かない
+- 確認できない場合は「個別材料は確認されていません」と書く
+- 「業績悪化」「競争激化」「収益性低下」等の中長期要因をその日の急騰・急落理由として書かない
+- セクター全体の動きや需給・マクロから推定できる場合のみ推定を記述する
+- 推定する場合は必ず「〜の可能性があります」「〜と見られます」と断定を避ける
+- 各銘柄「関連ニュース」の記載があればそれを優先して根拠に使う
+
+【本日の市場環境】
+日経平均: {nikkei}円 ({nikkei_change}、{market_mood})
+VIX: {vix_float:.2f}（{vix_dir}）
+USD/JPY: {usdjpy_float:.3f}円
+S&P500: {sp500} / WTI原油: {wti}
+
+【本日の主要ニュース（適時開示・ニュース）】
+{news_summary}
 
 【対象銘柄】
-{stock_list_str}
+{stocks_text}
 
-各銘柄について以下の形式で1〜2文で回答してください:
-銘柄名: 推定背景テキスト
+【出力形式】（各銘柄1行、パイプ区切り）
+銘柄名 | 背景（確認できた場合のみ。不明なら「個別材料は確認されていません。需給主導の動きと見られます。」） | 注意点
 
-【ルール】
-- 根拠のある推測のみ（架空の決算・提携等を捏造しない）
-- 市場全体の動き（セクター・マクロ・円安/円高）を根拠にした説明を優先
-- 断定的に記述（「とみられる」「可能性がある」は使わない）
-- コード番号や順位番号は含めない（銘柄名のみで回答）"""
+例（確認できない場合）:
+はてな(株) | 個別材料は確認されていません。需給主導の動きと見られます。 | 急落後の反発に注意
+中外製薬(株) | 個別材料は確認されていません。セクター全体の動きと見られます。 | 中期保有者は様子見を
+
+例（確認できた場合）:
+○○(株) | 本日の適時開示で下方修正を発表。業績懸念による売りと見られます。 | 続落リスクあり"""
 
     try:
-        result = ask_plain(prompt, max_tokens=512, timeout=120)
+        result = ask_plain(prompt, max_tokens=768, timeout=120)
         backgrounds = {}
         for line in result.strip().split("\n"):
-            if ":" in line:
+            line = line.strip()
+            if not line or line.startswith("#") or line.startswith("-") or line.startswith("例"):
+                continue
+            if "|" in line:
+                parts = line.split("|")
+                name = parts[0].strip().lstrip("0123456789. 　")
+                bg   = parts[1].strip() if len(parts) > 1 else ""
+            elif ":" in line:
+                # 旧形式フォールバック
                 parts = line.split(":", 1)
-                name  = parts[0].strip().lstrip("0123456789. 　")
-                bg    = parts[1].strip()
-                if name and bg and len(name) < 30:
-                    backgrounds[name] = bg
+                name = parts[0].strip().lstrip("0123456789. 　")
+                bg   = parts[1].strip()
+            else:
+                continue
+            if name and bg and len(name) < 30:
+                backgrounds[name] = bg
         return backgrounds
     except Exception as e:
         print(f"  ⚠️ 銘柄背景推定失敗: {e}")

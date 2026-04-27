@@ -179,6 +179,59 @@ def _check_nikkei_consistency(content: str, nikkei_actual: float) -> str:
     return re.sub(pattern, replace_nikkei, content)
 
 
+def _check_vix_consistency(content: str, vix_change_pct: float) -> str:
+    """
+    VIXの変動方向とコメントが矛盾していないかチェックして修正する。
+    VIX上昇なのに「不安感が低下」「恐怖指数が低下」と書いている場合に修正する。
+    VIX低下なのに「不安感が高まった」と書いている場合も修正する。
+    """
+    if vix_change_pct > 0:
+        # VIX上昇 → 「不安感低下」系の表現は誤り
+        wrong_patterns = [
+            (
+                "VIXの低下により、市場の不安感が低下",
+                f"VIXは前日比{vix_change_pct:+.1f}%と上昇しており、市場の警戒感はやや高まっています",
+            ),
+            (
+                "VIXが低下したことで",
+                f"VIXが{vix_change_pct:+.1f}%と上昇したものの",
+            ),
+            (
+                "市場の不安感が低下しています",
+                "市場の不安感はやや残っています",
+            ),
+            (
+                "恐怖指数が低下し",
+                f"恐怖指数（VIX）は{vix_change_pct:+.1f}%と上昇し",
+            ),
+            (
+                "VIX低下によりリスクオン",
+                f"VIXは上昇（{vix_change_pct:+.1f}%）しており、リスクオフ寄り",
+            ),
+        ]
+    elif vix_change_pct < 0:
+        # VIX低下 → 「不安感高まった」系の表現は誤り
+        wrong_patterns = [
+            (
+                "VIXが上昇し、市場の不安感が高まりました",
+                f"VIXは前日比{vix_change_pct:.1f}%と低下し、市場の警戒感は和らいでいます",
+            ),
+            (
+                "市場の不安感が高まっています",
+                "市場の不安感は緩和しています",
+            ),
+        ]
+    else:
+        return content
+
+    for wrong, correct in wrong_patterns:
+        if wrong in content:
+            content = content.replace(wrong, correct)
+            print(f"  🔧 VIX方向修正: {wrong[:30]}... → 修正済み")
+
+    return content
+
+
 _AFFILIATE_CONFIG = AGENT_ROOT / "config" / "affiliate_config.json"
 
 
@@ -2237,6 +2290,20 @@ def generate_article(
                 content = _check_nikkei_consistency(content, nikkei_val)
         except Exception as e:
             print(f"  ⚠️ 日経数値整合チェックスキップ: {e}")
+
+    # VIX方向整合チェック（投資記事のみ）
+    if is_finance and _finance_data_for_check:
+        try:
+            vix_chg = (
+                _finance_data_for_check
+                .get("macro", {})
+                .get("us_stocks", {})
+                .get("VIX", {})
+                .get("change_pct") or 0.0
+            )
+            content = _check_vix_consistency(content, float(vix_chg))
+        except Exception as e:
+            print(f"  ⚠️ VIX整合チェックスキップ: {e}")
 
     # 「この上昇/下落は続くのか？」セクション名を騰落に合わせて補正（投資記事のみ）
     if is_finance and _finance_data_for_check:
